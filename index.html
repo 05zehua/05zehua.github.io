@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25级少院5班通知中心</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7f6;
+            padding: 20px;
+            max-width: 1100px;
+            /* 增加宽度以适配两列 */
+            margin: 0 auto;
+            color: #333;
+            font-size: 18px;
+        }
+
+        /* 纯文字淡入动画，随后快速向上隐藏 */
+        #welcome-text {
+            position: fixed;
+            top: 40%;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #007bff;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            animation: welcomeSequence 1.8s forwards;
+            /* 缩短到1.8s */
+        }
+
+        @keyframes welcomeSequence {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            15% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            65% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-120px);
+                visibility: hidden;
+            }
+
+            /* 消失更快更高 */
+        }
+
+        /* 内容容器模糊动画 */
+        #main-content {
+            animation: blurSequence 1.8s forwards;
+            opacity: 0;
+        }
+
+        @keyframes blurSequence {
+            0% {
+                filter: blur(20px);
+                opacity: 0.3;
+            }
+
+            80% {
+                filter: blur(20px);
+                opacity: 0.3;
+            }
+
+            100% {
+                filter: blur(0);
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            display: none;
+        }
+
+        .module-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+
+        /* 响应式两列布局 */
+        #long-term-container,
+        #instant-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+
+            #long-term-container,
+            #instant-container {
+                grid-template-columns: 1fr;
+            }
+
+            #welcome-text {
+                font-size: 2.5em;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            /* 让卡片等高 */
+            box-sizing: border-box;
+        }
+
+        .card h3 {
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .urgent {
+            border: 2px solid #dc3545;
+            background: #fff5f5;
+        }
+
+        .urgent .deadline {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .expired {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .expired img {
+            filter: grayscale(100%);
+            opacity: 0.6;
+        }
+
+        .meta {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 10px;
+        }
+
+        .meta-item {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .target-text {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .urgent .target-text {
+            color: #dc3545;
+        }
+
+        .images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: auto;
+            padding-top: 15px;
+        }
+
+        .images img {
+            max-width: 180px;
+            max-height: 180px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            cursor: zoom-in;
+            transition: transform 0.2s;
+        }
+
+        .images img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
+        #image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+        }
+
+        #image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="welcome-text">25级少院5班通知中心</div>
+
+    <div id="main-content">
+        <h2 class="module-title">长期通知</h2>
+        <div id="long-term-container">加载中...</div>
+
+        <h2 class="module-title">即时通知</h2>
+        <div id="instant-container">加载中...</div>
+    </div>
+
+    <div id="image-modal" onclick="closeModal()">
+        <img id="modal-image" src="" alt="放大图片">
+    </div>
+
+    <script>
+        function openModal(src) {
+            document.getElementById('modal-image').src = src;
+            document.getElementById('image-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('image-modal').style.display = 'none';
+        }
+
+        async function fetchNotifications() {
+            try {
+                const response = await fetch('./data.json?t=' + new Date().getTime());
+                if (!response.ok) return [];
+                return await response.json();
+            } catch (error) {
+                console.error('获取通知失败:', error);
+                return [];
+            }
+        }
+
+        async function render() {
+            const notifications = await fetchNotifications();
+            const now = new Date();
+            let activeNotifs = [];
+
+            notifications.forEach(n => {
+                let status = 'normal', timeText = '';
+                let diffMs = 0;
+                let deadlineTime = null;
+
+                if (!n.deadline) {
+                    timeText = '长期有效';
+                } else {
+                    deadlineTime = new Date(n.deadline);
+                    diffMs = deadlineTime - now;
+                    const diffHours = diffMs / (1000 * 60 * 60);
+                    if (diffHours < -24) return;
+
+                    if (diffMs < 0) {
+                        status = 'expired';
+                        timeText = `已过期 · ${Math.floor(Math.abs(diffHours))}小时`;
+                    } else {
+                        const d = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                        const h = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const m = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                        timeText = `距离截止 · ${d}天 ${h}小时 ${m}分钟`;
+                    }
+                }
+                activeNotifs.push({ ...n, diffMs, status, timeText, deadlineTime });
+            });
+
+            activeNotifs.sort((a, b) => {
+                if (a.status === 'expired' && b.status !== 'expired') return 1;
+                if (a.status !== 'expired' && b.status === 'expired') return -1;
+                if (a.status !== 'expired') return a.diffMs - b.diffMs;
+                return b.deadlineTime - a.deadlineTime;
+            });
+
+            ['long-term', 'instant'].forEach(type => {
+                const idx = activeNotifs.findIndex(n => n.type === type && n.status !== 'expired');
+                if (idx !== -1) activeNotifs[idx].status = 'urgent';
+            });
+
+            document.getElementById('long-term-container').innerHTML = '';
+            document.getElementById('instant-container').innerHTML = '';
+
+            activeNotifs.forEach(n => {
+                const pubDateObj = new Date(n.publishTime);
+                const pubDate = `${pubDateObj.getFullYear()}/${pubDateObj.getMonth() + 1}/${pubDateObj.getDate()} ${pubDateObj.getHours()}:${pubDateObj.getMinutes().toString().padStart(2, '0')}`;
+
+                const imgs = (n.images && n.images.length > 0)
+                    ? n.images.map(src => `<img src="${src}" alt="通知配图" loading="lazy" onclick="openModal('${src}')">`).join('')
+                    : '';
+
+                const targetText = n.target ? n.target : '全体';
+
+                const html = `
+                    <div class="card ${n.status}">
+                        <h3>${n.title}</h3>
+                        <div class="meta">
+                            <span class="meta-item">${pubDate}</span> | 
+                            <span class="meta-item">通知对象: <span class="target-text">${targetText}</span></span> | 
+                            <span class="meta-item"><span class="deadline">${n.timeText}</span></span>
+                        </div>
+                        <p style="line-height: 1.6;">${n.content.replace(/\n/g, '<br>')}</p>
+                        ${imgs ? `<div class="images">${imgs}</div>` : ''}
+                    </div>
+                `;
+                document.getElementById(n.type === 'long-term' ? 'long-term-container' : 'instant-container').innerHTML += html;
+            });
+
+            if (document.getElementById('long-term-container').innerHTML === '') document.getElementById('long-term-container').innerHTML = '<p style="color:#999;">暂无通知</p>';
+            if (document.getElementById('instant-container').innerHTML === '') document.getElementById('instant-container').innerHTML = '<p style="color:#999;">暂无通知</p>';
+        }
+
+        render();
+    </script>
+</body>
+
+</html>
