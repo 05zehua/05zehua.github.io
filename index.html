@@ -153,9 +153,10 @@
             background: #fff5f5;
         }
 
-        .normal {
-            border: 2px solid #007bff;
-            background: #f0f7ff;
+        .normal .deadline {
+            color: #007bff;
+            font-weight: bold;
+            font-size: 1.1em;
         }
 
         .urgent .deadline {
@@ -167,6 +168,12 @@
         .expired {
             background: #e9ecef;
             color: #6c757d;
+        }
+
+        .expired .meta,
+        .expired .meta .target-text,
+        .expired .meta .deadline {
+            color: #6c757d !important;
         }
 
         .expired img {
@@ -185,6 +192,10 @@
         .meta-item {
             display: inline-block;
             margin-right: 5px;
+        }
+
+        .meta-label {
+            color: #666;
         }
 
         .target-text {
@@ -298,14 +309,16 @@
             let activeNotifs = [];
 
             notifications.forEach(n => {
-                let status = 'normal', timeText = '';
+                let status = 'normal', timeText = '', label = '距离截止';
                 let diffMs = 0;
                 let deadlineTime = null;
 
                 if (!n.deadline) {
+                    label = '有效期';
                     timeText = '长期有效';
                 } else if (n.deadline === 'TBD') {
-                    timeText = '时间待定';
+                    label = '时间';
+                    timeText = '待定';
                     if (n.isUrgent) status = 'urgent';
                 } else {
                     deadlineTime = new Date(n.deadline);
@@ -315,7 +328,8 @@
 
                     if (diffMs < 0) {
                         status = 'expired';
-                        timeText = `已过期 · ${Math.floor(Math.abs(diffHours))}小时`;
+                        label = '已过期';
+                        timeText = `${Math.floor(Math.abs(diffHours))}小时前`;
                     } else {
                         // 三天内变红
                         if (diffMs < 3 * 24 * 60 * 60 * 1000) {
@@ -324,10 +338,10 @@
                         const d = Math.floor(diffMs / (1000 * 60 * 60 * 24));
                         const h = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                         const m = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                        timeText = `距离截止 · ${d}天 ${h}小时 ${m}分钟`;
+                        timeText = `${d}天 ${h}小时 ${m}分钟`;
                     }
                 }
-                activeNotifs.push({ ...n, diffMs, status, timeText, deadlineTime });
+                activeNotifs.push({ ...n, diffMs, status, label, timeText, deadlineTime });
             });
 
             activeNotifs.sort((a, b) => {
@@ -356,8 +370,8 @@
                         <h3>${n.title}</h3>
                         <div class="meta">
                             <span class="meta-item">${pubDate}</span> | 
-                            <span class="meta-item">通知对象: <span class="target-text">${targetText}</span></span> | 
-                            <span class="meta-item"><span class="deadline">${n.timeText}</span></span>
+                            <span class="meta-item"><span class="meta-label">通知对象:</span> <span class="target-text">${targetText}</span></span> | 
+                            <span class="meta-item"><span class="meta-label">${n.label}:</span> <span class="deadline">${n.timeText}</span></span>
                         </div>
                         <p style="line-height: 1.6;">${n.content.replace(/\n/g, '<br>').replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>')}</p>
                         ${imgs ? `<div class="images">${imgs}</div>` : ''}
