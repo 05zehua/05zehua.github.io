@@ -31,7 +31,7 @@
             z-index: 9999;
             pointer-events: none;
             opacity: 0;
-            animation: welcomeSequence 1.0s forwards;
+            animation: welcomeSequence 2.0s forwards;
         }
 
         @keyframes welcomeSequence {
@@ -116,6 +116,18 @@
             body {
                 padding: 10px;
             }
+
+            .update-tag {
+                font-size: 0.5em !important;
+            }
+        }
+
+        .update-tag {
+            font-size: 0.6em;
+            font-weight: normal;
+            margin-top: 20px;
+            color: rgba(0, 123, 255, 0.8);
+            letter-spacing: 1px;
         }
 
         .card {
@@ -242,7 +254,10 @@
 </head>
 
 <body>
-    <div id="welcome-text">25级少院5班通知中心</div>
+    <div id="welcome-text">
+        25级少院5班通知中心
+        <div id="last-update" class="update-tag">正在获取更新日期...</div>
+    </div>
 
     <div id="main-content">
         <h2 class="module-title">通知</h2>
@@ -353,9 +368,58 @@
 
             if (document.getElementById('long-term-container').innerHTML === '') document.getElementById('long-term-container').innerHTML = '<p style="color:#999;">暂无通知</p>';
             if (document.getElementById('instant-container').innerHTML === '') document.getElementById('instant-container').innerHTML = '<p style="color:#999;">暂无通知</p>';
+
+            return notifications;
         }
 
-        render();
+        async function updateLastModified(notifications) {
+            const lastUpdateElem = document.getElementById('last-update');
+            let displayDate = localStorage.getItem('last_github_update');
+
+            // 1. 如果有缓存，直接先用（秒开）
+            if (displayDate) {
+                lastUpdateElem.innerText = `最近更新: ${displayDate}`;
+            }
+
+            // 2. 如果没缓存且有通知数据，用最新通知日期兜底
+            if (!displayDate && notifications && notifications.length > 0) {
+                const timestamps = notifications.map(n => new Date(n.publishTime).getTime()).filter(t => !isNaN(t));
+                if (timestamps.length > 0) {
+                    const latest = Math.max(...timestamps);
+                    const date = new Date(latest);
+                    displayDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                    lastUpdateElem.innerText = `最近更新: ${displayDate}`;
+                }
+            }
+
+            // 3. 后台静默刷新 GitHub 最新数据（哪怕已经有了缓存或兜底）
+            try {
+                const repo = "05zehua/05zehua.github.io";
+                const response = await fetch(`https://api.github.com/repos/${repo}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const date = new Date(data.pushed_at);
+                    const newDateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+                    if (newDateStr !== displayDate) {
+                        lastUpdateElem.innerText = `最近更新: ${newDateStr}`;
+                        localStorage.setItem('last_github_update', newDateStr);
+                    }
+                }
+            } catch (e) {
+                // 如果最后还是啥都没有，就藏起来
+                if (!displayDate) lastUpdateElem.style.display = 'none';
+            }
+        }
+
+        async function init() {
+            // 先尝试运行一次，利用缓存显示
+            updateLastModified();
+            // 在渲染通知后，带上通知数据做兜底
+            const notifications = await render();
+            updateLastModified(notifications);
+        }
+
+        init();
     </script>
 </body>
 
