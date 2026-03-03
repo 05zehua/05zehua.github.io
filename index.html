@@ -249,23 +249,33 @@
         }
 
         .meta {
-            font-size: 0.95em;
+            font-size: 0.92em;
             color: #666;
             margin-bottom: 12px;
             border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
             padding-bottom: 8px;
             display: flex;
-            flex-wrap: nowrap;
-            gap: 5px;
+            flex-wrap: wrap;
+            column-gap: 5px;
+            row-gap: 8px;
             align-items: center;
-            overflow: hidden;
             width: 100%;
         }
 
         .meta-sep {
             color: #ddd;
             flex-shrink: 0;
-            margin: 0 2px;
+            margin: 0 1px;
+        }
+
+        @media (max-width: 768px) {
+            .meta-sep {
+                display: none;
+            }
+
+            .meta {
+                column-gap: 12px;
+            }
         }
 
         .meta-item {
@@ -341,6 +351,15 @@
             object-fit: contain;
             border-radius: 4px;
         }
+
+        .footer-version {
+            text-align: center;
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-family: 'Inter', sans-serif;
+        }
     </style>
 </head>
 
@@ -368,6 +387,10 @@
 
     <div id="image-modal" onclick="closeModal()">
         <img id="modal-image" src="" alt="放大图片">
+    </div>
+
+    <div class="footer-version">
+        网站版本: 260304
     </div>
 
     <script>
