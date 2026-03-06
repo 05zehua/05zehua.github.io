@@ -132,19 +132,32 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* 响应式两列布局 */
+        /* 响应式瀑布流布局（保持左右顺序，消除底部留白） */
         #long-term-container,
         #instant-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            display: flex;
+            flex-direction: row;
             gap: 20px;
+            align-items: flex-start;
+        }
+
+        .masonry-column {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 20px;
+            min-width: 0;
         }
 
         @media (max-width: 768px) {
 
             #long-term-container,
             #instant-container {
-                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+
+            .masonry-column {
+                display: contents;
             }
 
             #welcome-text {
@@ -200,7 +213,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             display: flex;
             flex-direction: column;
-            height: 100%;
             box-sizing: border-box;
         }
 
@@ -359,6 +371,8 @@
             margin-top: 40px;
             margin-bottom: 20px;
             font-family: 'Inter', sans-serif;
+            animation: blurSequence 1.9s forwards;
+            opacity: 0;
         }
     </style>
 </head>
@@ -390,7 +404,7 @@
     </div>
 
     <div class="footer-version">
-        网站版本: 260305
+        网站版本: 260306
     </div>
 
     <script>
@@ -462,6 +476,20 @@
                         timeText = '长期进行';
                     }
 
+                    let isUrgentByStart = false;
+                    if (n.ongoingStart) {
+                        const startTime = new Date(n.ongoingStart);
+                        const startDiffMs = startTime - now;
+                        // 如果距离开始时间不到24小时，或者刚开始不到24小时
+                        if (startDiffMs >= -24 * 60 * 60 * 1000 && startDiffMs <= 24 * 60 * 60 * 1000) {
+                            isUrgentByStart = true;
+                        }
+                    }
+
+                    if (n.isUrgent || isUrgentByStart) {
+                        status = 'urgent';
+                    }
+
                     if (n.ongoingEnd) {
                         deadlineTime = new Date(n.ongoingEnd);
                         diffMs = deadlineTime - now;
@@ -471,8 +499,19 @@
                             status = 'expired';
                             timeText = '已结束';
                         }
+                    } else if (n.ongoingStart) {
+                        // 如果没有结束时间，把开始时间作为结束时间来判断是否过期
+                        deadlineTime = new Date(n.ongoingStart);
+                        diffMs = deadlineTime - now;
+                        const diffHours = diffMs / (1000 * 60 * 60);
+                        if (diffHours < -24) return;
+                        if (diffMs < 0) {
+                            status = 'expired';
+                            timeText = '已结束';
+                        }
                     } else {
-                        // 如果没有结束时间，当成普通正在进行处理
+                        // 如果连开始时间都没有，当成无限期进行处理
+                        deadlineTime = new Date('2099-12-31'); // 极大值防报错
                         diffMs = 10000000;
                     }
                 } else {
@@ -508,15 +547,23 @@
             });
 
             activeNotifs.sort((a, b) => {
+                // 已过期的排在最后
                 if (a.status === 'expired' && b.status !== 'expired') return 1;
                 if (a.status !== 'expired' && b.status === 'expired') return -1;
+
+                // 紧急（红色）的排在最前面
+                if (a.status === 'urgent' && b.status !== 'urgent') return -1;
+                if (a.status !== 'urgent' && b.status === 'urgent') return 1;
+
+                // 同样状态下按距离截止时间排序
                 if (a.status !== 'expired') return a.diffMs - b.diffMs;
                 return b.deadlineTime - a.deadlineTime;
             });
 
 
-            document.getElementById('long-term-container').innerHTML = '';
-            document.getElementById('instant-container').innerHTML = '';
+            let longIndex = 0, instantIndex = 0;
+            let longHtml1 = '', longHtml2 = '';
+            let instantHtml1 = '', instantHtml2 = '';
 
             activeNotifs.forEach(n => {
                 const pubDateObj = new Date(n.publishTime);
@@ -531,8 +578,10 @@
                     `<span class="meta-sep">|</span>
                             <span class="meta-item"><span class="meta-label">地点:</span> <span class="deadline">${n.location}</span></span>` : '';
 
+                let currentOrder = n.type === 'long-term' ? longIndex : instantIndex;
+
                 const html = `
-                    <div class="card ${n.status}">
+                    <div class="card ${n.status}" style="order: ${currentOrder};">
                         <h3>${n.title}</h3>
                         <div class="meta">
                             <span class="meta-item">${pubDate}</span>
@@ -542,15 +591,41 @@
                             <span class="meta-sep">|</span>
                             <span class="meta-item"><span class="meta-label">${n.label}:</span> <span class="deadline">${n.timeText}</span></span>
                         </div>
-                        <p style="line-height: 1.6;">${n.content.replace(/\n/g, '<br>').replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>')}</p>
+                        <p style="line-height: 1.6;">${n.content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>')}</p>
                         ${imgs ? `<div class="images">${imgs}</div>` : ''}
                     </div>
                 `;
-                document.getElementById(n.type === 'long-term' ? 'long-term-container' : 'instant-container').innerHTML += html;
+
+                if (n.type === 'long-term') {
+                    if (longIndex % 2 === 0) longHtml1 += html;
+                    else longHtml2 += html;
+                    longIndex++;
+                } else {
+                    if (instantIndex % 2 === 0) instantHtml1 += html;
+                    else instantHtml2 += html;
+                    instantIndex++;
+                }
             });
 
-            if (document.getElementById('long-term-container').innerHTML === '') document.getElementById('long-term-container').innerHTML = '<p style="color:#999;">暂无通知</p>';
-            if (document.getElementById('instant-container').innerHTML === '') document.getElementById('instant-container').innerHTML = '<p style="color:#999;">暂无通知</p>';
+            const longContainer = document.getElementById('long-term-container');
+            if (longIndex === 0) {
+                longContainer.innerHTML = '<p style="color:#999;">暂无通知</p>';
+            } else {
+                longContainer.innerHTML = `
+                    <div class="masonry-column">${longHtml1}</div>
+                    <div class="masonry-column">${longHtml2}</div>
+                `;
+            }
+
+            const instantContainer = document.getElementById('instant-container');
+            if (instantIndex === 0) {
+                instantContainer.innerHTML = '<p style="color:#999;">暂无通知</p>';
+            } else {
+                instantContainer.innerHTML = `
+                    <div class="masonry-column">${instantHtml1}</div>
+                    <div class="masonry-column">${instantHtml2}</div>
+                `;
+            }
 
             // 更新分类更新时间
             const formatDate = (ts) => {
