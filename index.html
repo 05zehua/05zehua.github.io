@@ -826,17 +826,29 @@
             const notifications = await render();
             updateLastModified(notifications);
 
-            // 检测紧急通知并触发手机震动
             const hasUrgent = document.querySelector('.card.urgent');
 
-            // 检查设备浏览器是否支持震动 API
             if (hasUrgent && "vibrate" in navigator) {
-                // 等待 1600 毫秒（严格对齐 CSS 的 animation-delay: 1.6s）
-                setTimeout(() => {
-                    // 震动节奏数组：[震动时长, 暂停时长, 震动时长]
-                    // 配合 0.55s 的动画周期：震动 100ms，停止 450ms，再震动 100ms，正好踩在两次闪烁的节奏点上
-                    navigator.vibrate([100, 450, 100]);
-                }, 1600);
+                // 标记是否已经震动过，防止每次摸屏幕都震动
+                let hasVibrated = false;
+
+                // 定义触发震动的函数
+                const triggerVibration = () => {
+                    if (!hasVibrated) {
+                        navigator.vibrate([100, 450, 100]);
+                        hasVibrated = true;
+
+                        // 震动成功后，立刻销毁监听器，不影响后续操作
+                        window.removeEventListener('touchstart', triggerVibration);
+                        window.removeEventListener('click', triggerVibration);
+                        window.removeEventListener('scroll', triggerVibration);
+                    }
+                };
+
+                // 监听用户的第一次点击、触摸或滚动
+                window.addEventListener('touchstart', triggerVibration, { passive: true });
+                window.addEventListener('click', triggerVibration, { passive: true });
+                window.addEventListener('scroll', triggerVibration, { passive: true });
             }
         }
 
