@@ -415,9 +415,20 @@
             filter: brightness(1.1);
         }
 
+        button[type="button"]#copyBtn {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        button[type="button"]#copyBtn:hover {
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            filter: brightness(1.1);
+        }
+
         .form-actions {
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
+            grid-template-columns: 1fr 1fr 1.5fr;
             gap: 12px;
             width: 100%;
             margin-top: 8px;
@@ -828,6 +839,7 @@
 
                     <div class="form-actions">
                         <button type="button" id="addBtn">预存</button>
+                        <button type="button" id="copyBtn">复制内容</button>
                         <button type="submit" form="form" id="downloadBtn">保存并导出</button>
                     </div>
                 </div> <!-- end .sidebar-column -->
@@ -967,23 +979,19 @@
             reader.readAsText(file);
         });
 
-        document.getElementById('addBtn').addEventListener('click', function () {
+        function getNewNotif() {
             const titleValue = document.getElementById('title').value.trim();
             const contentValue = document.getElementById('content').value.trim();
 
-            if (!titleValue && !contentValue) {
-                showToast('标题和内容不可全部为空，请至少填写其中一项！', 'warning');
-                return;
-            }
+            if (!titleValue && !contentValue) return null;
 
-            // 提取图片文件名，并拼接成相对路径
             const files = document.getElementById('images').files;
             const imagePaths = [];
             for (let i = 0; i < files.length; i++) {
                 imagePaths.push(`images/${files[i].name}`);
             }
 
-            const newNotif = {
+            return {
                 id: Date.now(),
                 type: document.getElementById('type').value,
                 title: titleValue || "未命名通知",
@@ -998,6 +1006,23 @@
                 isUrgent: document.querySelector('input[name="timeType"]:checked').value === 'ongoing' ? (document.getElementById('ongoingIsUrgent') ? document.getElementById('ongoingIsUrgent').checked : false) : (document.getElementById('isTBD').checked && document.getElementById('isUrgent').checked),
                 images: imagePaths
             };
+        }
+
+        function getFullCurrentData() {
+            const combined = [...currentData];
+            const unsaved = getNewNotif();
+            if (unsaved) {
+                combined.push(unsaved);
+            }
+            return combined;
+        }
+
+        document.getElementById('addBtn').addEventListener('click', function () {
+            const newNotif = getNewNotif();
+            if (!newNotif) {
+                showToast('标题和内容不可全部为空，请至少填写其中一项！', 'warning');
+                return;
+            }
 
             // 追加新数据
             currentData.push(newNotif);
@@ -1021,13 +1046,14 @@
         document.getElementById('form').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            if (currentData.length === 0) {
-                showToast('待发布列表中没有数据，请先填入通知并点击“存入待发布列表”！', 'warning');
+            const fullData = getFullCurrentData();
+            if (fullData.length === 0) {
+                showToast('当前没有数据可保存！', 'warning');
                 return;
             }
 
             // 生成文件并触发下载
-            const blob = new Blob([JSON.stringify(currentData, null, 2)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1037,7 +1063,23 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            showToast('生成成功！\n用新下载 a data.json 覆盖项目文件并推送至 Git。', 'success');
+            showToast('生成成功！\n用新下载的 data.json 覆盖项目文件并推送至 Git。', 'success');
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', function () {
+            const fullData = getFullCurrentData();
+            if (fullData.length === 0) {
+                showToast('当前没有数据可复制！', 'warning');
+                return;
+            }
+
+            const jsonStr = JSON.stringify(fullData, null, 2);
+            navigator.clipboard.writeText(jsonStr).then(() => {
+                showToast('已复制 data.json 内容到剪贴板！', 'success');
+            }).catch(err => {
+                showToast('复制失败，请手动选择并复制。', 'error');
+                console.error('Clipboard error:', err);
+            });
         });
 
         // Custom Select Interaction Logic
