@@ -825,31 +825,6 @@
         async function init() {
             const notifications = await render();
             updateLastModified(notifications);
-
-            const hasUrgent = document.querySelector('.card.urgent');
-
-            if (hasUrgent && "vibrate" in navigator) {
-                // 标记是否已经震动过，防止每次摸屏幕都震动
-                let hasVibrated = false;
-
-                // 定义触发震动的函数
-                const triggerVibration = () => {
-                    if (!hasVibrated) {
-                        navigator.vibrate([100, 450, 100]);
-                        hasVibrated = true;
-
-                        // 震动成功后，立刻销毁监听器，不影响后续操作
-                        window.removeEventListener('touchstart', triggerVibration);
-                        window.removeEventListener('click', triggerVibration);
-                        window.removeEventListener('scroll', triggerVibration);
-                    }
-                };
-
-                // 监听用户的第一次点击、触摸或滚动
-                window.addEventListener('touchstart', triggerVibration, { passive: true });
-                window.addEventListener('click', triggerVibration, { passive: true });
-                window.addEventListener('scroll', triggerVibration, { passive: true });
-            }
         }
 
         init();

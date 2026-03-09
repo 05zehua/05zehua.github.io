@@ -76,20 +76,5 @@
     "images": [
       "images/周四英语沙龙活动.png"
     ]
-  },
-  {
-    "id": 1773065872488,
-    "type": "long-term",
-    "title": "test",
-    "target": "",
-    "location": "",
-    "content": "**only test**\n* test\n~~test~~\nTest\n`test`",
-    "publishTime": "2026-03-09T14:17:52.488Z",
-    "timeType": "deadline",
-    "deadline": "2026-03-10T12:00",
-    "ongoingStart": "",
-    "ongoingEnd": "",
-    "isUrgent": false,
-    "images": []
   }
 ]
