@@ -623,7 +623,7 @@
                     const trimmedLine = line.trim();
                     if (trimmedLine.startsWith('* ')) {
                         if (!inList) {
-                            finalLines.push('<ul style="padding-left: 20px; list-style-position: outside;">');
+                            finalLines.push('<ul style="margin: 4px 0; padding-left: 20px; list-style-position: outside;">');
                             inList = true;
                         }
                         finalLines.push(`<li>${trimmedLine.substring(2)}</li>`);
@@ -631,6 +631,12 @@
                         if (inList) {
                             finalLines.push('</ul>');
                             inList = false;
+                            // 如果列表后面的紧接的是个空行，去掉这个空行产生的不必要换行
+                            if (trimmedLine === '') return;
+                        }
+                        // 如果空行紧接在列表前面，也去掉，防止列表前间距过大
+                        if (trimmedLine === '' && idx + 1 < lines.length && lines[idx + 1].trim().startsWith('* ')) {
+                            return;
                         }
                         // 给非列表行增加换行，除非是最后一行
                         finalLines.push(line + (idx < lines.length - 1 ? '<br>' : ''));

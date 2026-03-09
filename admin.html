@@ -1167,7 +1167,7 @@
                 const trimmed = line.trim();
                 if (trimmed.startsWith('* ')) {
                     if (!inList) {
-                        finalLines.push('<ul style="padding-left: 20px; list-style-position: outside; margin: 8px 0;">');
+                        finalLines.push('<ul style="margin: 4px 0; padding-left: 20px; list-style-position: outside;">');
                         inList = true;
                     }
                     finalLines.push(`<li>${trimmed.substring(2)}</li>`);
@@ -1175,6 +1175,10 @@
                     if (inList) {
                         finalLines.push('</ul>');
                         inList = false;
+                        if (trimmed === '') return;
+                    }
+                    if (trimmed === '' && idx + 1 < lines.length && lines[idx + 1].trim().startsWith('* ')) {
+                        return;
                     }
                     finalLines.push(line + (idx < lines.length - 1 ? '<br>' : ''));
                 }
