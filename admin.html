@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <title>data.json 生成器</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --container-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --input-bg: #0f172a;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --success-text: #34d399;
+            --success-border: #10b981;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #f87171;
+            --error-border: #ef4444;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --warning-text: #fbbf24;
+            --warning-border: #f59e0b;
+            --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* 自定义滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            box-sizing: border-box;
+            animation: fadeIn 0.4s ease-out;
+            padding: 10px 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            letter-spacing: -0.025em;
+        }
+
+        .file-upload-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            background: rgba(245, 158, 11, 0.05);
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            margin-bottom: 24px;
+            max-width: 460px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .file-upload-row b {
+            white-space: nowrap;
+            color: var(--warning-text);
+        }
+
+        .file-upload-row input[type="file"] {
+            margin-bottom: 0;
+            flex: 1;
+            padding: 8px;
+            border: 1px dashed rgba(245, 158, 11, 0.3);
+            background: transparent;
+        }
+
+        .file-upload-row input[type="file"]::file-selector-button {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fde68a;
+        }
+
+        .file-upload-row input[type="file"]::file-selector-button:hover {
+            background: rgba(245, 158, 11, 0.3);
+        }
+
+        .file-upload-row input[type="file"]:hover {
+            background: transparent;
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        #cleanup-log {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            display: none;
+            border: 1px solid var(--border-color);
+            line-height: 1.5;
+        }
+
+        .cleanup-title {
+            color: #fcd34d;
+            font-weight: 600;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+
+        .cleanup-images {
+            color: #fca5a5;
+            font-size: 0.9em;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px 30px;
+            align-items: start;
+        }
+
+        .main-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-column {
+            position: sticky;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .time-settings-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        label span {
+            font-size: 0.85rem;
+            font-weight: 400;
+            opacity: 0.8;
+            color: var(--text-muted);
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 0;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-family: var(--font-family);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 140px;
+            line-height: 1.5;
+        }
+
+        input[type="file"]:not(#oldDataFile) {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 0;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        input[type="file"]:not(#oldDataFile):hover {
+            border-color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        input[type="file"]:not(#oldDataFile)::file-selector-button {
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="file"]:not(#oldDataFile)::file-selector-button:hover {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+
+        input[type="text"]:focus,
+        input[type="datetime-local"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Custom Select Styling */
+        .custom-select {
+            position: relative;
+            width: 100%;
+            user-select: none;
+        }
+
+        .select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 44px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-main);
+            font-weight: 500;
+            box-sizing: border-box;
+        }
+
+        .select-trigger:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            background-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .custom-select.active .select-trigger {
+            border-color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .select-trigger i {
+            width: 14px;
+            height: 14px;
+            display: block;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .custom-select.active .select-trigger i {
+            transform: rotate(180deg);
+        }
+
+        .select-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 100%;
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.98);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(12px);
+        }
+
+        .custom-select.active .select-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .select-option {
+            padding: 12px 14px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .select-option:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text-main);
+        }
+
+        .select-option.selected {
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+            font-weight: 600;
+        }
+
+        button[type="button"],
+        button[type="submit"] {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        button[type="button"]:hover,
+        button[type="submit"]:hover {
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            background: linear-gradient(135deg, #4f92f7, var(--primary));
+            filter: brightness(1.1);
+        }
+
+        button[type="button"]:active,
+        button[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        button[type="button"]#addBtn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        button[type="button"]#addBtn:hover {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+            filter: brightness(1.1);
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 12px;
+            width: 100%;
+            margin-top: 8px;
+            /* Slightly closer to the card */
+        }
+
+        .form-actions button {
+            width: 100%;
+            padding: 14px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        body {
+            padding-bottom: 40px;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 16px 0;
+        }
+
+        /* Custom Checkbox & Radio */
+        input[type="radio"],
+        input[type="checkbox"] {
+            accent-color: var(--primary);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .radio-group-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .radio-label,
+        .checkbox-label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .time-wrap {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 0;
+            display: flex;
+            flex-wrap: wrap;
+            /* allow wrapping on small screens */
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            min-width: 200px;
+            /* basic minimum width for date inputs */
+        }
+
+        .input-wrapper input {
+            margin-bottom: 0 !important;
+            width: 100%;
+        }
+
+        .urgent-wrap {
+            margin-left: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-label.urgent {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .checkbox-label.urgent input[type="checkbox"] {
+            accent-color: #ef4444;
+        }
+
+        .time-separator {
+            color: var(--text-muted);
+            font-weight: 500;
+            padding: 0 8px;
+        }
+
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(1) opacity(0.7);
+            cursor: pointer;
+        }
+
+        ::-webkit-calendar-picker-indicator:hover {
+            filter: invert(1) opacity(1);
+        }
+
+        /* 内容预览区域 */
+        .content-editor-container {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 20px;
+            align-items: stretch;
+            margin-top: 8px;
+        }
+
+        .preview-pane {
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 480px;
+            color: #eee;
+        }
+
+        .preview-pane .card-preview {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            margin: 0;
+            border: 2px solid var(--primary);
+            background: rgba(0, 123, 255, 0.05);
+            min-height: 100%;
+        }
+
+        .preview-pane h3 {
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .preview-pane .meta-preview {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .preview-pane .target-text {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .preview-pane .deadline {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .preview-pane code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+
+        .preview-pane del {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .preview-pane ul {
+            margin: 8px 0;
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+
+        .preview-pane li {
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 900px) {
+            .content-editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Toast UI Styling */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            pointer-events: auto;
+            line-height: 1.5;
+            max-width: 400px;
+            word-break: break-all;
+        }
+
+        .toast.success {
+            background: #10b981;
+            color: white;
+            border: none;
+        }
+
+        .toast.error {
+            background: #ef4444;
+            color: white;
+            border: none;
+        }
+
+        .toast.warning {
+            background: #f59e0b;
+            color: white;
+            border: none;
+        }
+
+        @keyframes toastSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toastFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <div class="container">
+        <div class="file-upload-row">
+            <b>选择历史 data.json:</b>
+            <input type="file" id="oldDataFile" accept=".json">
+        </div>
+
+        <div id="cleanup-log"></div>
+
+        <form id="form">
+            <div class="form-grid">
+                <!-- 左侧主任务流 -->
+                <div class="main-column">
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px;">
+                        <div class="form-group">
+                            <label>通知类型</label>
+                            <div class="custom-select" id="typeGroup">
+                                <div class="select-trigger" id="typeTrigger">
+                                    <span id="selectedTypeText">通知</span>
+                                    <i></i>
+                                </div>
+                                <div class="select-dropdown">
+                                    <div class="select-option selected" data-value="long-term">通知</div>
+                                    <div class="select-option" data-value="instant">活动通知</div>
+                                </div>
+                                <input type="hidden" id="type" value="long-term">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>标题</label>
+                            <input type="text" id="title">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px;">
+                        <div class="form-group">
+                            <label>通知对象 <span>(留空显示"全体")</span></label>
+                            <input type="text" id="target">
+                        </div>
+                        <div class="form-group">
+                            <label>地点 <span>(留空则不展示)</span></label>
+                            <input type="text" id="location">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>附加图片</label>
+                        <input type="file" id="images" accept="image/*" multiple>
+                    </div>
+
+                    <div class="form-group">
+                        <label>内容 <span>(支持实时预览)</span></label>
+                        <div class="content-editor-container">
+                            <textarea id="content" rows="12" placeholder="在此输入通知内容..."></textarea>
+                            <div class="preview-pane" id="preview-pane">
+                                <div class="card-preview">
+                                    <h3 id="preview-title">标题预览</h3>
+                                    <div class="meta-preview">
+                                        <span id="preview-date">2026.03.09</span>
+                                        <span class="target-text">对象: <span id="preview-target">全体</span></span>
+                                        <span class="deadline">时间: <span id="preview-time">待定</span></span>
+                                    </div>
+                                    <div id="preview-content" style="line-height: 1.6; word-break: break-all;">
+                                        内容实时预览区域...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧时间设置轴 -->
+                <div class="sidebar-column">
+                    <div class="time-settings-card">
+                        <div class="form-group">
+                            <label style="color: var(--primary); font-weight: 700; margin-bottom: 12px;">时间设置</label>
+
+                            <div class="radio-group-container">
+                                <label class="radio-label">
+                                    <input type="radio" name="timeType" value="deadline" checked
+                                        onchange="toggleTimeMode()"> 截止时间
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="timeType" value="ongoing" onchange="toggleTimeMode()">
+                                    进行时间
+                                </label>
+                            </div>
+
+                            <div id="deadline-wrap" class="time-wrap"
+                                style="flex-direction: column; align-items: stretch; gap: 10px;">
+                                <div class="input-wrapper" style="min-width: 0;">
+                                    <input type="datetime-local" id="deadline">
+                                </div>
+                                <div
+                                    style="display: flex; justify-content: flex-start; align-items: center; gap: 20px;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="isTBD"
+                                            onchange="document.getElementById('urgent-wrap').style.display = this.checked ? 'flex' : 'none'">
+                                        时间待定
+                                    </label>
+                                    <div id="urgent-wrap" style="display: none;">
+                                        <label class="checkbox-label urgent">
+                                            <input type="checkbox" id="isUrgent"> 紧急
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="ongoing-wrap" class="time-wrap"
+                                style="display: none; flex-direction: column; align-items: stretch; gap: 10px;">
+                                <div class="input-wrapper"
+                                    style="min-width: 0; display: flex; align-items: center; gap: 8px;">
+                                    <span
+                                        style="white-space: nowrap; font-size: 0.85rem; color: var(--text-muted);">开始:</span>
+                                    <input type="datetime-local" id="ongoingStart">
+                                </div>
+
+                                <div class="input-wrapper"
+                                    style="min-width: 0; display: flex; align-items: center; gap: 8px;">
+                                    <span
+                                        style="white-space: nowrap; font-size: 0.85rem; color: var(--text-muted);">结束:</span>
+                                    <input type="datetime-local" id="ongoingEnd">
+                                </div>
+                                <div class="urgent-wrap">
+                                    <label class="checkbox-label urgent">
+                                        <input type="checkbox" id="ongoingIsUrgent"> 紧急
+                                    </label>
+                                </div>
+                            </div>
+                        </div> <!-- end form-group -->
+                    </div> <!-- end .time-settings-card -->
+
+                    <div class="form-actions">
+                        <button type="button" id="addBtn">预存</button>
+                        <button type="submit" form="form" id="downloadBtn">保存并导出</button>
+                    </div>
+                </div> <!-- end .sidebar-column -->
+            </div> <!-- end .form-grid -->
+        </form>
+    </div> <!-- end .container -->
+
+    <script>
+        let currentData = [];
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            // Handle newlines
+            toast.innerHTML = message.replace(/\n/g, '<br>');
+
+            container.appendChild(toast);
+
+            // Auto-remove after 2.5s (faster)
+            setTimeout(() => {
+                toast.style.animation = 'toastFadeOut 0.2s ease-in forwards';
+                toast.addEventListener('animationend', () => {
+                    toast.remove();
+                });
+            }, 2500);
+        }
+
+        function toggleTimeMode() {
+            const isOngoing = document.querySelector('input[name="timeType"]:checked').value === 'ongoing';
+            document.getElementById('deadline-wrap').style.display = isOngoing ? 'none' : 'flex';
+            document.getElementById('ongoing-wrap').style.display = isOngoing ? 'flex' : 'none';
+        }
+
+        function updateStatus(message, type = '') {
+            if (message) {
+                showToast(message, type);
+            }
+        }
+
+        function processAndCleanup(data) {
+            const now = new Date();
+            const removedTitles = [];
+            const removedImages = [];
+
+            const filteredData = data.filter(n => {
+                if (n.timeType === 'ongoing') {
+                    if (!n.ongoingEnd) {
+                        if (!n.ongoingStart) return true;
+                        const diffMs = new Date(n.ongoingStart) - now;
+                        const diffHours = diffMs / (1000 * 60 * 60);
+                        if (diffHours < -24) {
+                            removedTitles.push(n.title);
+                            if (n.images && n.images.length > 0) {
+                                n.images.forEach(img => removedImages.push(img.split('/').pop()));
+                            }
+                            return false;
+                        }
+                        return true;
+                    }
+                    // 如果有明确截至进行时间，算作过期
+                    const diffMs = new Date(n.ongoingEnd) - now;
+                    const diffHours = diffMs / (1000 * 60 * 60);
+                    if (diffHours < -24) {
+                        removedTitles.push(n.title);
+                        if (n.images && n.images.length > 0) {
+                            n.images.forEach(img => removedImages.push(img.split('/').pop()));
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+
+                if (!n.deadline || n.deadline === 'TBD') return true;
+
+                const diffMs = new Date(n.deadline) - now;
+                const diffHours = diffMs / (1000 * 60 * 60);
+
+                // 超过24小时即清理
+                if (diffHours < -24) {
+                    removedTitles.push(n.title);
+                    if (n.images && n.images.length > 0) {
+                        n.images.forEach(img => removedImages.push(img.split('/').pop()));
+                    }
+                    return false;
+                }
+                return true;
+            });
+
+            const logDiv = document.getElementById('cleanup-log');
+            if (removedTitles.length > 0) {
+                let logHtml = `<div><b>已自动清理 ${removedTitles.length} 条过期超过1天的通知：</b></div>`;
+                logHtml += `<div class="cleanup-title">${removedTitles.join(', ')}</div>`;
+
+                if (removedImages.length > 0) {
+                    logHtml += `<div class="cleanup-images">⚠️ <b>请手动从 images/ 文件夹删除以下图片：</b><br>${Array.from(new Set(removedImages)).join(', ')}</div>`;
+                }
+                logDiv.innerHTML = logHtml;
+                logDiv.style.display = 'block';
+            } else {
+                logDiv.style.display = 'none';
+            }
+
+            return filteredData;
+        }
+
+        // 自动读取历史 JSON
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('./data.json?t=' + Date.now());
+                if (response.ok) {
+                    const rawData = await response.json();
+                    currentData = processAndCleanup(rawData);
+                    updateStatus(`自动加载成功：已读取 ${currentData.length} 条有效通知。`, 'success');
+                } else {
+                    updateStatus('自动加载失败：未找到 data.json 或其内容格式不正确。请手动上传。', 'error');
+                }
+            } catch (err) {
+                updateStatus('自动加载失败：浏览器安全限制（如直接打开 HTML 文件）。请手动上传。', 'error');
+            }
+        });
+
+        // 手动读取历史 JSON
+        document.getElementById('oldDataFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                try {
+                    const rawData = JSON.parse(event.target.result);
+                    currentData = processAndCleanup(rawData);
+                    updateStatus(`手动读取成功：已读取 ${currentData.length} 条有效通知！`, 'success');
+                } catch (err) {
+                    updateStatus("读取失败，请确保选择了正确的 JSON 文件！", 'error');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        document.getElementById('addBtn').addEventListener('click', function () {
+            const titleValue = document.getElementById('title').value.trim();
+            const contentValue = document.getElementById('content').value.trim();
+
+            if (!titleValue && !contentValue) {
+                showToast('标题和内容不可全部为空，请至少填写其中一项！', 'warning');
+                return;
+            }
+
+            // 提取图片文件名，并拼接成相对路径
+            const files = document.getElementById('images').files;
+            const imagePaths = [];
+            for (let i = 0; i < files.length; i++) {
+                imagePaths.push(`images/${files[i].name}`);
+            }
+
+            const newNotif = {
+                id: Date.now(),
+                type: document.getElementById('type').value,
+                title: titleValue || "未命名通知",
+                target: document.getElementById('target').value,
+                location: document.getElementById('location').value,
+                content: contentValue,
+                publishTime: new Date().toISOString(),
+                timeType: document.querySelector('input[name="timeType"]:checked').value,
+                deadline: document.getElementById('isTBD').checked ? "TBD" : (document.getElementById('deadline').value || ""),
+                ongoingStart: document.getElementById('ongoingStart') ? document.getElementById('ongoingStart').value : "",
+                ongoingEnd: document.getElementById('ongoingEnd') ? document.getElementById('ongoingEnd').value : "",
+                isUrgent: document.querySelector('input[name="timeType"]:checked').value === 'ongoing' ? (document.getElementById('ongoingIsUrgent') ? document.getElementById('ongoingIsUrgent').checked : false) : (document.getElementById('isTBD').checked && document.getElementById('isUrgent').checked),
+                images: imagePaths
+            };
+
+            // 追加新数据
+            currentData.push(newNotif);
+
+            showToast(`已存入待发布列表！当前共有 ${currentData.length} 条有效通知。\n你可以继续填写下一条，或点击“完成并下载”！`, 'success');
+
+            // 重置表单，但不重置旧文件选择器
+            document.getElementById('form').reset();
+
+            // 重置自定义下拉框
+            document.getElementById('type').value = 'long-term';
+            document.getElementById('selectedTypeText').innerText = '通知';
+            document.querySelectorAll('#typeGroup .select-option').forEach(opt => {
+                opt.classList.remove('selected');
+                if (opt.dataset.value === 'long-term') opt.classList.add('selected');
+            });
+
+            toggleTimeMode(); // 恢复默认的时间模式形态
+        });
+
+        document.getElementById('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            if (currentData.length === 0) {
+                showToast('待发布列表中没有数据，请先填入通知并点击“存入待发布列表”！', 'warning');
+                return;
+            }
+
+            // 生成文件并触发下载
+            const blob = new Blob([JSON.stringify(currentData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('生成成功！\n用新下载 a data.json 覆盖项目文件并推送至 Git。', 'success');
+        });
+
+        // Custom Select Interaction Logic
+        const typeGroup = document.getElementById('typeGroup');
+        const typeTrigger = document.getElementById('typeTrigger');
+        const selectedTypeText = document.getElementById('selectedTypeText');
+        const typeInput = document.getElementById('type');
+        const selectOptions = document.querySelectorAll('#typeGroup .select-option');
+
+        typeTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            typeGroup.classList.toggle('active');
+        });
+
+        selectOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const value = opt.dataset.value;
+                const label = opt.innerText;
+
+                typeInput.value = value;
+                selectedTypeText.innerText = label;
+
+                selectOptions.forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+
+                typeGroup.classList.remove('active');
+            });
+        });
+
+        document.addEventListener('click', () => {
+            typeGroup.classList.remove('active');
+        });
+
+        // --- 实时预览逻辑 (Real-time Preview) ---
+        function updatePreview() {
+            const titleValue = document.getElementById('title').value.trim() || "标题预览";
+            const targetValue = document.getElementById('target').value.trim() || "全体";
+            const locationValue = document.getElementById('location').value.trim();
+            const contentValue = document.getElementById('content').value;
+            const timeType = document.querySelector('input[name="timeType"]:checked').value;
+            const isTBD = document.getElementById('isTBD').checked;
+            const isUrgent = timeType === 'ongoing' ? (document.getElementById('ongoingIsUrgent')?.checked) : (isTBD && document.getElementById('isUrgent').checked);
+
+            // 更新标题与元数据
+            document.getElementById('preview-title').innerText = titleValue;
+            document.getElementById('preview-target').innerText = targetValue;
+
+            // 时间预览逻辑
+            let timeText = "待定";
+            if (timeType === 'deadline') {
+                if (isTBD) {
+                    timeText = "待定";
+                } else {
+                    const deadlineValue = document.getElementById('deadline').value;
+                    if (deadlineValue) {
+                        const d = new Date(deadlineValue);
+                        timeText = `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                    }
+                }
+            } else {
+                const start = document.getElementById('ongoingStart').value;
+                const end = document.getElementById('ongoingEnd').value;
+                if (start || end) {
+                    const fmt = (v) => v ? v.replace('T', ' ').substring(5) : '';
+                    timeText = `${fmt(start)} ~ ${fmt(end)}`;
+                } else {
+                    timeText = "长期进行";
+                }
+            }
+            document.getElementById('preview-time').innerText = timeText;
+
+            // Markdown 渲染增强 (复刻 index.html 逻辑)
+            let processed = contentValue
+                .replace(/~~(.*?)~~/g, '<del>$1</del>')
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                .replace(/\*(.*?)\*/g, '<i>$1</i>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+
+            const lines = processed.split('\n');
+            let inList = false;
+            let finalLines = [];
+
+            lines.forEach((line, idx) => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('* ')) {
+                    if (!inList) {
+                        finalLines.push('<ul style="padding-left: 20px; list-style-position: outside; margin: 8px 0;">');
+                        inList = true;
+                    }
+                    finalLines.push(`<li>${trimmed.substring(2)}</li>`);
+                } else {
+                    if (inList) {
+                        finalLines.push('</ul>');
+                        inList = false;
+                    }
+                    finalLines.push(line + (idx < lines.length - 1 ? '<br>' : ''));
+                }
+            });
+            if (inList) finalLines.push('</ul>');
+
+            const previewContent = document.getElementById('preview-content');
+            previewContent.innerHTML = finalLines.join('');
+
+            // 样式对齐
+            const card = document.querySelector('.card-preview');
+            card.style.borderColor = isUrgent ? '#ef4444' : 'var(--primary)';
+            card.style.background = isUrgent ? 'rgba(239, 68, 68, 0.05)' : 'rgba(0, 123, 255, 0.05)';
+        }
+
+        // 绑定监听器实现实时同步
+        ['title', 'target', 'location', 'content', 'deadline', 'ongoingStart', 'ongoingEnd'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', updatePreview);
+        });
+
+        // 监听复选框和单选框
+        document.querySelectorAll('input[type="checkbox"], input[name="timeType"]').forEach(el => {
+            el.addEventListener('change', updatePreview);
+        });
+
+        // 初始化
+        updatePreview();
+    </script>
+</body>
+
+</html>

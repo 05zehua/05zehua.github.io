@@ -320,6 +320,30 @@
             text-decoration: underline;
         }
 
+        .card p code {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #e83e8c;
+        }
+
+        .card p del {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .card p ul {
+            margin: 8px 0;
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+
+        .card p li {
+            margin-bottom: 4px;
+        }
+
         .images {
             display: flex;
             flex-wrap: wrap;
@@ -404,7 +428,7 @@
     </div>
 
     <div class="footer-version">
-        网站版本: 260306
+        网站版本: 260309
     </div>
 
     <script>
@@ -564,6 +588,8 @@
             let longIndex = 0, instantIndex = 0;
             let longHtml1 = '', longHtml2 = '';
             let instantHtml1 = '', instantHtml2 = '';
+            let longCol1Height = 0, longCol2Height = 0;
+            let instantCol1Height = 0, instantCol2Height = 0;
 
             activeNotifs.forEach(n => {
                 const pubDateObj = new Date(n.publishTime);
@@ -580,6 +606,39 @@
 
                 let currentOrder = n.type === 'long-term' ? longIndex : instantIndex;
 
+                // 处理 Markdown 语法
+                let processedContent = n.content
+                    .replace(/~~(.*?)~~/g, '<del>$1</del>')
+                    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                    .replace(/\*(.*?)\*/g, '<i>$1</i>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+
+                // 处理以 * 开头的无序列表
+                const lines = processedContent.split('\n');
+                let inList = false;
+                let finalLines = [];
+
+                lines.forEach((line, idx) => {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine.startsWith('* ')) {
+                        if (!inList) {
+                            finalLines.push('<ul style="padding-left: 20px; list-style-position: outside;">');
+                            inList = true;
+                        }
+                        finalLines.push(`<li>${trimmedLine.substring(2)}</li>`);
+                    } else {
+                        if (inList) {
+                            finalLines.push('</ul>');
+                            inList = false;
+                        }
+                        // 给非列表行增加换行，除非是最后一行
+                        finalLines.push(line + (idx < lines.length - 1 ? '<br>' : ''));
+                    }
+                });
+                if (inList) finalLines.push('</ul>');
+                processedContent = finalLines.join('');
+
                 const html = `
                     <div class="card ${n.status}" style="order: ${currentOrder};">
                         <h3>${n.title}</h3>
@@ -591,18 +650,39 @@
                             <span class="meta-sep">|</span>
                             <span class="meta-item"><span class="meta-label">${n.label}:</span> <span class="deadline">${n.timeText}</span></span>
                         </div>
-                        <p style="line-height: 1.6;">${n.content.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>')}</p>
+                        <p style="line-height: 1.6;">${processedContent}</p>
                         ${imgs ? `<div class="images">${imgs}</div>` : ''}
                     </div>
                 `;
 
+                // 预估卡片高度以实现更均衡的瀑布流
+                let estimatedHeight = 150; // 标题和meta等基础高度
+                if (n.content) {
+                    estimatedHeight += (n.content.length / 25) * 28; // 预估文本折行
+                    const newlines = (n.content.match(/\n/g) || []).length;
+                    estimatedHeight += newlines * 28; // 回车换行
+                }
+                if (n.images && n.images.length > 0) {
+                    estimatedHeight += 160 * Math.ceil(n.images.length / 2); // 预估图片高度
+                }
+
                 if (n.type === 'long-term') {
-                    if (longIndex % 2 === 0) longHtml1 += html;
-                    else longHtml2 += html;
+                    if (longCol1Height <= longCol2Height) {
+                        longHtml1 += html;
+                        longCol1Height += estimatedHeight;
+                    } else {
+                        longHtml2 += html;
+                        longCol2Height += estimatedHeight;
+                    }
                     longIndex++;
                 } else {
-                    if (instantIndex % 2 === 0) instantHtml1 += html;
-                    else instantHtml2 += html;
+                    if (instantCol1Height <= instantCol2Height) {
+                        instantHtml1 += html;
+                        instantCol1Height += estimatedHeight;
+                    } else {
+                        instantHtml2 += html;
+                        instantCol2Height += estimatedHeight;
+                    }
                     instantIndex++;
                 }
             });
