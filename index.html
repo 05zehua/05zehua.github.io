@@ -225,6 +225,23 @@
         .urgent {
             border: 2px solid #dc3545;
             background: #fff5f5;
+            animation: urgentFlash 0.55s ease-in-out 2;
+            animation-delay: 1.6s;
+            animation-fill-mode: backwards;
+        }
+
+        @keyframes urgentFlash {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                background: #fff5f5;
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(220, 53, 69, 0.35);
+                background: #ffe3e6;
+            }
         }
 
         .normal {
@@ -295,6 +312,7 @@
             align-items: center;
             white-space: nowrap;
             flex-shrink: 0;
+            gap: 4px;
         }
 
         .meta-label {
@@ -310,37 +328,37 @@
             color: #dc3545;
         }
 
-        .card p a {
+        .card .content-text a {
             color: #007bff;
             text-decoration: none;
             word-break: break-all;
         }
 
-        .card p a:hover {
+        .card .content-text a:hover {
             text-decoration: underline;
         }
 
-        .card p code {
+        .card .content-text code {
             background: rgba(0, 0, 0, 0.05);
             padding: 2px 5px;
             border-radius: 4px;
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 0.9em;
-            color: #e83e8c;
+            color: #0e7cfa;
         }
 
-        .card p del {
+        .card .content-text del {
             text-decoration: line-through;
             opacity: 0.6;
         }
 
-        .card p ul {
+        .card .content-text ul {
             margin: 8px 0;
             padding-left: 20px;
             list-style-type: disc;
         }
 
-        .card p li {
+        .card .content-text li {
             margin-bottom: 4px;
         }
 
@@ -397,6 +415,45 @@
             font-family: 'Inter', sans-serif;
             animation: blurSequence 1.9s forwards;
             opacity: 0;
+        }
+
+        /* 倒计时圆环动画 */
+        .countdown-ring {
+            width: 16px;
+            height: 16px;
+            margin-left: 6px;
+            transform: rotate(-90deg);
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .countdown-ring circle {
+            fill: none;
+            stroke-width: 4;
+        }
+
+        .countdown-ring .ring-bg {
+            stroke: #f8d7da;
+        }
+
+        .countdown-ring .ring-progress {
+            stroke: #dc3545;
+            stroke-linecap: round;
+            /* 圆角端点 */
+            stroke-dasharray: 62.83;
+            /* 圆的周长 2 * π * r (r=10) */
+            animation: ringFill 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        /* 通过 CSS 变量接收 JS 算出的目标进度 */
+        @keyframes ringFill {
+            from {
+                stroke-dashoffset: 62.83;
+            }
+
+            to {
+                stroke-dashoffset: var(--target-offset);
+            }
         }
     </style>
 </head>
@@ -645,18 +702,38 @@
                 if (inList) finalLines.push('</ul>');
                 processedContent = finalLines.join('');
 
+                // 计算 3 天内的倒计时进度圆环
+                let ringHtml = '';
+                const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
+                // 只有在 urgent 状态，且剩余时间大于 0 且小于等于 3 天时才显示
+                if (n.status === 'urgent' && n.diffMs > 0 && n.diffMs <= threeDaysMs) {
+                    const r = 10;
+                    const c = 2 * Math.PI * r; // 圆周长约 62.83
+                    const ratio = n.diffMs / threeDaysMs; // 剩余时间占3天的比例 (1代表满3天，0代表马上截止)
+
+                    // 计算实线偏移量，offset=0 为整圈，offset=62.83 为空圈
+                    const offset = c * (1 - ratio);
+
+                    ringHtml = `
+                        <svg class="countdown-ring" viewBox="0 0 24 24">
+                            <circle class="ring-bg" cx="12" cy="12" r="10"></circle>
+                            <circle class="ring-progress" cx="12" cy="12" r="10" style="--target-offset: ${offset};"></circle>
+                        </svg>
+                    `;
+                }
+
                 const html = `
                     <div class="card ${n.status}" style="order: ${currentOrder};">
                         <h3>${n.title}</h3>
                         <div class="meta">
                             <span class="meta-item">${pubDate}</span>
                             <span class="meta-sep">|</span>
-                            <span class="meta-item"><span class="meta-label">通知对象:</span> <span class="target-text">${targetText}</span></span>
+                            <span class="meta-item"><span class="meta-label">对象:</span> <span class="target-text">${targetText}</span></span>
                             ${locHtml}
                             <span class="meta-sep">|</span>
-                            <span class="meta-item"><span class="meta-label">${n.label}:</span> <span class="deadline">${n.timeText}</span></span>
+                            <span class="meta-item"><span class="meta-label">${n.label}:</span> <span class="deadline">${n.timeText}</span>${ringHtml}</span>
                         </div>
-                        <p style="line-height: 1.6;">${processedContent}</p>
+                        <div class="content-text" style="line-height: 1.6;">${processedContent}</div>
                         ${imgs ? `<div class="images">${imgs}</div>` : ''}
                     </div>
                 `;
@@ -748,6 +825,19 @@
         async function init() {
             const notifications = await render();
             updateLastModified(notifications);
+
+            // 检测紧急通知并触发手机震动
+            const hasUrgent = document.querySelector('.card.urgent');
+
+            // 检查设备浏览器是否支持震动 API
+            if (hasUrgent && "vibrate" in navigator) {
+                // 等待 1600 毫秒（严格对齐 CSS 的 animation-delay: 1.6s）
+                setTimeout(() => {
+                    // 震动节奏数组：[震动时长, 暂停时长, 震动时长]
+                    // 配合 0.55s 的动画周期：震动 100ms，停止 450ms，再震动 100ms，正好踩在两次闪烁的节奏点上
+                    navigator.vibrate([100, 450, 100]);
+                }, 1600);
+            }
         }
 
         init();
