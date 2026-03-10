@@ -76,5 +76,22 @@
     "images": [
       "images/周四英语沙龙活动.png"
     ]
+  },
+  {
+    "id": 1773142233467,
+    "type": "long-term",
+    "title": "第六届九章杯大学生数学竞赛",
+    "target": "",
+    "location": "",
+    "content": "",
+    "publishTime": "2026-03-10T11:30:33.467Z",
+    "timeType": "deadline",
+    "deadline": "2026-03-15T23:59",
+    "ongoingStart": "",
+    "ongoingEnd": "",
+    "isUrgent": false,
+    "images": [
+      "images/九章杯.PNG"
+    ]
   }
 ]
