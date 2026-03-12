@@ -485,7 +485,7 @@
     </div>
 
     <div class="footer-version">
-        网站版本: 260309
+        网站版本: 260312
     </div>
 
     <script>
@@ -541,7 +541,7 @@
 
                 let timeType = n.timeType || 'deadline';
                 let status = 'normal', timeText = '', label = timeType === 'ongoing' ? '进行时间' : '距离截止';
-                let diffMs = 0;
+                let diffMs = Infinity;
                 let deadlineTime = null;
 
                 if (timeType === 'ongoing') {
@@ -592,13 +592,14 @@
                         }
                     } else {
                         // 如果连开始时间都没有，当成无限期进行处理
-                        deadlineTime = new Date('2099-12-31'); // 极大值防报错
-                        diffMs = 10000000;
+                        deadlineTime = new Date('2099-12-31');
+                        diffMs = deadlineTime - now;
                     }
                 } else {
                     if (!n.deadline) {
                         label = '有效期';
                         timeText = '长期有效';
+                        if (n.isUrgent) status = 'urgent';
                     } else if (n.deadline === 'TBD') {
                         label = '时间';
                         timeText = '待定';
@@ -614,7 +615,7 @@
                             label = '已过期';
                             timeText = `${Math.floor(Math.abs(diffHours))}小时前`;
                         } else {
-                            if (diffMs < 3 * 24 * 60 * 60 * 1000) {
+                            if (n.isUrgent || diffMs < 3 * 24 * 60 * 60 * 1000) {
                                 status = 'urgent';
                             }
                             const d = Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -705,8 +706,9 @@
                 // 计算 3 天内的倒计时进度圆环
                 let ringHtml = '';
                 const threeDaysMs = 3 * 24 * 60 * 60 * 1000;
-                // 只有在 urgent 状态，且剩余时间大于 0 且小于等于 3 天时才显示
-                if (n.status === 'urgent' && n.diffMs > 0 && n.diffMs <= threeDaysMs) {
+                // 有截止日期且剩余时间 <= 3天时才显示倒计时
+                const hasTime = n.deadline || n.ongoingEnd || n.ongoingStart;
+                if (status === 'urgent' && hasTime && diffMs > 0 && diffMs <= threeDaysMs) {
                     const r = 10;
                     const c = 2 * Math.PI * r; // 圆周长约 62.83
                     const ratio = n.diffMs / threeDaysMs; // 剩余时间占3天的比例 (1代表满3天，0代表马上截止)
