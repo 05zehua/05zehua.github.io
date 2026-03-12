@@ -44,23 +44,6 @@
     ]
   },
   {
-    "id": 1773054952187,
-    "type": "instant",
-    "title": "化院实验室参观活动",
-    "target": "",
-    "location": "",
-    "content": "",
-    "publishTime": "2026-03-09T11:15:52.188Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "2026-03-11T16:00",
-    "ongoingEnd": "2026-03-11T18:00",
-    "isUrgent": false,
-    "images": [
-      "images/化院实验室参观活动.jpg"
-    ]
-  },
-  {
     "id": 1773055038528,
     "type": "instant",
     "title": "英语沙龙活动",
@@ -93,5 +76,20 @@
     "images": [
       "images/九章杯.PNG"
     ]
+  },
+  {
+    "id": 1773312417208,
+    "type": "long-term",
+    "title": "一春班级活动意愿统计",
+    "target": "",
+    "location": "",
+    "content": "**一春班级活动意愿统计**\n\nhttps://docs.qq.com/form/page/DR2xRQk9OandscU1H\n\n*这是本学期班级活动的意愿收集表，大家务必认真填写帮助我们开展工作！感谢！*",
+    "publishTime": "2026-03-12T10:46:57.208Z",
+    "timeType": "ongoing",
+    "deadline": "",
+    "ongoingStart": "",
+    "ongoingEnd": "",
+    "isUrgent": true,
+    "images": []
   }
 ]
