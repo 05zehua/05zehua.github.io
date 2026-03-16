@@ -141,6 +141,12 @@
             align-items: flex-start;
         }
 
+        #others-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .masonry-column {
             display: flex;
             flex-direction: column;
@@ -247,6 +253,20 @@
         .normal {
             border: 2px solid #007bff;
             background: #f0f7ff;
+        }
+
+        #others-container .card {
+            border: 2px solid #444;
+            background: #fdfdfd;
+        }
+
+        #others-container .card h3 {
+            color: #333;
+        }
+
+        #others-container .card .content-text a {
+            color: #007bff;
+            font-weight: 600;
         }
 
         .normal .deadline {
@@ -478,6 +498,26 @@
             <span id="instant-update" class="section-update-tag"></span>
         </div>
         <div id="instant-container">加载中...</div>
+
+        <div class="section-header">
+            <h2 class="module-title">其他</h2>
+        </div>
+        <div id="others-container">
+            <div class="card">
+                <h3>友情链接</h3>
+                <div class="content-text" style="line-height: 1.6;">
+                    <ul id="friendship-links-list">
+                        <!-- Links will be dynamically populated here -->
+                    </ul>
+                </div>
+            </div>
+            <div class="card">
+                <h3>其他说明</h3>
+                <div class="content-text" style="line-height: 1.6;">
+                    欢迎提出意见！
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="image-modal" onclick="closeModal()">
@@ -485,7 +525,7 @@
     </div>
 
     <div class="footer-version">
-        网站版本: 260312
+        网站版本: 260316
     </div>
 
     <script>
@@ -827,6 +867,27 @@
         async function init() {
             const notifications = await render();
             updateLastModified(notifications);
+            await renderFriendshipLinks();
+        }
+
+        async function renderFriendshipLinks() {
+            try {
+                const response = await fetch('./links.json?t=' + new Date().getTime());
+                if (!response.ok) return;
+
+                const links = await response.json();
+                const listEl = document.getElementById('friendship-links-list');
+
+                if (links && links.length > 0) {
+                    listEl.innerHTML = links.map(link =>
+                        `<li style="margin-bottom: 8px;"><a href="${link.url}" target="_blank">${link.name}</a></li>`
+                    ).join('');
+                } else {
+                    listEl.innerHTML = '<li style="color: #999; list-style-type: none; margin-left: -20px;">暂无链接</li>';
+                }
+            } catch (error) {
+                console.error('获取友情链接失败:', error);
+            }
         }
 
         init();

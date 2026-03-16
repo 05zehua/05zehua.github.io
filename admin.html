@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>data.json 生成器</title>
+    <title>数据文件生成器</title>
+    <!-- 引入 SortableJS 实现列表拖拽功能 -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
         :root {
             --bg-color: #000000;
@@ -88,46 +90,30 @@
             letter-spacing: -0.025em;
         }
 
-        .file-upload-row {
-            display: flex;
+        .custom-upload-btn {
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 12px;
-            background: rgba(245, 158, 11, 0.05);
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(245, 158, 11, 0.35);
-            margin-bottom: 24px;
-            max-width: 460px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            justify-content: center;
+            background: rgba(245, 158, 11, 0.4);
+            border: 1px solid rgba(245, 158, 11, 0.6);
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            font-weight: 700;
         }
 
-        .file-upload-row b {
-            white-space: nowrap;
-            color: var(--warning-text);
-        }
-
-        .file-upload-row input[type="file"] {
-            margin-bottom: 0;
-            flex: 1;
-            padding: 8px;
-            border: 1px dashed rgba(245, 158, 11, 0.3);
-            background: transparent;
-        }
-
-        .file-upload-row input[type="file"]::file-selector-button {
-            background: rgba(245, 158, 11, 0.2);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            color: #fde68a;
-        }
-
-        .file-upload-row input[type="file"]::file-selector-button:hover {
-            background: rgba(245, 158, 11, 0.3);
-        }
-
-        .file-upload-row input[type="file"]:hover {
-            background: transparent;
+        .custom-upload-btn:hover {
+            background: rgba(245, 158, 11, 0.25);
             border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        /* 防止被全局 label span 污染 */
+        .custom-upload-btn span {
+            color: #ffffff !important;
+            opacity: 1 !important;
         }
 
         #cleanup-log {
@@ -169,8 +155,6 @@
         }
 
         .sidebar-column {
-            position: sticky;
-            top: 20px;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -645,8 +629,8 @@
         .toast {
             background: #1e293b;
             color: #f8fafc;
-            padding: 16px 24px;
-            border-radius: 12px;
+            padding: 12px 24px;
+            border-radius: 9999px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             font-size: 0.95rem;
             font-weight: 500;
@@ -701,15 +685,159 @@
                 transform: translateY(-30px);
             }
         }
+
+        /* 友情链接管理专区样式 */
+        .links-manager-container {
+            margin-top: 40px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .links-manager-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .links-manager-header h3 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .link-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .link-item:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .link-inputs {
+            display: flex;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .link-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .icon-btn.danger {
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .icon-btn.danger:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        .add-link-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .add-link-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 拖动手柄样式 */
+        .drag-handle {
+            cursor: grab;
+            color: var(--text-muted);
+            padding: 0 10px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        .drag-handle:hover {
+            color: var(--text-main);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+
+        /* 拖拽时的占位符样式 */
+        .sortable-ghost {
+            opacity: 0.4;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed var(--primary);
+        }
     </style>
 </head>
 
 <body>
     <div id="toast-container"></div>
     <div class="container">
-        <div class="file-upload-row">
-            <b>选择历史 data.json:</b>
-            <input type="file" id="oldDataFile" accept=".json">
+        <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+            <label class="custom-upload-btn">
+                <span>上传data.json</span>
+                <input type="file" id="oldDataFile" accept=".json" style="display: none;">
+            </label>
+            <label class="custom-upload-btn">
+                <span>上传links.json</span>
+                <input type="file" id="oldLinksFile" accept=".json" style="display: none;">
+            </label>
         </div>
 
         <div id="cleanup-log"></div>
@@ -756,7 +884,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>内容 <span>(支持实时预览)</span></label>
+                        <label>内容</label>
                         <div class="content-editor-container">
                             <textarea id="content" rows="12" placeholder="在此输入通知内容..."></textarea>
                             <div class="preview-pane" id="preview-pane">
@@ -845,10 +973,30 @@
                 </div> <!-- end .sidebar-column -->
             </div> <!-- end .form-grid -->
         </form>
+
+        <!-- 友情链接管理专区 -->
+        <div class="links-manager-container">
+            <div class="links-manager-header">
+                <h3>友情链接管理</h3>
+                <button type="button" id="saveLinksBtn" style="padding: 8px 16px; font-size: 0.9rem;">保存并导出
+                    links.json</button>
+            </div>
+
+            <div id="linksContainer">
+                <!-- 链接列表将在这里动态生成 -->
+            </div>
+
+            <button type="button" class="add-link-btn" id="addNewLinkBtn" title="新增链接"
+                style="margin-top: 10px; display: none; align-items: center; justify-content: center; font-size: 1.2rem;">
+                +
+            </button>
+        </div>
+
     </div> <!-- end .container -->
 
     <script>
         let currentData = [];
+        let linksData = [];
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -958,7 +1106,20 @@
                     updateStatus('自动加载失败：未找到 data.json 或其内容格式不正确。请手动上传。', 'error');
                 }
             } catch (err) {
-                updateStatus('自动加载失败：浏览器安全限制（如直接打开 HTML 文件）。请手动上传。', 'error');
+                updateStatus('自动加载失败：浏览器安全限制。请手动上传。', 'error');
+            }
+
+            // 自动读取 links.json
+            try {
+                const response = await fetch('./links.json?t=' + Date.now());
+                if (response.ok) {
+                    linksData = await response.json();
+                    renderLinks();
+                }
+            } catch (err) {
+                console.warn('未找到 links.json 或加载失败', err);
+            } finally {
+                renderLinks();
             }
         });
 
@@ -971,12 +1132,31 @@
                 try {
                     const rawData = JSON.parse(event.target.result);
                     currentData = processAndCleanup(rawData);
-                    updateStatus(`手动读取成功：已读取 ${currentData.length} 条有效通知！`, 'success');
+                    updateStatus(`读取成功：已读取 ${currentData.length} 条有效通知！`, 'success');
                 } catch (err) {
-                    updateStatus("读取失败，请确保选择了正确的 JSON 文件！", 'error');
+                    updateStatus("读取失败，请确保选择了正确的 data.json 文件！", 'error');
                 }
             };
             reader.readAsText(file);
+            this.value = '';
+        });
+
+        // 手动读取 links.json
+        document.getElementById('oldLinksFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                try {
+                    linksData = JSON.parse(event.target.result);
+                    renderLinks();
+                    updateStatus(`读取成功：已读取 ${linksData.length} 条链接！`, 'success');
+                } catch (err) {
+                    updateStatus("读取失败，请确保选择了正确的 links.json 文件！", 'error');
+                }
+            };
+            reader.readAsText(file);
+            this.value = '';
         });
 
         function getNewNotif() {
@@ -1063,7 +1243,7 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            showToast('生成成功！\n用新下载的 data.json 覆盖项目文件并推送至 Git。', 'success');
+            showToast('data.json 生成成功！', 'success');
         });
 
         document.getElementById('copyBtn').addEventListener('click', function () {
@@ -1207,6 +1387,110 @@
 
         // 初始化
         updatePreview();
+
+        // --- 友情链接管理逻辑 ---
+        let sortableInstance = null;
+
+        function renderLinks() {
+            const container = document.getElementById('linksContainer');
+            const globalAddBtn = document.getElementById('addNewLinkBtn');
+            container.innerHTML = '';
+
+            if (linksData.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">暂无</div>';
+                globalAddBtn.style.display = 'flex'; // 列表为空时显示全局新增按钮
+
+                // 销毁可能存在的旧实例
+                if (sortableInstance) {
+                    sortableInstance.destroy();
+                    sortableInstance = null;
+                }
+                return;
+            }
+
+            globalAddBtn.style.display = 'none'; // 列表不为空时隐藏全局新增按钮
+
+            linksData.forEach((link, index) => {
+                const item = document.createElement('div');
+                item.className = 'link-item';
+                item.dataset.index = index; // 绑定索引以便在拖拽结束时识别
+                item.innerHTML = `
+                    <div class="drag-handle" title="拖动以排序">≡</div>
+                    <div class="link-inputs">
+                        <input type="text" placeholder="链接名称" value="${link.name || ''}" onchange="updateLink(${index}, 'name', this.value)" style="flex: 1; min-width: 120px;">
+                        <input type="text" placeholder="URL地址" value="${link.url || ''}" onchange="updateLink(${index}, 'url', this.value)" style="flex: 3; min-width: 250px;">
+                    </div>
+                    <div class="link-actions">
+                        <button type="button" class="icon-btn" onclick="insertLinkAfter(${index})" title="在此下方新增一条链接">+</button>
+                        <button type="button" class="icon-btn danger" onclick="deleteLink(${index})">删除</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+
+            // 初始化或更新 SortableJS 实例
+            if (sortableInstance) {
+                sortableInstance.destroy();
+            }
+            sortableInstance = new Sortable(container, {
+                animation: 150,
+                handle: '.drag-handle', // 指定拖动手柄
+                ghostClass: 'sortable-ghost',
+                onEnd: function (evt) {
+                    // 当拖拽结束时更新 linksData 数组的顺序
+                    const itemEl = evt.item;  // 拖动的 HTML 元素
+                    const oldIndex = evt.oldIndex;
+                    const newIndex = evt.newIndex;
+
+                    if (oldIndex !== newIndex) {
+                        // 在数组中移动元素
+                        const movedItem = linksData.splice(oldIndex, 1)[0];
+                        linksData.splice(newIndex, 0, movedItem);
+                        // 重新渲染以更新绑定的 index (onchange 等)
+                        renderLinks();
+                    }
+                },
+            });
+        }
+
+        window.updateLink = function (index, field, value) {
+            if (linksData[index]) {
+                linksData[index][field] = value.trim();
+            }
+        };
+
+        window.insertLinkAfter = function (index) {
+            linksData.splice(index + 1, 0, { id: Date.now(), name: '', url: '' });
+            renderLinks();
+        };
+
+        window.deleteLink = function (index) {
+            linksData.splice(index, 1);
+            renderLinks();
+        };
+
+        document.getElementById('addNewLinkBtn').addEventListener('click', function () {
+            linksData.push({ id: Date.now(), name: '', url: '' });
+            renderLinks();
+        });
+
+        document.getElementById('saveLinksBtn').addEventListener('click', function () {
+            // 过滤掉完全空的项
+            const validLinks = linksData.filter(link => link.name || link.url);
+
+            const blob = new Blob([JSON.stringify(validLinks, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'links.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('links.json 生成成功', 'success');
+        });
+
     </script>
 </body>
 

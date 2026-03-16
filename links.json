@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1773671482193,
+    "name": "评课社区",
+    "url": "https://icourse.club/"
+  },
+  {
+    "id": 1773669404715,
+    "name": "教务系统",
+    "url": "https://jw.ustc.edu.cn/home"
+  },
+  {
+    "id": 1773669523144,
+    "name": "OJ平台",
+    "url": "https://cscourse.ustc.edu.cn/indexcs/simple.jsp?loginErr=0"
+  },
+  {
+    "id": 1773669450154,
+    "name": "bb系统",
+    "url": "https://www.bb.ustc.edu.cn/webapps/login/"
+  },
+  {
+    "id": 1773669427891,
+    "name": "文件格式转换",
+    "url": "https://convertio.co/zh/"
+  },
+  {
+    "id": 1773669489134,
+    "name": "Z-library",
+    "url": "https://zh.zchongqing.ru/"
+  }
+]
