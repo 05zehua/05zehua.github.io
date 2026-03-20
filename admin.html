@@ -829,7 +829,7 @@
 <body>
     <div id="toast-container"></div>
     <div class="container">
-        <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+        <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
             <label class="custom-upload-btn">
                 <span>上传data.json</span>
                 <input type="file" id="oldDataFile" accept=".json" style="display: none;">
@@ -837,6 +837,10 @@
             <label class="custom-upload-btn">
                 <span>上传links.json</span>
                 <input type="file" id="oldLinksFile" accept=".json" style="display: none;">
+            </label>
+            <label class="custom-upload-btn">
+                <span>上传timeline.json</span>
+                <input type="file" id="oldTimelineFile" accept=".json" style="display: none;">
             </label>
         </div>
 
@@ -992,11 +996,29 @@
             </button>
         </div>
 
+        <!-- 时间轴节点管理专区 -->
+        <div class="links-manager-container" style="margin-top: 20px;">
+            <div class="links-manager-header">
+                <h3>时间轴节点管理</h3>
+                <button type="button" id="saveTimelineBtn" style="padding: 8px 16px; font-size: 0.9rem;">保存并导出 timeline.json</button>
+            </div>
+
+            <div id="timelineContainer">
+                <!-- 节点列表将在这里动态生成 -->
+            </div>
+
+            <button type="button" class="add-link-btn" id="addNewTimelineBtn" title="新增节点"
+                style="margin-top: 10px; display: none; align-items: center; justify-content: center; font-size: 1.2rem;">
+                +
+            </button>
+        </div>
+
     </div> <!-- end .container -->
 
     <script>
         let currentData = [];
         let linksData = [];
+        let timelineData = [];
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -1114,12 +1136,23 @@
                 const response = await fetch('./links.json?t=' + Date.now());
                 if (response.ok) {
                     linksData = await response.json();
-                    renderLinks();
                 }
             } catch (err) {
                 console.warn('未找到 links.json 或加载失败', err);
             } finally {
                 renderLinks();
+            }
+
+            // 自动读取 timeline.json
+            try {
+                const response = await fetch('./timeline.json?t=' + Date.now());
+                if (response.ok) {
+                    timelineData = await response.json();
+                }
+            } catch (err) {
+                console.warn('未找到 timeline.json 或加载失败', err);
+            } finally {
+                renderTimeline();
             }
         });
 
@@ -1153,6 +1186,24 @@
                     updateStatus(`读取成功：已读取 ${linksData.length} 条链接！`, 'success');
                 } catch (err) {
                     updateStatus("读取失败，请确保选择了正确的 links.json 文件！", 'error');
+                }
+            };
+            reader.readAsText(file);
+            this.value = '';
+        });
+
+        // 手动读取 timeline.json
+        document.getElementById('oldTimelineFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                try {
+                    timelineData = JSON.parse(event.target.result);
+                    renderTimeline();
+                    updateStatus(`读取成功：已读取 ${timelineData.length} 个时间轴节点！`, 'success');
+                } catch (err) {
+                    updateStatus("读取失败，请确保选择了正确的 timeline.json 文件！", 'error');
                 }
             };
             reader.readAsText(file);
@@ -1489,6 +1540,127 @@
             URL.revokeObjectURL(url);
 
             showToast('links.json 生成成功', 'success');
+        });
+
+        // --- 时间轴节点管理逻辑 ---
+
+        function sortTimelineData() {
+            timelineData.sort((a, b) => {
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                const timeA = new Date(a.date.replace(/\./g, '/')).getTime();
+                const timeB = new Date(b.date.replace(/\./g, '/')).getTime();
+                if (isNaN(timeA)) return 1;
+                if (isNaN(timeB)) return -1;
+                return timeA - timeB;
+            });
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            const globalAddBtn = document.getElementById('addNewTimelineBtn');
+            container.innerHTML = '';
+
+            if (timelineData.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">暂无节点数据</div>';
+                globalAddBtn.style.display = 'flex'; 
+                return;
+            }
+
+            globalAddBtn.style.display = 'flex'; 
+
+            timelineData.forEach((node, index) => {
+                const item = document.createElement('div');
+                item.className = 'link-item';
+                item.dataset.index = index; 
+                item.innerHTML = `
+                    <div class="link-inputs" style="flex-wrap: wrap; padding-left: 10px;">
+                        <input type="text" placeholder="节点日期 (例如 2025.10.15)" value="${node.date || ''}" onchange="updateTimeline(${index}, 'date', this.value)" style="flex: 1; min-width: 120px;">
+                        <input type="text" placeholder="文字说明 (可包含网址)" value="${node.text || ''}" onchange="updateTimeline(${index}, 'text', this.value)" style="flex: 2; min-width: 200px;">
+                        <div style="flex: 1.5; min-width: 250px; display: flex; gap: 8px; align-items: center;">
+                            <button type="button" class="icon-btn" onclick="document.getElementById('timeline-file-${index}').click()" title="选择包含图片的文件夹" style="flex: 1; justify-content: center; height: 100%;">选择图片文件夹</button>
+                            <span id="timeline-img-text-${index}" style="font-size: 0.85em; color: var(--text-muted); max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${node.images && node.images.length > 0 ? `已选择 ${node.images.length} 张图片` : (node.image ? '1 张图片' : '无图片')}</span>
+                            <input type="file" id="timeline-file-${index}" style="display: none;" accept="image/*" multiple webkitdirectory directory onchange="handleTimelineFile(${index}, this)">
+                        </div>
+                    </div>
+                    <div class="link-actions">
+                        <button type="button" class="icon-btn danger" onclick="deleteTimeline(${index})">删除</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        window.updateTimeline = function (index, field, value) {
+            if (timelineData[index]) {
+                timelineData[index][field] = typeof value === 'string' ? value.trim() : value;
+                // 日期更新触发重排
+                if (field === 'date') {
+                    sortTimelineData();
+                    renderTimeline();
+                }
+            }
+        };
+
+        window.handleTimelineFile = function (index, input) {
+            const files = Array.from(input.files);
+            if (files.length === 0) return;
+
+            // 1. 自动过滤非图片文件 (例如 .DS_Store 等)
+            const imageFiles = files.filter(f => f.type.startsWith('image/'));
+            
+            // 2. 自然顺序排序 (确保 2.jpg 排在 10.jpg 前面)
+            imageFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+            // 3. 提取层级路径：使用 webkitRelativePath 拼接路径
+            const paths = imageFiles.map(f => {
+                // 如果是文件夹上传，webkitRelativePath 会是 "folderName/fileName.jpg"
+                // 否则回退到 f.name
+                const relativePath = f.webkitRelativePath || f.name;
+                return `timeline_images/${relativePath}`;
+            });
+            
+            // 清理旧的单图字段
+            if(timelineData[index].image) {
+                delete timelineData[index].image;
+            }
+            
+            // 更新数据
+            updateTimeline(index, 'images', paths);
+
+            // 同时更新 UI 上的文本提示
+            const imgSpan = document.getElementById(`timeline-img-text-${index}`);
+            if (imgSpan) {
+                imgSpan.innerText = `已选择 ${paths.length} 张图片`;
+                imgSpan.title = paths.join('\n');
+            }
+        };
+
+        window.deleteTimeline = function (index) {
+            timelineData.splice(index, 1);
+            renderTimeline();
+        };
+
+        document.getElementById('addNewTimelineBtn').addEventListener('click', function () {
+            timelineData.push({ id: Date.now(), date: '', text: '', image: '' });
+            sortTimelineData();
+            renderTimeline();
+        });
+
+        document.getElementById('saveTimelineBtn').addEventListener('click', function () {
+            const validNodes = timelineData.filter(node => node.date || node.text || node.image || (node.images && node.images.length > 0));
+
+            const blob = new Blob([JSON.stringify(validNodes, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'timeline.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('timeline.json 生成成功', 'success');
         });
 
     </script>
