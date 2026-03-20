@@ -1,5 +1,7 @@
 **欢迎访问25级少院5班通知中心**
 
-点击链接访问: [https://05zehua.github.io/](https://05zehua.github.io/)
+*推荐使用**电脑**浏览器**全屏访问**，部分页面在手机端未进行适配！*
+
+点击访问: [https://05zehua.github.io/](https://05zehua.github.io/)
 
 如果有任何建议或意见, 欢迎联系syh指出

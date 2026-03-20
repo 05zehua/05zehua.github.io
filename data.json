@@ -1,17 +1,5 @@
 [
   {
-    "id": 1772476933949,
-    "type": "long-term",
-    "title": "新学期电子注册",
-    "target": "",
-    "content": "请同学们尽快完成新学期的电子信息注册！\n网址：http://xgyth.ustc.edu.cn",
-    "publishTime": "2026-03-02T18:42:13.950Z",
-    "deadline": "2026-03-15T23:59",
-    "images": [
-      "images/新学期电子注册.jpg"
-    ]
-  },
-  {
     "id": 1772685969035,
     "type": "instant",
     "title": "环太平洋大学联盟（APRU）本科生领袖计划（ULP）",
@@ -41,23 +29,6 @@
     "isUrgent": false,
     "images": [
       "images/形式与政策报名.jpg"
-    ]
-  },
-  {
-    "id": 1773142233467,
-    "type": "instant",
-    "title": "第六届九章杯大学生数学竞赛",
-    "target": "",
-    "location": "",
-    "content": "",
-    "publishTime": "2026-03-10T11:30:33.467Z",
-    "timeType": "deadline",
-    "deadline": "2026-03-15T23:59",
-    "ongoingStart": "",
-    "ongoingEnd": "",
-    "isUrgent": false,
-    "images": [
-      "images/九章杯.PNG"
     ]
   },
   {
