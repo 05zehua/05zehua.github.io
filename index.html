@@ -11,6 +11,9 @@
     <style>
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            /* 加入以下两行，修复 Safari 字体闪烁问题 */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             background-color: #f8fafc;
             padding: 20px;
             max-width: 1100px;
@@ -222,13 +225,29 @@
             }
 
             .section-header {
+                position: relative;
+                /* 为绝对定位提供参考系 */
                 row-gap: 15px;
-                /* 换行时保留垂直间距 */
+            }
+
+            /* 仅给第一个包含主题切换按钮的标题栏右侧预留安全空间，防止文字与按钮重叠 */
+            #main-content>.section-header:first-of-type {
+                padding-right: 45px;
             }
 
             .header-left {
                 flex-wrap: wrap;
-                /* 允许更新时间标签换行 */
+            }
+
+            .theme-toggle-btn {
+                position: absolute;
+                right: -42px;
+                top: 0;
+                margin-left: 0;
+            }
+
+            .collapse-toggle-btn {
+                order: unset;
             }
         }
 
@@ -1466,11 +1485,26 @@
             transform: translate(-50%, -50%) rotate(0) scale(1);
         }
 
-        /* ----- 深色模式切换过渡动画（已修正 Safari 兼容性与全局同步） ----- */
+        /* ----- 深色模式切换过渡动画（彻底规避 Safari 渲染瓶颈） ----- */
         .theme-transition,
-        .theme-transition *,
-        .theme-transition *::before,
-        .theme-transition *::after {
+        .theme-transition::before,
+        .theme-transition::after,
+        .theme-transition .card,
+        .theme-transition .card::before,
+        .theme-transition .welcome-title,
+        .theme-transition .module-title,
+        .theme-transition .card h3,
+        .theme-transition .meta,
+        .theme-transition .meta-label,
+        .theme-transition .timeline-content,
+        .theme-transition .timeline-desc,
+        .theme-transition .timeline-dot,
+        .theme-transition .timeline-endpoint,
+        .theme-transition .thumb-tooltip,
+        .theme-transition .footer-version,
+        .theme-transition .theme-toggle-btn,
+        .theme-transition .theme-toggle-btn svg,
+        .theme-transition .countdown-ring .ring-bg {
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1496,7 +1530,7 @@
     <div id="welcome-text">
         <div class="welcome-inner">
             <div class="welcome-title">25级少院5班通知中心</div>
-            <div id="last-update" class="update-tag">正在获取更新日期...</div>
+            <div id="last-update" class="update-tag">正在获取通知更新日期...</div>
         </div>
     </div>
 
