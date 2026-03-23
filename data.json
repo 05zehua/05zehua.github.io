@@ -62,20 +62,51 @@
     "images": []
   },
   {
-    "id": 1773667200099,
-    "type": "instant",
-    "title": "少年遇伯乐实验室参观活动",
+    "id": 1774254709419,
+    "type": "long-term",
+    "title": "春季心理健康状况普查",
     "target": "",
-    "location": "高新校区信智学部",
-    "content": "少年遇伯乐实验室参观活动将于3月21日（本周六）8：15-16：00来到高新校区信智学部，参观类脑智能技术及应用国家工程实验室、认知智能全国重点实验室、认知智能安全实验室、下一代移动计算与数据创新实验室。具体信息见二课报名通知，欢迎低年级同学报名",
-    "publishTime": "2026-03-16T13:20:00.099Z",
+    "location": "",
+    "content": "http://xlcs.ustc.edu.cn\n\n**账号**：学号202603\n**密码**：身份证后6位",
+    "publishTime": "2026-03-23T08:31:49.419Z",
     "timeType": "ongoing",
     "deadline": "",
-    "ongoingStart": "2026-03-21T08:15",
-    "ongoingEnd": "2026-03-21T16:00",
+    "ongoingStart": "2026-03-24T08:00",
+    "ongoingEnd": "2026-03-24T14:00",
+    "isUrgent": false,
+    "images": []
+  },
+  {
+    "id": 1774254855939,
+    "type": "instant",
+    "title": "“心动安徽·最美人物”发布仪式",
+    "target": "",
+    "location": "中校区体育馆",
+    "content": "**3.24下午**在**中校区体育馆**举办的**“心动安徽·最美人物”发布仪式**名单已公布，现场将通过每个人物的短片展示和现场采访，集中表彰在各行各业坚守奉献、担当作为的先进典型。请各位团支书转发至班群，欢迎感兴趣的同学参加",
+    "publishTime": "2026-03-23T08:34:15.939Z",
+    "timeType": "ongoing",
+    "deadline": "",
+    "ongoingStart": "2026-03-24T14:30",
+    "ongoingEnd": "2026-03-24T16:30",
     "isUrgent": false,
     "images": [
-      "images/少年遇伯乐.jpg"
+      "images/“心动安徽·最美人物”发布仪式.jpg",
+      "images/“心动安徽·最美人物”发布仪式2.jpg"
     ]
+  },
+  {
+    "id": 1774254884502,
+    "type": "instant",
+    "title": "暑期/交流项目",
+    "target": "",
+    "location": "",
+    "content": "https://vista.ustc.edu.cn/",
+    "publishTime": "2026-03-23T08:34:44.502Z",
+    "timeType": "deadline",
+    "deadline": "",
+    "ongoingStart": "",
+    "ongoingEnd": "",
+    "isUrgent": false,
+    "images": []
   }
 ]
