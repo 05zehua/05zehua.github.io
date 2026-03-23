@@ -29,9 +29,10 @@
             width: 100%;
             height: 100%;
             z-index: -999;
-            background-image: radial-gradient(at 0% 0%, hsla(210, 100%, 96%, 1) 0, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(190, 100%, 96%, 1) 0, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(240, 100%, 96%, 1) 0, transparent 50%);
+            /* 将原本不透明的高亮 hsla 替换为极低透明度的 rgba 透视叠加，消除切换深色时的亮度残留 */
+            background-image: radial-gradient(at 0% 0%, rgba(0, 123, 255, 0.06) 0, transparent 50%),
+                radial-gradient(at 50% 0%, rgba(0, 200, 255, 0.06) 0, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(100, 0, 255, 0.05) 0, transparent 50%);
             transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
@@ -154,6 +155,8 @@
             font-weight: 800;
             color: #0f172a;
             border-bottom: none;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .module-title::after {
@@ -217,6 +220,16 @@
             .update-tag {
                 font-size: 2.1rem !important;
             }
+
+            .section-header {
+                row-gap: 15px;
+                /* 换行时保留垂直间距 */
+            }
+
+            .header-left {
+                flex-wrap: wrap;
+                /* 允许更新时间标签换行 */
+            }
         }
 
 
@@ -228,6 +241,7 @@
             margin-top: 35px;
             margin-bottom: 5px;
             padding-bottom: 8px;
+            flex-wrap: wrap;
         }
 
         .section-header .module-title {
@@ -306,7 +320,9 @@
         }
 
         .urgent::before {
-            background: linear-gradient(to bottom right, #ffffff, #fff1f2);
+            /* 使用 rgba 实现微弱的红色叠加，视觉效果等同于原来的 #fff1f2 */
+            background: linear-gradient(to bottom right, transparent, rgba(220, 53, 69, 0.08));
+            border-radius: inherit;
         }
 
         @keyframes urgentFlash {
@@ -362,7 +378,9 @@
         }
 
         .normal::before {
-            background: linear-gradient(to bottom right, #ffffff, #f8fafc);
+            /* 使用 rgba 实现微弱的蓝灰色叠加，视觉效果等同于原来的 #f8fafc */
+            background: linear-gradient(to bottom right, transparent, rgba(0, 123, 255, 0.02));
+            border-radius: inherit;
         }
 
         #others-container .card {
@@ -1391,7 +1409,8 @@
             -webkit-backdrop-filter: blur(4px);
             margin-left: auto;
             /* Push to the right */
-            position: relative; /* 确保作为图标绝对定位的容器 */
+            position: relative;
+            /* 确保作为图标绝对定位的容器 */
         }
 
         .theme-toggle-btn:hover {
@@ -1430,6 +1449,7 @@
             opacity: 1;
             transform: translate(-50%, -50%) rotate(0) scale(1);
         }
+
         .theme-toggle-btn .icon-sun {
             opacity: 0;
             transform: translate(-50%, -50%) rotate(-90deg) scale(0);
@@ -1440,25 +1460,36 @@
             opacity: 0;
             transform: translate(-50%, -50%) rotate(90deg) scale(0);
         }
+
         body.dark-mode .theme-toggle-btn .icon-sun {
             opacity: 1;
             transform: translate(-50%, -50%) rotate(0) scale(1);
         }
 
-        /* ----- 深色模式切换过渡动画 ----- */
+        /* ----- 深色模式切换过渡动画（已修正 Safari 兼容性与全局同步） ----- */
         .theme-transition,
         .theme-transition *,
-        .theme-transition::before,
-        .theme-transition::after {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        .theme-transition *::before,
+        .theme-transition *::after {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                text-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
     </style>
 </head>
 
 <body>
     <script>
-        // Use early script execution to prevent white flash
-        if (localStorage.getItem('theme') === 'dark') {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // 如果本地存储为 dark，或者没有本地存储且系统为暗黑模式
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
             document.body.classList.add('dark-mode');
         }
     </script>
@@ -1595,7 +1626,7 @@
     </div>
 
     <div class="footer-version">
-        网站版本: 260323
+        版本: 260323 | 最近更新: 改进深色模式
     </div>
 
     <script>
@@ -2585,7 +2616,7 @@
             void document.body.offsetHeight;
 
             const isDark = document.body.classList.toggle('dark-mode');
-            
+
             // 仅更新 localStorage，由 CSS 处理图标切换
             if (isDark) {
                 localStorage.setItem('theme', 'dark');
@@ -2593,11 +2624,24 @@
                 localStorage.setItem('theme', 'light');
             }
 
-            // 动画结束后移除过渡 class
+            // 动画结束后移除过渡 class，增加 50ms 的缓冲时间防止动画末端被截断
             setTimeout(() => {
                 document.body.classList.remove('theme-transition');
-            }, 400);
+            }, 450);
         }
+
+        // 监听系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            const savedTheme = localStorage.getItem('theme');
+            // 只有在用户没有手动覆盖的情况下，才跟随系统实时切换
+            if (!savedTheme) {
+                if (event.matches) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            }
+        });
 
         init();
     </script>
