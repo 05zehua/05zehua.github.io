@@ -5,7 +5,7 @@
     "title": "环太平洋大学联盟（APRU）本科生领袖计划（ULP）",
     "target": "",
     "location": "",
-    "content": "“未来已来：人工智能与机器人时代的领导力”，2026 年6月22日至 7月3日，由南方科技大学承办。具体信息见 https://www.apru.org/event/apru-undergraduate-leaders-program-2026/",
+    "content": "“未来已来：人工智能与机器人时代的领导力”，2026年6月22日至7月3日，由南方科技大学承办。具体信息见 https://www.apru.org/event/apru-undergraduate-leaders-program-2026/",
     "publishTime": "2026-03-05T04:46:09.036Z",
     "timeType": "ongoing",
     "deadline": "",
@@ -108,5 +108,40 @@
     "ongoingEnd": "",
     "isUrgent": false,
     "images": []
+  },
+  {
+    "id": 1774348050341,
+    "type": "instant",
+    "title": "“数理本源与范式重构——通用人工智能的数学基石”主题沙龙",
+    "target": "",
+    "location": "物质科学楼BC连廊三楼会议室",
+    "content": "为积极推动人工智能、量子科技、交叉科学等战略高地建设，科研部、人力资源处、发展规划处与校工会联合举办“瀚海策源荟”前沿科学思想与战略范式主题沙龙。\n首期沙龙以**“数理本源与范式重构——通用人工智能的数学基石”**为主题，特别邀请了大湾区大学理学院副院长夏志宏教授作题为《基于数学原理的人工智能算法》的引导报告。欢迎全校对交叉科学、人工智能及数学基础研究感兴趣的本科生、硕士生及博士生扫描下方二维码报名参加。报名成功后，请提前15分钟到达会场。（具体详见通知链接：https://www.ustc.edu.cn/info/1364/24723.htm ）",
+    "publishTime": "2026-03-24T10:27:30.341Z",
+    "timeType": "ongoing",
+    "deadline": "2026-03-25T14:30",
+    "ongoingStart": "2026-03-25T14:30",
+    "ongoingEnd": "2026-03-25T16:00",
+    "isUrgent": false,
+    "images": [
+      "images/ai.png"
+    ]
+  },
+  {
+    "id": 1774348224520,
+    "type": "instant",
+    "title": "弘扬“五四”精神，奔赴闪耀青春——2026年 “五四”青年跑",
+    "target": "",
+    "location": "西校区/高新校区",
+    "content": "`**报名时间**`\n3月26日（星期四）15:00~3月29日15:00\n\n`**举办时间**`\n4月25日 （星期六）9:00 暂定\n\n`**活动地点**`\n1.西校区：操场-寰宇路-操场；\n2.高新校区：操场-卓越路-操场。\n\n`**注意事项**`\n在校学生需通过后续发布的第二课堂马拉松专用链接报名。点击报名后应及时填写完整的个人信息（如联系方式、身份证、性别、服装尺码、紧急联系人等），逾期未填写视为自动放弃，系统会取消报名。西校区限报1800人，高新校区限报1800人。活动现场无需签到签退，主办方将依据有效成绩统一录入第二课堂体学时。\n\n`**奖励办法等详细说明**`\n参阅：https://mp.weixin.qq.com/s/z80O_Zpf8OmGakOnyhYS8w?scene=1&click_id=289",
+    "publishTime": "2026-03-24T10:30:24.520Z",
+    "timeType": "deadline",
+    "deadline": "",
+    "ongoingStart": "",
+    "ongoingEnd": "",
+    "isUrgent": false,
+    "images": [
+      "images/五四高新.png",
+      "images/五四西区.png"
+    ]
   }
 ]
