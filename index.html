@@ -550,6 +550,7 @@
             margin-top: 14px;
             padding-top: 12px;
             border-top: 1px dashed rgba(15, 23, 42, 0.15);
+            transition: border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .files-title {
@@ -557,6 +558,7 @@
             font-weight: 600;
             color: #475569;
             margin-bottom: 8px;
+            transition: color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .files-list {
@@ -576,6 +578,7 @@
             border-radius: 8px;
             background: rgba(15, 23, 42, 0.03);
             border: 1px solid rgba(15, 23, 42, 0.08);
+            transition: background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .file-icon {
@@ -591,11 +594,13 @@
             color: #334155;
             font-size: 0.92em;
             word-break: break-all;
+            transition: color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .file-name-link {
             color: #2563eb;
             text-decoration: none;
+            transition: color 0.24s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .file-name-link:hover {
@@ -612,6 +617,7 @@
             padding: 2px 8px;
             text-transform: uppercase;
             letter-spacing: 0.02em;
+            transition: color 0.28s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .images {
@@ -627,7 +633,7 @@
             max-height: 180px;
             border-radius: 6px;
             object-fit: cover;
-            border: 1px solid #ddd;
+            border: none;
             cursor: zoom-in;
             transition: transform 0.2s;
         }
@@ -1215,7 +1221,7 @@
             /* 完整显示，不裁剪 */
             border-radius: 8px;
             margin-bottom: 10px;
-            background: #f8f9fa;
+            background: transparent;
             cursor: zoom-in;
         }
 
@@ -1245,7 +1251,7 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 0;
-            background: #f8f9fa;
+            background: transparent;
         }
 
         /* 修复单图未居中问题 */
@@ -1652,6 +1658,12 @@
         .theme-transition .footer-version,
         .theme-transition .theme-toggle-btn,
         .theme-transition .theme-toggle-btn svg,
+        .theme-transition .files-section,
+        .theme-transition .files-title,
+        .theme-transition .file-item,
+        .theme-transition .file-name,
+        .theme-transition .file-name-link,
+        .theme-transition .file-ext,
         .theme-transition .countdown-ring .ring-bg {
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1661,6 +1673,17 @@
                 text-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* iOS 上附件文字切换加速，减少与卡片背景的视觉延迟 */
+        @supports (-webkit-touch-callout: none) {
+            .theme-transition .files-title,
+            .theme-transition .file-name,
+            .theme-transition .file-name-link,
+            .theme-transition .file-ext {
+                transition-duration: 0.2s !important;
+                transition-property: color, border-color, background-color !important;
+            }
         }
     </style>
 </head>
@@ -1808,7 +1831,7 @@
     </div>
 
     <div class="footer-version">
-        版本: 260323 | 最近更新: 改进深色模式
+        版本: 260409 | 最近更新: 允许上传附件
     </div>
 
     <script>
@@ -1902,6 +1925,25 @@
             return parts[parts.length - 1] || '';
         }
 
+        function isDateOnlyString(value) {
+            return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '').trim());
+        }
+
+        function parseNotifTime(value, endOfDayForDateOnly = false) {
+            const raw = String(value || '').trim();
+            if (!raw) return null;
+
+            if (isDateOnlyString(raw)) {
+                const [y, m, d] = raw.split('-').map(Number);
+                return endOfDayForDateOnly
+                    ? new Date(y, m - 1, d, 23, 59, 59, 999)
+                    : new Date(y, m - 1, d, 0, 0, 0, 0);
+            }
+
+            const parsed = new Date(raw);
+            return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+
         function splitFileNameAndExt(filePath) {
             const fullName = extractFileName(filePath);
             const dotIndex = fullName.lastIndexOf('.');
@@ -1955,7 +1997,7 @@
 
             return `
                 <div class="files-section">
-                    <div class="files-title">附带文件</div>
+                    <div class="files-title">附件</div>
                     <ul class="files-list">${items}</ul>
                 </div>
             `;
@@ -1989,12 +2031,13 @@
 
                 const formatTime = (isoString) => {
                     if (!isoString) return '';
-                    const d = new Date(isoString);
+                    const d = parseNotifTime(isoString, true);
+                    if (!d) return '';
                     const M = String(d.getMonth() + 1).padStart(2, '0');
                     const day = String(d.getDate()).padStart(2, '0');
                     // 如果原始字符串中没有包含时间部分（没有'T'也没有空格，通常长度<=10）
                     // 则认为只输入了日期，不展示具体的时分
-                    if (isoString.length <= 10 && !isoString.includes('T') && !isoString.includes(' ')) {
+                    if (isDateOnlyString(isoString)) {
                         return `${M}.${day}`;
                     }
                     const h = String(d.getHours()).padStart(2, '0');
@@ -2022,7 +2065,8 @@
 
                     let isUrgentByStart = false;
                     if (n.ongoingStart) {
-                        const startTime = new Date(n.ongoingStart);
+                        const startTime = parseNotifTime(n.ongoingStart, false);
+                        if (!startTime) return;
                         const startDiffMs = startTime - now;
                         // 如果距离开始时间不到24小时，或者刚开始不到24小时
                         if (startDiffMs >= -24 * 60 * 60 * 1000 && startDiffMs <= 24 * 60 * 60 * 1000) {
@@ -2035,7 +2079,8 @@
                     }
 
                     if (n.ongoingEnd) {
-                        deadlineTime = new Date(n.ongoingEnd);
+                        deadlineTime = parseNotifTime(n.ongoingEnd, true);
+                        if (!deadlineTime) return;
                         diffMs = deadlineTime - now;
                         const diffHours = diffMs / (1000 * 60 * 60);
                         if (diffHours < -24) return;
@@ -2045,7 +2090,8 @@
                         }
                     } else if (n.ongoingStart) {
                         // 如果没有结束时间，把开始时间作为结束时间来判断是否过期
-                        deadlineTime = new Date(n.ongoingStart);
+                        deadlineTime = parseNotifTime(n.ongoingStart, true);
+                        if (!deadlineTime) return;
                         diffMs = deadlineTime - now;
                         const diffHours = diffMs / (1000 * 60 * 60);
                         if (diffHours < -24) return;
@@ -2068,7 +2114,8 @@
                         timeText = '待定';
                         if (n.isUrgent) status = 'urgent';
                     } else {
-                        deadlineTime = new Date(n.deadline);
+                        deadlineTime = parseNotifTime(n.deadline, true);
+                        if (!deadlineTime) return;
                         diffMs = deadlineTime - now;
                         const diffHours = diffMs / (1000 * 60 * 60);
                         if (diffHours < -24) return;
@@ -2177,8 +2224,9 @@
 
                 // 优先检查即将开始的倒计时
                 if (n.ongoingStart) {
-                    const startDiffMs = new Date(n.ongoingStart) - now;
-                    if (startDiffMs > 0 && startDiffMs <= threeDaysMs) {
+                    const startTime = parseNotifTime(n.ongoingStart, false);
+                    const startDiffMs = startTime ? (startTime - now) : NaN;
+                    if (!Number.isNaN(startDiffMs) && startDiffMs > 0 && startDiffMs <= threeDaysMs) {
                         showRing = true;
                         ringRatio = startDiffMs / threeDaysMs;
                     }
@@ -2187,8 +2235,9 @@
                 if (!showRing) {
                     const endTarget = n.ongoingEnd || n.deadline;
                     if (endTarget && endTarget !== 'TBD') {
-                        const endDiffMs = new Date(endTarget) - now;
-                        if (endDiffMs > 0 && endDiffMs <= threeDaysMs) {
+                        const endTime = parseNotifTime(endTarget, true);
+                        const endDiffMs = endTime ? (endTime - now) : NaN;
+                        if (!Number.isNaN(endDiffMs) && endDiffMs > 0 && endDiffMs <= threeDaysMs) {
                             showRing = true;
                             ringRatio = endDiffMs / threeDaysMs;
                         }
@@ -2922,4 +2971,3 @@
 </body>
 
 </html>
-

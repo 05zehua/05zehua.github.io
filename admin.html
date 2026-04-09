@@ -219,7 +219,7 @@
             line-height: 1.5;
         }
 
-        input[type="file"]:not(#oldDataFile) {
+        input[type="file"]:not(#oldJsonFiles) {
             width: 100%;
             padding: 12px;
             margin-bottom: 0;
@@ -233,12 +233,12 @@
             transition: all 0.2s ease;
         }
 
-        input[type="file"]:not(#oldDataFile):hover {
+        input[type="file"]:not(#oldJsonFiles):hover {
             border-color: var(--text-muted);
             background: rgba(255, 255, 255, 0.04);
         }
 
-        input[type="file"]:not(#oldDataFile)::file-selector-button {
+        input[type="file"]:not(#oldJsonFiles)::file-selector-button {
             background: var(--container-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
@@ -251,7 +251,7 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        input[type="file"]:not(#oldDataFile)::file-selector-button:hover {
+        input[type="file"]:not(#oldJsonFiles)::file-selector-button:hover {
             background: #2d3748;
             border-color: #4a5568;
         }
@@ -277,28 +277,28 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: rgba(255, 255, 255, 0.05);
+            background: #000000;
             padding: 10px 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 12px;
             height: 44px;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
             color: var(--text-main);
             font-weight: 500;
             box-sizing: border-box;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
         }
 
         .select-trigger:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            background-color: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border-color: rgba(59, 130, 246, 0.65);
+            background: #000000;
         }
 
         .custom-select.active .select-trigger {
             border-color: var(--primary);
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+            background: #000000;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .select-trigger i {
@@ -309,7 +309,8 @@
             background-repeat: no-repeat;
             background-position: center;
             background-size: contain;
-            transition: transform 0.3s ease;
+            transition: transform 0.25s ease;
+            opacity: 1;
         }
 
         .custom-select.active .select-trigger i {
@@ -321,45 +322,51 @@
             top: calc(100% + 8px);
             left: 0;
             width: 100%;
-            background: #1e293b;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #000000;
+            border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 16px;
-            overflow: hidden;
+            overflow: visible;
             z-index: 1000;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-10px) scale(0.98);
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(12px);
+            transform: translateY(-6px);
+            transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+            padding: 8px;
+            box-sizing: border-box;
         }
 
         .custom-select.active .select-dropdown {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
 
         .select-option {
-            padding: 12px 14px;
+            padding: 10px 12px;
             cursor: pointer;
             color: var(--text-muted);
             font-size: 0.95rem;
-            transition: all 0.2s ease;
+            transition: color 0.16s ease, background-color 0.16s ease, border-color 0.16s ease;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            margin: 0;
+            background: transparent;
         }
 
         .select-option:hover {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(255, 255, 255, 0.06);
             color: var(--text-main);
         }
 
         .select-option.selected {
-            color: var(--primary);
-            background: rgba(59, 130, 246, 0.05);
-            font-weight: 600;
+            color: #bfdbfe;
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.45);
+            font-weight: 500;
         }
 
         button[type="button"],
@@ -831,16 +838,8 @@
     <div class="container">
         <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
             <label class="custom-upload-btn">
-                <span>上传data.json</span>
-                <input type="file" id="oldDataFile" accept=".json" style="display: none;">
-            </label>
-            <label class="custom-upload-btn">
-                <span>上传links.json</span>
-                <input type="file" id="oldLinksFile" accept=".json" style="display: none;">
-            </label>
-            <label class="custom-upload-btn">
-                <span>上传timeline.json</span>
-                <input type="file" id="oldTimelineFile" accept=".json" style="display: none;">
+                <span>上传JSON文件（可多选）</span>
+                <input type="file" id="oldJsonFiles" accept=".json" multiple style="display: none;">
             </label>
         </div>
 
@@ -1165,57 +1164,84 @@
             }
         });
 
-        // 手动读取历史 JSON
-        document.getElementById('oldDataFile').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                try {
-                    const rawData = JSON.parse(event.target.result);
-                    currentData = processAndCleanup(rawData);
-                    updateStatus(`读取成功：已读取 ${currentData.length} 条有效通知！`, 'success');
-                } catch (err) {
-                    updateStatus("读取失败，请确保选择了正确的 data.json 文件！", 'error');
-                }
-            };
-            reader.readAsText(file);
-            this.value = '';
-        });
+        function readJsonFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        resolve(JSON.parse(event.target.result));
+                    } catch (err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = () => reject(new Error('read failed'));
+                reader.readAsText(file);
+            });
+        }
 
-        // 手动读取 links.json
-        document.getElementById('oldLinksFile').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                try {
-                    linksData = JSON.parse(event.target.result);
-                    renderLinks();
-                    updateStatus(`读取成功：已读取 ${linksData.length} 条链接！`, 'success');
-                } catch (err) {
-                    updateStatus("读取失败，请确保选择了正确的 links.json 文件！", 'error');
-                }
-            };
-            reader.readAsText(file);
-            this.value = '';
-        });
+        function resolveJsonTypeByName(fileName) {
+            const name = (fileName || '').toLowerCase();
+            if (name === 'data.json') return 'data';
+            if (name === 'links.json') return 'links';
+            if (name === 'timeline.json') return 'timeline';
+            if (name.includes('timeline')) return 'timeline';
+            if (name.includes('link')) return 'links';
+            if (name.includes('data')) return 'data';
+            return '';
+        }
 
-        // 手动读取 timeline.json
-        document.getElementById('oldTimelineFile').addEventListener('change', function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                try {
-                    timelineData = JSON.parse(event.target.result);
-                    renderTimeline();
-                    updateStatus(`读取成功：已读取 ${timelineData.length} 个时间轴节点！`, 'success');
-                } catch (err) {
-                    updateStatus("读取失败，请确保选择了正确的 timeline.json 文件！", 'error');
+        // 手动读取历史 JSON（单入口，多文件，按文件名自动匹配）
+        document.getElementById('oldJsonFiles').addEventListener('change', async function (e) {
+            const files = Array.from(e.target.files || []);
+            if (files.length === 0) return;
+
+            let loadedData = false;
+            let loadedLinks = false;
+            let loadedTimeline = false;
+            const unknownFiles = [];
+            const failedFiles = [];
+
+            for (const file of files) {
+                const type = resolveJsonTypeByName(file.name);
+                if (!type) {
+                    unknownFiles.push(file.name);
+                    continue;
                 }
-            };
-            reader.readAsText(file);
+
+                try {
+                    const jsonData = await readJsonFile(file);
+                    if (type === 'data') {
+                        currentData = processAndCleanup(jsonData);
+                        loadedData = true;
+                    } else if (type === 'links') {
+                        linksData = jsonData;
+                        renderLinks();
+                        loadedLinks = true;
+                    } else if (type === 'timeline') {
+                        timelineData = jsonData;
+                        renderTimeline();
+                        loadedTimeline = true;
+                    }
+                } catch (err) {
+                    failedFiles.push(file.name);
+                }
+            }
+
+            const summary = [];
+            if (loadedData) summary.push(`通知 ${currentData.length} 条`);
+            if (loadedLinks) summary.push(`链接 ${linksData.length} 条`);
+            if (loadedTimeline) summary.push(`时间轴 ${timelineData.length} 个节点`);
+
+            if (summary.length > 0) {
+                updateStatus(`读取成功：${summary.join('，')}。`, 'success');
+            }
+            if (unknownFiles.length > 0) {
+                showToast(`未识别文件名，已跳过：${unknownFiles.join('，')}`, 'warning');
+            }
+            if (failedFiles.length > 0) {
+                showToast(`解析失败：${failedFiles.join('，')}`, 'error');
+            }
+
             this.value = '';
         });
 
