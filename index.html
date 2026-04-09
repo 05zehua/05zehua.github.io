@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -375,15 +375,31 @@
         }
 
         .countdown-ring .ring-bg {
-            stroke: #ffe4e6;
+            stroke: #dbeafe;
         }
 
         .countdown-ring .ring-progress {
-            stroke: #dc3545;
+            stroke: #007bff;
             stroke-dasharray: 62.83;
             stroke-dashoffset: 62.83;
             animation: ringDraw 1.5s ease-out forwards;
             animation-delay: 1.6s;
+        }
+
+        .countdown-ring.countdown-urgent .ring-bg {
+            stroke: #ffe4e6;
+        }
+
+        .countdown-ring.countdown-urgent .ring-progress {
+            stroke: #dc3545;
+        }
+
+        .countdown-ring.countdown-expired .ring-bg {
+            stroke: #e9ecef;
+        }
+
+        .countdown-ring.countdown-expired .ring-progress {
+            stroke: #6c757d;
         }
 
         @keyframes ringDraw {
@@ -530,6 +546,74 @@
             margin-bottom: 4px;
         }
 
+        .files-section {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(15, 23, 42, 0.15);
+        }
+
+        .files-title {
+            font-size: 0.88em;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+
+        .files-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.03);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        .file-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            object-fit: contain;
+        }
+
+        .file-name {
+            flex: 1;
+            min-width: 0;
+            color: #334155;
+            font-size: 0.92em;
+            word-break: break-all;
+        }
+
+        .file-name-link {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .file-name-link:hover {
+            text-decoration: underline;
+        }
+
+        .file-ext {
+            flex-shrink: 0;
+            font-size: 0.78em;
+            color: #2563eb;
+            border: 1px solid rgba(37, 99, 235, 0.28);
+            background: rgba(37, 99, 235, 0.08);
+            border-radius: 999px;
+            padding: 2px 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
         .images {
             display: flex;
             flex-wrap: wrap;
@@ -669,16 +753,32 @@
         }
 
         .countdown-ring .ring-bg {
-            stroke: #f8d7da;
+            stroke: #dbeafe;
         }
 
         .countdown-ring .ring-progress {
-            stroke: #dc3545;
+            stroke: #007bff;
             stroke-linecap: round;
             /* 圆角端点 */
             stroke-dasharray: 62.83;
             /* 圆的周长 2 * π * r (r=10) */
             animation: ringFill 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .countdown-ring.countdown-urgent .ring-bg {
+            stroke: #ffe4e6;
+        }
+
+        .countdown-ring.countdown-urgent .ring-progress {
+            stroke: #dc3545;
+        }
+
+        .countdown-ring.countdown-expired .ring-bg {
+            stroke: #e9ecef;
+        }
+
+        .countdown-ring.countdown-expired .ring-progress {
+            stroke: #6c757d;
         }
 
         /* 通过 CSS 变量接收 JS 算出的目标进度 */
@@ -1361,6 +1461,33 @@
             border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
         }
 
+        body.dark-mode .files-section {
+            border-top-color: rgba(148, 163, 184, 0.25);
+        }
+
+        body.dark-mode .files-title {
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .file-item {
+            background: rgba(148, 163, 184, 0.08);
+            border-color: rgba(148, 163, 184, 0.22);
+        }
+
+        body.dark-mode .file-name {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .file-name-link {
+            color: #93c5fd;
+        }
+
+        body.dark-mode .file-ext {
+            color: #93c5fd;
+            border-color: rgba(147, 197, 253, 0.35);
+            background: rgba(147, 197, 253, 0.1);
+        }
+
         body.dark-mode .urgent,
         body.dark-mode .normal {
             background-color: #1e1e1e;
@@ -1407,8 +1534,28 @@
             color: #6b7280;
         }
 
-        body.dark-mode .countdown-ring .ring-bg {
+        body.dark-mode .countdown-ring.countdown-normal .ring-bg {
+            stroke: #1e3a8a;
+        }
+
+        body.dark-mode .countdown-ring.countdown-normal .ring-progress {
+            stroke: #007bff;
+        }
+
+        body.dark-mode .countdown-ring.countdown-urgent .ring-bg {
             stroke: #4a1d22;
+        }
+
+        body.dark-mode .countdown-ring.countdown-urgent .ring-progress {
+            stroke: #dc3545;
+        }
+
+        body.dark-mode .countdown-ring.countdown-expired .ring-bg {
+            stroke: #374151;
+        }
+
+        body.dark-mode .countdown-ring.countdown-expired .ring-progress {
+            stroke: #6c757d;
         }
 
         /* ----- 深色模式切换按钮样式 ----- */
@@ -1727,6 +1874,93 @@
             }
         }
 
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function linkifySmart(text) {
+            if (!text) return '';
+            // 首轮识别：遇到空白、括号、中文和尖括号立即截断
+            const urlRegex = /(https?:\/\/[^\s<>()（）\[\]{}【】《》\u3400-\u9FFF]+)/g;
+            // 次轮清理：剥离链接尾部中英文标点（不影响链接中间的点号）
+            const trailingPunctRegex = /[.,;:!?。，；：！？、"'”’》】）\]\}]+$/;
+            return text.replace(urlRegex, (fullUrl) => {
+                const cleanUrl = fullUrl.replace(trailingPunctRegex, '');
+                const trailing = fullUrl.slice(cleanUrl.length);
+                return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${trailing}`;
+            });
+        }
+
+        function extractFileName(filePath) {
+            const path = String(filePath || '');
+            const parts = path.split(/[\\/]/);
+            return parts[parts.length - 1] || '';
+        }
+
+        function splitFileNameAndExt(filePath) {
+            const fullName = extractFileName(filePath);
+            const dotIndex = fullName.lastIndexOf('.');
+            if (dotIndex <= 0 || dotIndex === fullName.length - 1) {
+                return { name: fullName || '未命名文件', ext: '无后缀' };
+            }
+            return {
+                name: fullName.slice(0, dotIndex),
+                ext: fullName.slice(dotIndex + 1).toLowerCase()
+            };
+        }
+
+        function buildFileHref(filePath) {
+            return encodeURI(String(filePath || '').replace(/\\/g, '/'));
+        }
+
+        function getFileIconUrl(ext) {
+            const iconMap = {
+                pdf: 'https://img.icons8.com/color/48/pdf.png',
+                doc: 'https://img.icons8.com/color/48/microsoft-word-2019--v1.png',
+                docx: 'https://img.icons8.com/color/48/microsoft-word-2019--v1.png',
+                xls: 'https://img.icons8.com/color/48/microsoft-excel-2019--v1.png',
+                xlsx: 'https://img.icons8.com/color/48/microsoft-excel-2019--v1.png',
+                ppt: 'https://img.icons8.com/color/48/microsoft-powerpoint-2019--v1.png',
+                pptx: 'https://img.icons8.com/color/48/microsoft-powerpoint-2019--v1.png',
+                zip: 'https://img.icons8.com/color/48/zip.png',
+                rar: 'https://img.icons8.com/color/48/zip.png',
+                '7z': 'https://img.icons8.com/color/48/zip.png',
+                txt: 'https://img.icons8.com/color/48/txt.png'
+            };
+            return iconMap[ext] || 'https://img.icons8.com/color/48/document--v1.png';
+        }
+
+        function buildFilesHtml(fileList) {
+            if (!Array.isArray(fileList) || fileList.length === 0) return '';
+
+            const items = fileList.map(filePath => {
+                const { name, ext } = splitFileNameAndExt(filePath);
+                const iconUrl = getFileIconUrl(ext);
+                const href = buildFileHref(filePath);
+                return `
+                    <li class="file-item">
+                        <img class="file-icon" src="${iconUrl}" alt="${escapeHtml(ext)} 文件图标" loading="lazy">
+                        <span class="file-name">
+                            <a class="file-name-link" href="${href}" target="_blank" rel="noopener noreferrer">${escapeHtml(name)}</a>
+                        </span>
+                        <span class="file-ext">${escapeHtml(ext)}</span>
+                    </li>
+                `;
+            }).join('');
+
+            return `
+                <div class="files-section">
+                    <div class="files-title">附带文件</div>
+                    <ul class="files-list">${items}</ul>
+                </div>
+            `;
+        }
+
         async function fetchNotifications() {
             try {
                 const response = await fetch('./data.json?t=' + new Date().getTime());
@@ -1886,6 +2120,8 @@
                 const imgs = imageList.length > 0
                     ? imageList.map(src => `<img src="${src}" alt="通知配图" loading="lazy" onclick="openModal('${src}', ${JSON.stringify(imageList).replace(/"/g, '&quot;')})">`).join('')
                     : '';
+                const fileList = Array.isArray(n.files) ? n.files : [];
+                const filesHtml = buildFilesHtml(fileList);
 
                 const targetText = n.target ? n.target : '全体';
                 const locHtml = (n.location && n.location.trim() !== '') ?
@@ -1899,8 +2135,8 @@
                     .replace(/~~(.*?)~~/g, '<del>$1</del>')
                     .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
                     .replace(/\*(.*?)\*/g, '<i>$1</i>')
-                    .replace(/`(.*?)`/g, '<code>$1</code>')
-                    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+                    .replace(/`(.*?)`/g, '<code>$1</code>');
+                processedContent = linkifySmart(processedContent);
 
                 // 处理以 * 开头的无序列表
                 const lines = processedContent.split('\n');
@@ -1964,7 +2200,7 @@
                     const c = 2 * Math.PI * r; // 圆周长约 62.83
                     const offset = c * (1 - ringRatio);
                     ringHtml = `
-                        <svg class="countdown-ring" viewBox="0 0 24 24">
+                        <svg class="countdown-ring countdown-${n.status}" viewBox="0 0 24 24">
                             <circle class="ring-bg" cx="12" cy="12" r="10"></circle>
                             <circle class="ring-progress" cx="12" cy="12" r="10" style="--target-offset: ${offset};"></circle>
                         </svg>
@@ -1983,6 +2219,7 @@
                             <span class="meta-item"><span class="meta-label">${n.label}:</span> <span class="deadline">${n.timeText}</span>${ringHtml}</span>
                         </div>
                         <div class="content-text" style="line-height: 1.6;">${processedContent}</div>
+                        ${filesHtml}
                         ${imgs ? `<div class="images">${imgs}</div>` : ''}
                     </div>
                 `;
@@ -1996,6 +2233,9 @@
                 }
                 if (n.images && n.images.length > 0) {
                     estimatedHeight += 160 * Math.ceil(n.images.length / 2); // 预估图片高度
+                }
+                if (fileList.length > 0) {
+                    estimatedHeight += 56 + fileList.length * 44; // 预估文件列表高度
                 }
 
                 if (n.type === 'long-term') {
@@ -2084,9 +2324,8 @@
 
         function wrapUrls(text) {
             if (!text) return '';
-            const urlRegex = /(https?:\/\/[^\s<]+)/g;
             // 处理 URL 包装
-            let processed = text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+            let processed = linkifySmart(text);
             // 处理 Markdown 粗体 **内容** -> <strong>内容</strong>
             processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             // 处理换行符
@@ -2683,3 +2922,4 @@
 </body>
 
 </html>
+

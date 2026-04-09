@@ -1,166 +1,176 @@
-[
-  {
-    "id": 1772685969035,
-    "type": "instant",
-    "title": "环太平洋大学联盟（APRU）本科生领袖计划（ULP）",
-    "target": "",
-    "location": "",
-    "content": "“未来已来：人工智能与机器人时代的领导力”，2026年6月22日至7月3日，由南方科技大学承办。具体信息见 https://www.apru.org/event/apru-undergraduate-leaders-program-2026/",
-    "publishTime": "2026-03-05T04:46:09.036Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "2026-06-22",
-    "ongoingEnd": "2026-07-03",
-    "isUrgent": false,
-    "images": []
-  },
-  {
-    "id": 1772686281625,
-    "type": "instant",
-    "title": "形势与政策报名",
-    "target": "",
-    "location": "",
-    "content": "“形势与政策”是本科生必修课，修读方式为大三之前听课8次，大三时就其中两次课程写2个报告提交。\n详见马克思主义学院官网的通知公告栏目http://marx.ustc.edu.cn/2023/0606/c30320a605104/page.htm",
-    "publishTime": "2026-03-05T04:51:21.625Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "",
-    "ongoingEnd": "",
-    "isUrgent": false,
-    "images": [
-      "images/形式与政策报名.jpg"
-    ]
-  },
-  {
-    "id": 1773312417208,
-    "type": "long-term",
-    "title": "一春班级活动意愿统计",
-    "target": "",
-    "location": "",
-    "content": "**一春班级活动意愿统计**\n\nhttps://docs.qq.com/form/page/DR2xRQk9OandscU1H\n\n*这是本学期班级活动的意愿收集表，大家务必认真填写帮助我们开展工作！感谢！*",
-    "publishTime": "2026-03-12T10:46:57.208Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "",
-    "ongoingEnd": "",
-    "isUrgent": true,
-    "images": []
-  },
-  {
-    "id": 1774254884502,
-    "type": "instant",
-    "title": "暑期/交流项目",
-    "target": "",
-    "location": "",
-    "content": "https://vista.ustc.edu.cn/",
-    "publishTime": "2026-03-23T08:34:44.502Z",
-    "timeType": "deadline",
-    "deadline": "",
-    "ongoingStart": "",
-    "ongoingEnd": "",
-    "isUrgent": false,
-    "images": []
-  },
-  {
-    "id": 1774348224520,
-    "type": "instant",
-    "title": "弘扬“五四”精神，奔赴闪耀青春——2026年 “五四”青年跑",
-    "target": "",
-    "location": "西校区/高新校区",
-    "content": "`**报名时间**`\n3月26日（星期四）15:00~3月29日15:00\n\n`**举办时间**`\n4月25日 （星期六）9:00 暂定\n\n`**活动地点**`\n1.西校区：操场-寰宇路-操场；\n2.高新校区：操场-卓越路-操场。\n\n`**注意事项**`\n在校学生需通过后续发布的第二课堂马拉松专用链接报名。点击报名后应及时填写完整的个人信息（如联系方式、身份证、性别、服装尺码、紧急联系人等），逾期未填写视为自动放弃，系统会取消报名。西校区限报1800人，高新校区限报1800人。活动现场无需签到签退，主办方将依据有效成绩统一录入第二课堂体学时。\n\n`**奖励办法等详细说明**`\n参阅：https://mp.weixin.qq.com/s/z80O_Zpf8OmGakOnyhYS8w?scene=1&click_id=289",
-    "publishTime": "2026-03-24T10:30:24.520Z",
-    "timeType": "deadline",
-    "deadline": "",
-    "ongoingStart": "",
-    "ongoingEnd": "",
-    "isUrgent": false,
-    "images": [
-      "images/五四高新.png",
-      "images/五四西区.png"
-    ]
-  },
-  {
-    "id": 1775052503731,
-    "type": "instant",
-    "title": "少年遇伯乐",
-    "target": "",
-    "location": "合肥微尺度物质科学国家研究中心",
-    "content": "少年遇伯乐实验室参观活动将于4月8日（下周三）16：00-18：00来到合肥微尺度物质科学国家研究中心，参观超冷原子光晶格实验室、冷原子量子存储与量子中继实验室、量子材料物理实验室、仿生与纳米化学实验室。具体信息见二课通知，欢迎低年级同学报名！",
-    "publishTime": "2026-04-01T14:08:23.731Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "2026-04-08T16:00",
-    "ongoingEnd": "2026-04-08T18:00",
-    "isUrgent": false,
-    "images": [
-      "images/snybl48.jpg"
-    ]
-  },
-  {
-    "id": 1775052573931,
-    "type": "instant",
-    "title": "[集体报名，待定] 国防教育征兵宣讲",
-    "target": "",
-    "location": "",
-    "content": "为深入贯彻落实习近平新时代中国特色社会主义思想和习近平强军思想，服务国防和军队现代化建设需求，依据《国防法》《兵役法》等法律法规，进一步激发适龄青年参军报国热情，营造全社会关心支持国防建设的良好氛围，鼓励大学生携笔从戎、立志军营、建功立业，党委人民武装部决定组织在籍退役大学生士兵，深入各班级开展国防教育及征兵宣讲系列活动。现将有关事项通知如下：\n一、活动主题\n“青春报国 铸梦军营”—— 国防教育征兵宣讲系列活动\n二、活动时间\n2026年春季学期\n三、活动对象\n全体在校学生、以班级为单位\n四、活动安排\n1.活动内容：国防知识、军史军情、征兵政策解读；解读义务兵、直招军官、定向培养军官相关政策；亲身军旅经历分享（在部队学习、训练、生活等真实经历，讲述军营成长故事）。\n2.报名方式：欢迎各班级积极预约，宣讲团将上门开展宣讲与互动答疑。请以班级为单位通过报名链接（https://docs.qq.com/form/page/DSm9ibmJUYVRRUWFu ）完成报名。",
-    "publishTime": "2026-04-01T14:09:33.931Z",
-    "timeType": "deadline",
-    "deadline": "",
-    "ongoingStart": "",
-    "ongoingEnd": "",
-    "isUrgent": false,
-    "images": []
-  },
-  {
-    "id": 1775664913201,
-    "type": "instant",
-    "title": "少年班论坛",
-    "target": "",
-    "location": "5101",
-    "content": "少年班论坛将于下周三（04/15）下午16:00在五教5101教室举行。本期论坛邀请了浙江大学数学高等研究院孙崧教授，报告主题为《爱因斯坦度量的几何》，欢迎同学们通过扫海报上二维码报名参加！",
-    "publishTime": "2026-04-08T16:15:13.201Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "2026-04-15T16:00",
-    "ongoingEnd": "",
-    "isUrgent": false,
-    "images": [
-      "images/少年班论坛.jpg"
-    ]
-  },
-  {
-    "id": 1775664978484,
-    "type": "long-term",
-    "title": "“少年遇伯乐”2026年本科生科研实践师生交流会",
-    "target": "",
-    "location": "西活三楼",
-    "content": "【遇见伯乐，点亮科研之路】本周六（4月11日）少年班学院在西活三楼举办“少年遇伯乐”2026年本科生科研实践师生交流会，届时全校会有近200名导师来参会，与同学们面对面交流，为大家选专业、选导师、科研兴趣提升、升学就业前景等方面获得导师们的亲自指导提供最佳机会，请同学们积极报名。\n\n另外学院要求**全部2025级同学**参与，每人至少报名一场活动，有特殊情况不能参加的要向班主任请假。\n\n同学们进入会场后领取打卡卡片，与导师沟通后在打卡区域盖章（至少2个），活动结束后在二课上传卡片照片，即视为参加活动。活动还为同学们准备了丰富的奖品：同学们可以根据获得签章数量在现场兑换学院纪念品，数量有限，先到先得，详情见二课通知。",
-    "publishTime": "2026-04-08T16:16:18.484Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "2026-04-11",
-    "ongoingEnd": "",
-    "isUrgent": true,
-    "images": [
-      "images/少年遇伯乐411.jpg"
-    ]
-  },
-  {
-    "id": 1775665029163,
-    "type": "instant",
-    "title": "西区安全馆参观",
-    "target": "",
-    "location": "西区安全馆",
-    "content": "4.12 16：00-16：30班级活动西区安全馆参观，价值一个劳学时，有兴趣的同学可以积极参加",
-    "publishTime": "2026-04-08T16:17:09.163Z",
-    "timeType": "ongoing",
-    "deadline": "",
-    "ongoingStart": "2026-04-12T16:00",
-    "ongoingEnd": "2026-04-12T16:30",
-    "isUrgent": false,
-    "images": [
-      "images/安全1.jpg",
-      "images/安全2.jpg"
-    ]
-  }
+﻿[
+    {
+        "id": 1772685969035,
+        "type": "instant",
+        "title": "环太平洋大学联盟（APRU）本科生领袖计划（ULP）",
+        "target": "",
+        "location": "",
+        "content": "“未来已来：人工智能与机器人时代的领导力”，2026年6月22日至7月3日，由南方科技大学承办。具体信息见 https://www.apru.org/event/apru-undergraduate-leaders-program-2026/",
+        "publishTime": "2026-03-05T04:46:09.036Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "2026-06-22",
+        "ongoingEnd": "2026-07-03",
+        "isUrgent": false,
+        "images": [],
+        "files": []
+    },
+    {
+        "id": 1772686281625,
+        "type": "instant",
+        "title": "形势与政策报名",
+        "target": "",
+        "location": "",
+        "content": "“形势与政策”是本科生必修课，修读方式为大三之前听课8次，大三时就其中两次课程写2个报告提交。\n详见马克思主义学院官网的通知公告栏目http://marx.ustc.edu.cn/2023/0606/c30320a605104/page.htm",
+        "publishTime": "2026-03-05T04:51:21.625Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "",
+        "ongoingEnd": "",
+        "isUrgent": false,
+        "images": [
+            "images/形式与政策报名.jpg"
+        ],
+        "files": []
+    },
+    {
+        "id": 1773312417208,
+        "type": "long-term",
+        "title": "一春班级活动意愿统计",
+        "target": "",
+        "location": "",
+        "content": "**一春班级活动意愿统计**\n\nhttps://docs.qq.com/form/page/DR2xRQk9OandscU1H\n\n*这是本学期班级活动的意愿收集表，大家务必认真填写帮助我们开展工作！感谢！*",
+        "publishTime": "2026-03-12T10:46:57.208Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "",
+        "ongoingEnd": "",
+        "isUrgent": true,
+        "images": [],
+        "files": []
+    },
+    {
+        "id": 1774254884502,
+        "type": "instant",
+        "title": "暑期/交流项目",
+        "target": "",
+        "location": "",
+        "content": "https://vista.ustc.edu.cn/",
+        "publishTime": "2026-03-23T08:34:44.502Z",
+        "timeType": "deadline",
+        "deadline": "",
+        "ongoingStart": "",
+        "ongoingEnd": "",
+        "isUrgent": false,
+        "images": [],
+        "files": []
+    },
+    {
+        "id": 1774348224520,
+        "type": "instant",
+        "title": "弘扬“五四”精神，奔赴闪耀青春——2026年 “五四”青年跑",
+        "target": "",
+        "location": "西校区/高新校区",
+        "content": "`**报名时间**`\n3月26日（星期四）15:00~3月29日15:00\n\n`**举办时间**`\n4月25日 （星期六）9:00 暂定\n\n`**活动地点**`\n1.西校区：操场-寰宇路-操场；\n2.高新校区：操场-卓越路-操场。\n\n`**注意事项**`\n在校学生需通过后续发布的第二课堂马拉松专用链接报名。点击报名后应及时填写完整的个人信息（如联系方式、身份证、性别、服装尺码、紧急联系人等），逾期未填写视为自动放弃，系统会取消报名。西校区限报1800人，高新校区限报1800人。活动现场无需签到签退，主办方将依据有效成绩统一录入第二课堂体学时。\n\n`**奖励办法等详细说明**`\n参阅：https://mp.weixin.qq.com/s/z80O_Zpf8OmGakOnyhYS8w?scene=1&click_id=289",
+        "publishTime": "2026-03-24T10:30:24.520Z",
+        "timeType": "deadline",
+        "deadline": "",
+        "ongoingStart": "",
+        "ongoingEnd": "",
+        "isUrgent": false,
+        "images": [
+            "images/五四高新.png",
+            "images/五四西区.png"
+        ],
+        "files": []
+    },
+    {
+        "id": 1775052573931,
+        "type": "instant",
+        "title": "[集体报名，待定] 国防教育征兵宣讲",
+        "target": "",
+        "location": "",
+        "content": "为深入贯彻落实习近平新时代中国特色社会主义思想和习近平强军思想，服务国防和军队现代化建设需求，依据《国防法》《兵役法》等法律法规，进一步激发适龄青年参军报国热情，营造全社会关心支持国防建设的良好氛围，鼓励大学生携笔从戎、立志军营、建功立业，党委人民武装部决定组织在籍退役大学生士兵，深入各班级开展国防教育及征兵宣讲系列活动。现将有关事项通知如下：\n一、活动主题\n“青春报国 铸梦军营”—— 国防教育征兵宣讲系列活动\n二、活动时间\n2026年春季学期\n三、活动对象\n全体在校学生、以班级为单位\n四、活动安排\n1.活动内容：国防知识、军史军情、征兵政策解读；解读义务兵、直招军官、定向培养军官相关政策；亲身军旅经历分享（在部队学习、训练、生活等真实经历，讲述军营成长故事）。\n2.报名方式：欢迎各班级积极预约，宣讲团将上门开展宣讲与互动答疑。请以班级为单位通过报名链接（https://docs.qq.com/form/page/DSm9ibmJUYVRRUWFu）完成报名。",
+        "publishTime": "2026-04-01T14:09:33.931Z",
+        "timeType": "deadline",
+        "deadline": "",
+        "ongoingStart": "",
+        "ongoingEnd": "",
+        "isUrgent": false,
+        "images": [],
+        "files": []
+    },
+    {
+        "id": 1775664913201,
+        "type": "instant",
+        "title": "少年班论坛",
+        "target": "",
+        "location": "5101",
+        "content": "少年班论坛将于下周三（04/15）下午16:00在五教5101教室举行。本期论坛邀请了浙江大学数学高等研究院孙崧教授，报告主题为《爱因斯坦度量的几何》，欢迎同学们通过扫海报上二维码报名参加！",
+        "publishTime": "2026-04-08T16:15:13.201Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "2026-04-15T16:00",
+        "ongoingEnd": "",
+        "isUrgent": false,
+        "images": [
+            "images/少年班论坛.jpg"
+        ],
+        "files": []
+    },
+    {
+        "id": 1775664978484,
+        "type": "long-term",
+        "title": "“少年遇伯乐”2026年本科生科研实践师生交流会",
+        "target": "",
+        "location": "西活三楼",
+        "content": "【遇见伯乐，点亮科研之路】本周六（4月11日）少年班学院在西活三楼举办“少年遇伯乐”2026年本科生科研实践师生交流会，届时全校会有近200名导师来参会，与同学们面对面交流，为大家选专业、选导师、科研兴趣提升、升学就业前景等方面获得导师们的亲自指导提供最佳机会，请同学们积极报名。\n\n另外学院要求**全部2025级同学**参与，每人至少报名一场活动，有特殊情况不能参加的要向班主任请假。\n\n同学们进入会场后领取打卡卡片，与导师沟通后在打卡区域盖章（至少2个），活动结束后在二课上传卡片照片，即视为参加活动。活动还为同学们准备了丰富的奖品：同学们可以根据获得签章数量在现场兑换学院纪念品，数量有限，先到先得，详情见二课通知。",
+        "publishTime": "2026-04-08T16:16:18.484Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "2026-04-11",
+        "ongoingEnd": "",
+        "isUrgent": true,
+        "images": [
+            "images/少年遇伯乐411.jpg"
+        ],
+        "files": []
+    },
+    {
+        "id": 1775665029163,
+        "type": "instant",
+        "title": "西区安全馆参观",
+        "target": "",
+        "location": "西区安全馆",
+        "content": "4.12 16：00-16：30班级活动西区安全馆参观，价值一个劳学时，有兴趣的同学可以积极参加",
+        "publishTime": "2026-04-08T16:17:09.163Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "2026-04-12T16:00",
+        "ongoingEnd": "2026-04-12T16:30",
+        "isUrgent": false,
+        "images": [
+            "images/安全1.jpg",
+            "images/安全2.jpg"
+        ],
+        "files": []
+    },
+    {
+        "id": 1775738597631,
+        "type": "long-term",
+        "title": "期中评教",
+        "target": "",
+        "location": "",
+        "content": "本科生期中网上评教开放时间段是：4月9日-4月16日，请通知所有本科生在规定时间内参与期中网上评教，操作文件见附件。",
+        "publishTime": "2026-04-09T12:43:17.631Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "",
+        "ongoingEnd": "",
+        "isUrgent": false,
+        "images": [],
+        "files": [
+            "files/01-教字[2026]6号 关于开展2026年春季学期本科教学检查的通知doc.pdf"
+        ]
+    }
 ]

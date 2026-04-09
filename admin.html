@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hans">
 
 <head>
@@ -888,6 +888,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label>附带文件 <span>(不限制格式与数量)</span></label>
+                        <input type="file" id="attachments" multiple>
+                    </div>
+
+                    <div class="form-group">
                         <label>内容</label>
                         <div class="content-editor-container">
                             <textarea id="content" rows="12" placeholder="在此输入通知内容..."></textarea>
@@ -1113,7 +1118,11 @@
                 logDiv.style.display = 'none';
             }
 
-            return filteredData;
+            return filteredData.map(n => ({
+                ...n,
+                images: Array.isArray(n.images) ? n.images : [],
+                files: Array.isArray(n.files) ? n.files : []
+            }));
         }
 
         // 自动读取历史 JSON
@@ -1216,10 +1225,16 @@
 
             if (!titleValue && !contentValue) return null;
 
-            const files = document.getElementById('images').files;
+            const imageFiles = document.getElementById('images').files;
             const imagePaths = [];
-            for (let i = 0; i < files.length; i++) {
-                imagePaths.push(`images/${files[i].name}`);
+            for (let i = 0; i < imageFiles.length; i++) {
+                imagePaths.push(`images/${imageFiles[i].name}`);
+            }
+
+            const attachmentFiles = document.getElementById('attachments').files;
+            const attachmentPaths = [];
+            for (let i = 0; i < attachmentFiles.length; i++) {
+                attachmentPaths.push(`files/${attachmentFiles[i].name}`);
             }
 
             return {
@@ -1235,7 +1250,8 @@
                 ongoingStart: document.getElementById('ongoingStart') ? document.getElementById('ongoingStart').value : "",
                 ongoingEnd: document.getElementById('ongoingEnd') ? document.getElementById('ongoingEnd').value : "",
                 isUrgent: document.querySelector('input[name="timeType"]:checked').value === 'ongoing' ? (document.getElementById('ongoingIsUrgent') ? document.getElementById('ongoingIsUrgent').checked : false) : (document.getElementById('isTBD').checked && document.getElementById('isUrgent').checked),
-                images: imagePaths
+                images: imagePaths,
+                files: attachmentPaths
             };
         }
 
@@ -1344,6 +1360,19 @@
             typeGroup.classList.remove('active');
         });
 
+        function linkifySmart(text) {
+            if (!text) return '';
+            // 首轮识别：遇到空白、括号、中文和尖括号立即截断
+            const urlRegex = /(https?:\/\/[^\s<>()（）\[\]{}【】《》\u3400-\u9FFF]+)/g;
+            // 次轮清理：剥离链接尾部中英文标点（不影响链接中间的点号）
+            const trailingPunctRegex = /[.,;:!?。，；：！？、"'”’》】）\]\}]+$/;
+            return text.replace(urlRegex, (fullUrl) => {
+                const cleanUrl = fullUrl.replace(trailingPunctRegex, '');
+                const trailing = fullUrl.slice(cleanUrl.length);
+                return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>${trailing}`;
+            });
+        }
+
         // --- 实时预览逻辑 (Real-time Preview) ---
         function updatePreview() {
             const titleValue = document.getElementById('title').value.trim() || "标题预览";
@@ -1387,8 +1416,8 @@
                 .replace(/~~(.*?)~~/g, '<del>$1</del>')
                 .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
                 .replace(/\*(.*?)\*/g, '<i>$1</i>')
-                .replace(/`(.*?)`/g, '<code>$1</code>')
-                .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+                .replace(/`(.*?)`/g, '<code>$1</code>');
+            processed = linkifySmart(processed);
 
             const lines = processed.split('\n');
             let inList = false;
@@ -1667,3 +1696,4 @@
 </body>
 
 </html>
+
