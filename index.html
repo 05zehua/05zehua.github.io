@@ -2066,11 +2066,12 @@
                     let isUrgentByStart = false;
                     if (n.ongoingStart) {
                         const startTime = parseNotifTime(n.ongoingStart, false);
-                        if (!startTime) return;
-                        const startDiffMs = startTime - now;
-                        // 如果距离开始时间不到24小时，或者刚开始不到24小时
-                        if (startDiffMs >= -24 * 60 * 60 * 1000 && startDiffMs <= 24 * 60 * 60 * 1000) {
-                            isUrgentByStart = true;
+                        if (startTime) {
+                            const startDiffMs = startTime - now;
+                            // 如果距离开始时间不到24小时，或者刚开始不到24小时
+                            if (startDiffMs >= -24 * 60 * 60 * 1000 && startDiffMs <= 24 * 60 * 60 * 1000) {
+                                isUrgentByStart = true;
+                            }
                         }
                     }
 
