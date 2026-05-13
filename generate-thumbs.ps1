@@ -1,6 +1,6 @@
 param(
-    [string]$SourceRoot = "timeline_images",
-    [string]$ThumbRoot = "timeline_thumbs",
+    [string[]]$SourceRoot = @("timeline_images", "images"),
+    [string]$ThumbRoot = "thumbs",
     [int]$MaxWidth = 480,
     [int]$MaxHeight = 360,
     [int]$JpegQuality = 82
@@ -16,12 +16,7 @@ $repoRoot = if ($scriptPath) {
 } else {
     (Get-Location).Path
 }
-$sourcePath = Join-Path $repoRoot $SourceRoot
 $thumbPath = Join-Path $repoRoot $ThumbRoot
-
-if (!(Test-Path -LiteralPath $sourcePath)) {
-    throw "Source directory not found: $sourcePath"
-}
 
 if (!(Test-Path -LiteralPath $thumbPath)) {
     New-Item -ItemType Directory -Path $thumbPath -Force | Out-Null
@@ -40,52 +35,72 @@ $created = 0
 $skipped = 0
 $failed = 0
 
-Get-ChildItem -LiteralPath $sourcePath -Recurse -File | ForEach-Object {
-    $relative = $_.FullName.Substring($sourcePath.Length).TrimStart("\", "/")
-    $relativeDir = Split-Path -Parent $relative
-    $outputDir = Join-Path $thumbPath $relativeDir
-    $outputName = [System.IO.Path]::GetFileNameWithoutExtension($_.Name) + ".jpg"
-    $outputFile = Join-Path $outputDir $outputName
-
-    if ((Test-Path -LiteralPath $outputFile) -and
-        ((Get-Item -LiteralPath $outputFile).LastWriteTimeUtc -ge $_.LastWriteTimeUtc)) {
-        $skipped++
-        return
+foreach ($root in $SourceRoot) {
+    $sourcePath = Join-Path $repoRoot $root
+    if (!(Test-Path -LiteralPath $sourcePath)) {
+        Write-Warning "Source directory not found, skipped: $sourcePath"
+        continue
     }
 
-    try {
-        if (!(Test-Path -LiteralPath $outputDir)) {
-            New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+    $sourceLeaf = Split-Path -Leaf $sourcePath.TrimEnd("\", "/")
+    $thumbSubdir = if ($sourceLeaf -eq "timeline_images") { "" } else { $sourceLeaf }
+    $targetRoot = if ([string]::IsNullOrWhiteSpace($thumbSubdir)) {
+        $thumbPath
+    } else {
+        Join-Path $thumbPath $thumbSubdir
+    }
+
+    Get-ChildItem -LiteralPath $sourcePath -Recurse -File | ForEach-Object {
+        $relative = $_.FullName.Substring($sourcePath.Length).TrimStart("\", "/")
+        $relativeDir = Split-Path -Parent $relative
+        $outputDir = if ([string]::IsNullOrWhiteSpace($relativeDir)) {
+            $targetRoot
+        } else {
+            Join-Path $targetRoot $relativeDir
+        }
+        $outputName = [System.IO.Path]::GetFileNameWithoutExtension($_.Name) + ".jpg"
+        $outputFile = Join-Path $outputDir $outputName
+
+        if ((Test-Path -LiteralPath $outputFile) -and
+            ((Get-Item -LiteralPath $outputFile).LastWriteTimeUtc -ge $_.LastWriteTimeUtc)) {
+            $skipped++
+            return
         }
 
-        $img = [System.Drawing.Image]::FromFile($_.FullName)
-        $ratio = [Math]::Min($MaxWidth / $img.Width, $MaxHeight / $img.Height)
-        if ($ratio -gt 1) { $ratio = 1 }
+        try {
+            if (!(Test-Path -LiteralPath $outputDir)) {
+                New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
+            }
 
-        $newWidth = [Math]::Max(1, [int][Math]::Round($img.Width * $ratio))
-        $newHeight = [Math]::Max(1, [int][Math]::Round($img.Height * $ratio))
+            $img = [System.Drawing.Image]::FromFile($_.FullName)
+            $ratio = [Math]::Min($MaxWidth / $img.Width, $MaxHeight / $img.Height)
+            if ($ratio -gt 1) { $ratio = 1 }
 
-        $bitmap = New-Object System.Drawing.Bitmap($newWidth, $newHeight)
-        $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
-        $graphics.Clear([System.Drawing.Color]::White)
-        $graphics.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
-        $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-        $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
-        $graphics.DrawImage($img, 0, 0, $newWidth, $newHeight)
+            $newWidth = [Math]::Max(1, [int][Math]::Round($img.Width * $ratio))
+            $newHeight = [Math]::Max(1, [int][Math]::Round($img.Height * $ratio))
 
-        $bitmap.Save($outputFile, $jpegCodec, $encoderParams)
-        $created++
-    } catch {
-        $failed++
-        Write-Warning "Failed to create thumbnail for $($_.FullName): $($_.Exception.Message)"
-    } finally {
-        if ($graphics) { $graphics.Dispose() }
-        if ($bitmap) { $bitmap.Dispose() }
-        if ($img) { $img.Dispose() }
-        $graphics = $null
-        $bitmap = $null
-        $img = $null
+            $bitmap = New-Object System.Drawing.Bitmap($newWidth, $newHeight)
+            $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+            $graphics.Clear([System.Drawing.Color]::White)
+            $graphics.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
+            $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+            $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
+            $graphics.DrawImage($img, 0, 0, $newWidth, $newHeight)
+
+            $bitmap.Save($outputFile, $jpegCodec, $encoderParams)
+            $created++
+        } catch {
+            $failed++
+            Write-Warning "Failed to create thumbnail for $($_.FullName): $($_.Exception.Message)"
+        } finally {
+            if ($graphics) { $graphics.Dispose() }
+            if ($bitmap) { $bitmap.Dispose() }
+            if ($img) { $img.Dispose() }
+            $graphics = $null
+            $bitmap = $null
+            $img = $null
+        }
     }
 }
 
-Write-Output "Timeline thumbnails complete. Created/updated: $created, skipped: $skipped, failed: $failed."
+Write-Output "Thumbnails complete. Created/updated: $created, skipped: $skipped, failed: $failed."

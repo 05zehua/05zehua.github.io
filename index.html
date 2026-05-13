@@ -3255,8 +3255,9 @@
                 const pubDate = `${pubDateObj.getFullYear()}.${pubDateObj.getMonth() + 1}.${pubDateObj.getDate()} ${pubDateObj.getHours()}:${pubDateObj.getMinutes().toString().padStart(2, '0')}`;
 
                 const imageList = (n.images && n.images.length > 0) ? n.images : [];
+                const modalImageList = imageList.map(img => String(img || '').replace(/^\//, ''));
                 const imgs = imageList.length > 0
-                    ? imageList.map(src => `<img src="${src}" alt="通知配图" loading="lazy" onclick="openModal('${src}', ${JSON.stringify(imageList).replace(/"/g, '&quot;')})">`).join('')
+                    ? imageList.map(src => buildNoticeImageHtml(src, modalImageList)).join('')
                     : '';
                 const fileList = Array.isArray(n.files) ? n.files : [];
                 const filesHtml = buildFilesHtml(fileList);
@@ -3472,17 +3473,32 @@
             return processed.replace(/\n/g, '<br>');
         }
 
-        function getTimelineThumbSrc(src) {
+        function getImageThumbSrc(src) {
             const normalized = String(src || '').replace(/\\/g, '/').replace(/^\//, '');
-            if (!normalized.startsWith('timeline_images/')) return normalized;
-            return normalized
-                .replace(/^timeline_images\//, 'timeline_thumbs/')
-                .replace(/\.[^/.]+$/, '.jpg');
+            if (normalized.startsWith('timeline_images/')) {
+                return normalized
+                    .replace(/^timeline_images\//, 'thumbs/')
+                    .replace(/\.[^/.]+$/, '.jpg');
+            }
+            if (normalized.startsWith('images/')) {
+                return normalized
+                    .replace(/^images\//, 'thumbs/images/')
+                    .replace(/\.[^/.]+$/, '.jpg');
+            }
+            return normalized;
+        }
+
+        function buildNoticeImageHtml(src, modalImages) {
+            const cleanSrc = String(src || '').replace(/^\//, '');
+            const thumbSrc = getImageThumbSrc(cleanSrc);
+            const srcArg = escapeHtml(JSON.stringify(cleanSrc));
+            const imagesArg = escapeHtml(JSON.stringify(modalImages));
+            return `<img src="${escapeHtml(thumbSrc)}" data-full-src="${escapeHtml(cleanSrc)}" alt="通知配图" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='${escapeHtml(cleanSrc)}';" onclick="openModal(${srcArg}, ${imagesArg})">`;
         }
 
         function buildTimelineImageHtml(src, modalImages) {
             const cleanSrc = String(src || '').replace(/^\//, '');
-            const thumbSrc = getTimelineThumbSrc(cleanSrc);
+            const thumbSrc = getImageThumbSrc(cleanSrc);
             const srcArg = escapeHtml(JSON.stringify(cleanSrc));
             const imagesArg = escapeHtml(JSON.stringify(modalImages));
             return `<img src="${escapeHtml(thumbSrc)}" data-full-src="${escapeHtml(cleanSrc)}" alt="timeline image" loading="lazy" decoding="async" fetchpriority="low" onerror="this.onerror=null; this.src='${escapeHtml(cleanSrc)}';" onclick="openModal(${srcArg}, ${imagesArg})">`;
