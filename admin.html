@@ -982,6 +982,23 @@
             </div> <!-- end .form-grid -->
         </form>
 
+        <!-- 统一DDL管理专区 -->
+        <div class="links-manager-container">
+            <div class="links-manager-header">
+                <h3>统一DDL管理</h3>
+                <button type="button" id="saveDdlBtn" style="padding: 8px 16px; font-size: 0.9rem;">保存并导出 ddl.json</button>
+            </div>
+
+            <div id="ddlContainer">
+                <!-- 统一DDL列表将在这里动态生成 -->
+            </div>
+
+            <button type="button" class="add-link-btn" id="addNewDdlBtn" title="新增统一DDL"
+                style="margin-top: 10px; display: none; align-items: center; justify-content: center; font-size: 1.2rem;">
+                +
+            </button>
+        </div>
+
         <!-- 友情链接管理专区 -->
         <div class="links-manager-container">
             <div class="links-manager-header">
@@ -1023,6 +1040,7 @@
         let currentData = [];
         let linksData = [];
         let timelineData = [];
+        let ddlData = [];
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -1162,6 +1180,18 @@
             } finally {
                 renderTimeline();
             }
+
+            // 自动读取 ddl.json
+            try {
+                const response = await fetch('./ddl.json?t=' + Date.now());
+                if (response.ok) {
+                    ddlData = normalizeAdminDdlData(await response.json());
+                }
+            } catch (err) {
+                console.warn('未找到 ddl.json 或加载失败', err);
+            } finally {
+                renderDdl();
+            }
         });
 
         function readJsonFile(file) {
@@ -1184,6 +1214,7 @@
             if (name === 'data.json') return 'data';
             if (name === 'links.json') return 'links';
             if (name === 'timeline.json') return 'timeline';
+            if (name === 'ddl.json') return 'ddl';
             return '';
         }
 
@@ -1195,6 +1226,7 @@
             let loadedData = false;
             let loadedLinks = false;
             let loadedTimeline = false;
+            let loadedDdl = false;
             const unknownFiles = [];
             const failedFiles = [];
 
@@ -1218,6 +1250,10 @@
                         timelineData = jsonData;
                         renderTimeline();
                         loadedTimeline = true;
+                    } else if (type === 'ddl') {
+                        ddlData = normalizeAdminDdlData(jsonData);
+                        renderDdl();
+                        loadedDdl = true;
                     }
                 } catch (err) {
                     failedFiles.push(file.name);
@@ -1228,6 +1264,7 @@
             if (loadedData) summary.push(`通知 ${currentData.length} 条`);
             if (loadedLinks) summary.push(`链接 ${linksData.length} 条`);
             if (loadedTimeline) summary.push(`时间轴 ${timelineData.length} 个节点`);
+            if (loadedDdl) summary.push(`统一DDL ${ddlData.length} 条`);
 
             if (summary.length > 0) {
                 updateStatus(`读取成功：${summary.join('，')}。`, 'success');
@@ -1490,6 +1527,133 @@
 
         // 初始化
         updatePreview();
+
+        // --- 统一DDL管理逻辑 ---
+        function escapeAttr(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        function toDatetimeLocalValue(value) {
+            if (!value) return '';
+            if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) {
+                return value.slice(0, 16);
+            }
+
+            const timestamp = Number.isFinite(Number(value)) ? Number(value) : new Date(value).getTime();
+            if (!Number.isFinite(timestamp) || Number.isNaN(timestamp)) return '';
+
+            const date = new Date(timestamp);
+            const pad = number => String(number).padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+        }
+
+        function normalizeAdminDdlData(data) {
+            if (!Array.isArray(data)) return [];
+            return data.map((item, index) => ({
+                id: item?.id || `${Date.now()}-${index}`,
+                subject: String(item?.subject || '').trim(),
+                location: String(item?.location || '').trim(),
+                time: toDatetimeLocalValue(item?.time)
+            })).sort(compareAdminDdlItems);
+        }
+
+        function compareAdminDdlItems(a, b) {
+            const now = Date.now();
+            const timeA = new Date(a.time).getTime();
+            const timeB = new Date(b.time).getTime();
+            const validA = Number.isFinite(timeA);
+            const validB = Number.isFinite(timeB);
+            if (validA !== validB) return validA ? -1 : 1;
+            if (!validA && !validB) return String(a.subject).localeCompare(String(b.subject), 'zh-Hans-CN');
+
+            const endedA = timeA <= now;
+            const endedB = timeB <= now;
+            if (endedA !== endedB) return endedA ? 1 : -1;
+            return timeA - timeB || String(a.subject).localeCompare(String(b.subject), 'zh-Hans-CN');
+        }
+
+        function sortDdlData() {
+            ddlData.sort(compareAdminDdlItems);
+        }
+
+        function renderDdl() {
+            const container = document.getElementById('ddlContainer');
+            const globalAddBtn = document.getElementById('addNewDdlBtn');
+            container.innerHTML = '';
+
+            if (ddlData.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">暂无统一DDL数据</div>';
+                globalAddBtn.style.display = 'flex';
+                return;
+            }
+
+            globalAddBtn.style.display = 'flex';
+            sortDdlData();
+
+            ddlData.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'link-item';
+                row.dataset.index = index;
+                row.innerHTML = `
+                    <div class="link-inputs" style="flex-wrap: wrap; padding-left: 10px;">
+                        <input type="text" placeholder="主题" value="${escapeAttr(item.subject)}" onchange="updateDdl(${index}, 'subject', this.value)" style="flex: 1.2; min-width: 160px;">
+                        <input type="text" placeholder="地点" value="${escapeAttr(item.location)}" onchange="updateDdl(${index}, 'location', this.value)" style="flex: 1; min-width: 140px;">
+                        <input type="datetime-local" step="900" value="${escapeAttr(item.time)}" onchange="updateDdl(${index}, 'time', this.value)" style="flex: 1.2; min-width: 190px;">
+                    </div>
+                    <div class="link-actions">
+                        <button type="button" class="icon-btn danger" onclick="deleteDdl(${index})">删除</button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        window.updateDdl = function (index, field, value) {
+            if (!ddlData[index]) return;
+            ddlData[index][field] = typeof value === 'string' ? value.trim() : value;
+            if (field === 'time') {
+                sortDdlData();
+                renderDdl();
+            }
+        };
+
+        window.deleteDdl = function (index) {
+            ddlData.splice(index, 1);
+            renderDdl();
+        };
+
+        document.getElementById('addNewDdlBtn').addEventListener('click', function () {
+            ddlData.push({ id: Date.now(), subject: '', location: '', time: '' });
+            renderDdl();
+        });
+
+        document.getElementById('saveDdlBtn').addEventListener('click', function () {
+            const validDdl = ddlData
+                .filter(item => item.subject && item.time)
+                .sort(compareAdminDdlItems)
+                .map(item => ({
+                    id: item.id || Date.now(),
+                    subject: item.subject,
+                    location: item.location || '',
+                    time: item.time
+                }));
+
+            const blob = new Blob([JSON.stringify(validDdl, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ddl.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast('ddl.json 生成成功', 'success');
+        });
 
         // --- 友情链接管理逻辑 ---
         let sortableInstance = null;

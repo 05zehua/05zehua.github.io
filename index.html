@@ -1747,26 +1747,27 @@
         .theme-transition .file-name,
         .theme-transition .file-name-link,
         .theme-transition .file-ext,
-        .theme-transition .exam-panel,
-        .theme-transition .exam-panel-title,
-        .theme-transition .exam-option-row,
-        .theme-transition .exam-option-title,
-        .theme-transition .exam-option-desc,
-        .theme-transition .exam-manual-hint,
-        .theme-transition .exam-field label,
-        .theme-transition .exam-input,
-        .theme-transition .exam-select,
-        .theme-transition .exam-primary-btn,
-        .theme-transition .exam-secondary-btn,
-        .theme-transition .exam-card,
-        .theme-transition .exam-subject,
-        .theme-transition .exam-time,
-        .theme-transition .exam-location,
-        .theme-transition .exam-status,
-        .theme-transition .exam-more-btn,
-        .theme-transition .exam-card-menu,
-        .theme-transition .exam-menu-item,
-        .theme-transition .exam-empty,
+        .theme-transition .ddl-panel,
+        .theme-transition .ddl-panel-title,
+        .theme-transition .ddl-option-row,
+        .theme-transition .ddl-option-title,
+        .theme-transition .ddl-option-desc,
+        .theme-transition .ddl-manual-hint,
+        .theme-transition .ddl-field label,
+        .theme-transition .ddl-input,
+        .theme-transition .ddl-select,
+        .theme-transition .ddl-primary-btn,
+        .theme-transition .ddl-secondary-btn,
+        .theme-transition .ddl-card,
+        .theme-transition .ddl-subject,
+        .theme-transition .ddl-time,
+        .theme-transition .ddl-location,
+        .theme-transition .ddl-note,
+        .theme-transition .ddl-status,
+        .theme-transition .ddl-more-btn,
+        .theme-transition .ddl-card-menu,
+        .theme-transition .ddl-menu-item,
+        .theme-transition .ddl-empty,
         .theme-transition .countdown-ring .ring-bg {
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1975,25 +1976,25 @@
             display: block;
         }
 
-        /* 考试页面 */
-        .exam-layout {
+        /* DDL页面 */
+        .ddl-layout {
             display: grid;
-            grid-template-columns: minmax(260px, 0.9fr) minmax(320px, 1.35fr);
+            grid-template-columns: minmax(240px, 0.85fr) minmax(280px, 1fr) minmax(280px, 1fr);
             gap: 24px;
             align-items: start;
         }
 
-        .exam-column {
+        .ddl-column {
             min-width: 0;
         }
 
-        .exam-column .module-title {
+        .ddl-column .module-title {
             margin-top: 0;
             margin-bottom: 20px;
             padding-bottom: 0;
         }
 
-        .exam-panel {
+        .ddl-panel {
             background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(15, 23, 42, 0.08);
             border-radius: 18px;
@@ -2004,7 +2005,7 @@
                 box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .exam-panel-title {
+        .ddl-panel-title {
             margin: 0 0 16px;
             color: #0f172a;
             font-size: 1.35em;
@@ -2012,13 +2013,13 @@
             transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .exam-option-list {
+        .ddl-option-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .exam-option-row {
+        .ddl-option-row {
             width: 100%;
             display: flex;
             align-items: center;
@@ -2038,31 +2039,31 @@
                 color 0.25s ease;
         }
 
-        .exam-option-row:hover {
+        .ddl-option-row:hover {
             background: rgba(37, 99, 235, 0.1);
             border-color: rgba(37, 99, 235, 0.24);
         }
 
-        .exam-option-main {
+        .ddl-option-main {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             gap: 2px;
         }
 
-        .exam-option-title {
+        .ddl-option-title {
             font-weight: 700;
             color: #0f172a;
             transition: color 0.25s ease;
         }
 
-        .exam-option-desc {
+        .ddl-option-desc {
             font-size: 0.86em;
             color: #64748b;
             transition: color 0.25s ease;
         }
 
-        .exam-manual-hint {
+        .ddl-manual-hint {
             margin: 4px 2px 0;
             color: #94a3b8;
             font-size: 0.9em;
@@ -2070,7 +2071,7 @@
             transition: color 0.25s ease;
         }
 
-        .exam-form {
+        .ddl-form {
             display: flex;
             flex-direction: column;
             gap: 14px;
@@ -2079,21 +2080,21 @@
             transition: opacity 0.25s ease, margin-top 0.3s ease;
         }
 
-        .exam-field {
+        .ddl-field {
             display: flex;
             flex-direction: column;
             gap: 7px;
         }
 
-        .exam-field label {
+        .ddl-field label {
             color: #475569;
             font-size: 0.9em;
             font-weight: 700;
             transition: color 0.25s ease;
         }
 
-        .exam-input,
-        .exam-select {
+        .ddl-input,
+        .ddl-select {
             width: 100%;
             border: 1px solid rgba(15, 23, 42, 0.12);
             border-radius: 12px;
@@ -2109,26 +2110,107 @@
                 color 0.25s ease;
         }
 
-        .exam-input:focus,
-        .exam-select:focus {
+        .ddl-time-picker {
+            position: relative;
+            min-width: 0;
+        }
+
+        .ddl-select {
+            appearance: none;
+            -webkit-appearance: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 46px;
+            border-radius: 14px;
+            padding: 10px 34px 10px 14px;
+            font-weight: 600;
+            line-height: 1.2;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+        }
+
+        .ddl-select::after {
+            content: '';
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            width: 9px;
+            height: 9px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: translateY(-65%) rotate(45deg);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        .ddl-time-picker.open .ddl-select::after {
+            transform: translateY(-35%) rotate(225deg);
+        }
+
+        .ddl-input:focus,
+        .ddl-select:focus,
+        .ddl-time-picker.open .ddl-select {
             border-color: rgba(15, 23, 42, 0.22);
             box-shadow: none;
         }
 
-        .exam-time-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 8px;
+        .ddl-select-menu {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 8px);
+            z-index: 40;
+            display: none;
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
         }
 
-        .exam-form-actions {
+        .ddl-time-picker.open .ddl-select-menu {
+            display: grid;
+            gap: 4px;
+        }
+
+        .ddl-select-option {
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: #0f172a;
+            padding: 9px 10px;
+            font: inherit;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.18s ease, color 0.18s ease;
+        }
+
+        .ddl-select-option:hover,
+        .ddl-select-option.selected {
+            background: rgba(37, 99, 235, 0.1);
+            color: #007bff;
+        }
+
+        .ddl-time-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .ddl-form-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
 
-        .exam-primary-btn,
-        .exam-secondary-btn {
+        .ddl-primary-btn,
+        .ddl-secondary-btn {
             border: 1px solid transparent;
             border-radius: 999px;
             padding: 10px 18px;
@@ -2141,43 +2223,43 @@
                 box-shadow 0.25s ease;
         }
 
-        .exam-primary-btn {
+        .ddl-primary-btn {
             background: #007bff;
             color: #fff;
             border-color: #007bff;
             box-shadow: none;
         }
 
-        .exam-secondary-btn {
+        .ddl-secondary-btn {
             background: rgba(100, 116, 139, 0.1);
             color: #475569;
             border-color: rgba(100, 116, 139, 0.16);
         }
 
-        .exam-primary-btn:hover {
+        .ddl-primary-btn:hover {
             background: #0069d9;
             border-color: #0069d9;
         }
 
-        .exam-secondary-btn:hover {
+        .ddl-secondary-btn:hover {
             background: rgba(100, 116, 139, 0.16);
             border-color: rgba(100, 116, 139, 0.24);
         }
 
-        .exam-option-row:focus,
-        .exam-primary-btn:focus,
-        .exam-secondary-btn:focus {
+        .ddl-option-row:focus,
+        .ddl-primary-btn:focus,
+        .ddl-secondary-btn:focus {
             outline: none;
             box-shadow: none;
         }
 
-        .exam-list {
+        .ddl-list {
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
 
-        .exam-card {
+        .ddl-card {
             position: relative;
             display: grid;
             grid-template-columns: minmax(0, 1fr);
@@ -2193,12 +2275,12 @@
                 filter 0.3s ease;
         }
 
-        .exam-card-main {
+        .ddl-card-main {
             min-width: 0;
             padding-right: 36px;
         }
 
-        .exam-card.exam-ended {
+        .ddl-card.ddl-ended {
             background: rgba(226, 232, 240, 0.72);
             border-color: rgba(100, 116, 139, 0.18);
             box-shadow: none;
@@ -2206,13 +2288,13 @@
             opacity: 0.76;
         }
 
-        .exam-card.exam-urgent {
+        .ddl-card.ddl-urgent {
             border: 1.5px solid #dc3545;
             animation: urgentFlash 1.2s cubic-bezier(0.4, 0, 0.2, 1) 3;
             animation-fill-mode: forwards;
         }
 
-        .exam-subject {
+        .ddl-subject {
             margin: 0 0 6px;
             color: #0f172a;
             font-size: 1.12em;
@@ -2220,20 +2302,29 @@
             transition: color 0.25s ease;
         }
 
-        .exam-time {
+        .ddl-time {
             color: #64748b;
             font-size: 0.92em;
             transition: color 0.25s ease;
         }
 
-        .exam-location {
+        .ddl-location {
             color: #64748b;
             font-size: 0.92em;
             margin-top: 4px;
             transition: color 0.25s ease;
         }
 
-        .exam-status {
+        /* [EXAM-IMPORT-START] 书签导入的考试说明显示样式，后续可整段删除 */
+        .ddl-note {
+            color: #64748b;
+            font-size: 0.92em;
+            margin-top: 4px;
+            transition: color 0.25s ease;
+        }
+        /* [EXAM-IMPORT-END] */
+
+        .ddl-status {
             margin-top: 14px;
             justify-self: end;
             width: auto;
@@ -2246,18 +2337,19 @@
             transition: color 0.25s ease;
         }
 
-        .exam-card.exam-urgent .exam-status {
+        .ddl-card.ddl-urgent .ddl-status {
             color: #dc3545;
         }
 
-        .exam-card.exam-ended .exam-subject,
-        .exam-card.exam-ended .exam-time,
-        .exam-card.exam-ended .exam-location,
-        .exam-card.exam-ended .exam-status {
+        .ddl-card.ddl-ended .ddl-subject,
+        .ddl-card.ddl-ended .ddl-time,
+        .ddl-card.ddl-ended .ddl-location,
+        .ddl-card.ddl-ended .ddl-note,
+        .ddl-card.ddl-ended .ddl-status {
             color: #64748b;
         }
 
-        .exam-more-btn {
+        .ddl-more-btn {
             position: absolute;
             top: 3px;
             right: 12px;
@@ -2275,20 +2367,20 @@
             transition: color 0.25s ease;
         }
 
-        .exam-more-btn svg {
+        .ddl-more-btn svg {
             width: 22px;
             height: 22px;
             display: block;
             fill: currentColor;
         }
 
-        .exam-more-btn:hover,
-        .exam-card.menu-open .exam-more-btn {
+        .ddl-more-btn:hover,
+        .ddl-card.menu-open .ddl-more-btn {
             background: transparent;
             color: #2563eb;
         }
 
-        .exam-card-menu {
+        .ddl-card-menu {
             position: absolute;
             top: 46px;
             right: 12px;
@@ -2302,13 +2394,13 @@
             z-index: 20;
         }
 
-        .exam-card.menu-open .exam-card-menu {
+        .ddl-card.menu-open .ddl-card-menu {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
 
-        .exam-menu-item {
+        .ddl-menu-item {
             border: none;
             border-radius: 9px;
             background: transparent;
@@ -2320,23 +2412,22 @@
             transition: background-color 0.2s ease, color 0.2s ease;
         }
 
-        .exam-menu-item:hover {
+        .ddl-menu-item:hover {
             background: rgba(37, 99, 235, 0.09);
             color: #1d4ed8;
         }
 
-        .exam-menu-item.danger:hover {
+        .ddl-menu-item.danger:hover {
             background: rgba(239, 68, 68, 0.1);
             color: #dc2626;
         }
 
-        .exam-empty {
+        .ddl-empty {
             color: #94a3b8;
-            padding: 30px 12px;
+            padding: 8px 0;
             text-align: center;
-            border-radius: 14px;
-            background: rgba(148, 163, 184, 0.08);
-            transition: color 0.25s ease, background-color 0.25s ease;
+            background: transparent;
+            transition: color 0.25s ease;
         }
 
         #toast-container {
@@ -2452,118 +2543,141 @@
             color: #6b7280;
         }
 
-        body.dark-mode .exam-panel,
-        body.dark-mode .exam-card {
+        body.dark-mode .ddl-panel,
+        body.dark-mode .ddl-card {
             background: rgba(30, 30, 30, 0.95);
             border-color: rgba(255, 255, 255, 0.12);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
         }
 
-        body.dark-mode .exam-panel-title,
-        body.dark-mode .exam-option-title,
-        body.dark-mode .exam-subject {
+        body.dark-mode .ddl-panel-title,
+        body.dark-mode .ddl-option-title,
+        body.dark-mode .ddl-subject {
             color: #f8fafc;
         }
 
-        body.dark-mode .exam-option-row {
+        body.dark-mode .ddl-option-row {
             background: rgba(37, 99, 235, 0.12);
             border-color: rgba(147, 197, 253, 0.18);
             color: #e2e8f0;
         }
 
-        body.dark-mode .exam-option-row:hover {
+        body.dark-mode .ddl-option-row:hover {
             background: rgba(37, 99, 235, 0.18);
             border-color: rgba(147, 197, 253, 0.28);
         }
 
-        body.dark-mode .exam-option-desc,
-        body.dark-mode .exam-manual-hint,
-        body.dark-mode .exam-field label,
-        body.dark-mode .exam-time,
-        body.dark-mode .exam-location {
+        body.dark-mode .ddl-option-desc,
+        body.dark-mode .ddl-manual-hint,
+        body.dark-mode .ddl-field label,
+        body.dark-mode .ddl-time,
+        body.dark-mode .ddl-location,
+        body.dark-mode .ddl-note {
             color: #94a3b8;
         }
 
-        body.dark-mode .exam-input,
-        body.dark-mode .exam-select {
+        body.dark-mode .ddl-input,
+        body.dark-mode .ddl-select {
             background: rgba(15, 23, 42, 0.72);
             border-color: rgba(148, 163, 184, 0.22);
             color: #f8fafc;
         }
 
-        body.dark-mode .exam-input:focus,
-        body.dark-mode .exam-select:focus {
+        body.dark-mode .ddl-select {
+            box-shadow: none;
+        }
+
+        body.dark-mode .ddl-input:focus,
+        body.dark-mode .ddl-select:focus,
+        body.dark-mode .ddl-time-picker.open .ddl-select {
             border-color: rgba(148, 163, 184, 0.36);
             box-shadow: none;
         }
 
-        body.dark-mode .exam-primary-btn {
+        body.dark-mode .ddl-select-menu {
+            background: rgba(30, 30, 30, 0.98);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .ddl-select-option {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .ddl-select-option:hover,
+        body.dark-mode .ddl-select-option.selected {
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+        }
+
+        body.dark-mode .ddl-primary-btn {
             background: #007bff;
             border-color: #007bff;
         }
 
-        body.dark-mode .exam-primary-btn:hover {
+        body.dark-mode .ddl-primary-btn:hover {
             background: #0069d9;
             border-color: #0069d9;
         }
 
-        body.dark-mode .exam-secondary-btn {
+        body.dark-mode .ddl-secondary-btn {
             background: rgba(148, 163, 184, 0.12);
             color: #cbd5e1;
             border-color: rgba(148, 163, 184, 0.2);
         }
 
-        body.dark-mode .exam-secondary-btn:hover {
+        body.dark-mode .ddl-secondary-btn:hover {
             background: rgba(148, 163, 184, 0.18);
             border-color: rgba(148, 163, 184, 0.3);
         }
 
-        body.dark-mode .exam-more-btn {
+        body.dark-mode .ddl-more-btn {
             background: transparent;
             color: #cbd5e1;
         }
 
-        body.dark-mode .exam-more-btn:hover,
-        body.dark-mode .exam-card.menu-open .exam-more-btn {
+        body.dark-mode .ddl-more-btn:hover,
+        body.dark-mode .ddl-card.menu-open .ddl-more-btn {
             background: transparent;
             color: #93c5fd;
         }
 
-        body.dark-mode .exam-card.exam-urgent {
+        body.dark-mode .ddl-card.ddl-urgent {
             border-color: #dc3545;
         }
 
-        body.dark-mode .exam-card-menu {
+        body.dark-mode .ddl-card-menu {
             background: rgba(30, 30, 30, 0.98);
             border-color: rgba(255, 255, 255, 0.12);
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
         }
 
-        body.dark-mode .exam-menu-item {
+        body.dark-mode .ddl-menu-item {
             color: #e2e8f0;
         }
 
-        body.dark-mode .exam-menu-item:hover {
+        body.dark-mode .ddl-menu-item:hover {
             background: rgba(59, 130, 246, 0.18);
             color: #93c5fd;
         }
 
-        body.dark-mode .exam-card.exam-ended {
+        body.dark-mode .ddl-card.ddl-ended {
             background: rgba(51, 65, 85, 0.52);
             border-color: rgba(148, 163, 184, 0.18);
             box-shadow: none;
         }
 
-        body.dark-mode .exam-card.exam-ended .exam-subject,
-        body.dark-mode .exam-card.exam-ended .exam-time,
-        body.dark-mode .exam-card.exam-ended .exam-location,
-        body.dark-mode .exam-card.exam-ended .exam-status {
+        body.dark-mode .ddl-card.ddl-ended .ddl-subject,
+        body.dark-mode .ddl-card.ddl-ended .ddl-time,
+        body.dark-mode .ddl-card.ddl-ended .ddl-location,
+        body.dark-mode .ddl-card.ddl-ended .ddl-note,
+        body.dark-mode .ddl-card.ddl-ended .ddl-status {
             color: #94a3b8;
         }
 
-        body.dark-mode .exam-empty {
+        body.dark-mode .ddl-empty {
             color: #64748b;
-            background: rgba(148, 163, 184, 0.08);
+            background: transparent;
         }
 
         /* 导航栏主题过渡 */
@@ -2575,25 +2689,25 @@
         }
 
         @media (max-width: 768px) {
-            .exam-layout {
+            .ddl-layout {
                 grid-template-columns: 1fr;
                 gap: 16px;
             }
 
-            .exam-panel {
+            .ddl-panel {
                 padding: 18px;
                 border-radius: 16px;
             }
 
-            .exam-time-grid {
+            .ddl-time-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
-            .exam-card {
+            .ddl-card {
                 padding: 15px;
             }
 
-            .exam-card-main {
+            .ddl-card-main {
                 padding-right: 34px;
             }
 
@@ -2679,7 +2793,7 @@
         </button>
         <div class="nav-tabs" id="nav-tabs">
             <button class="nav-item active" data-tab="notice" onclick="switchTab('notice')">通知</button>
-            <button class="nav-item" data-tab="exam" onclick="switchTab('exam')">考试</button>
+            <button class="nav-item" data-tab="ddl" onclick="switchTab('ddl')">DDL</button>
             <button class="nav-item" data-tab="other" onclick="switchTab('other')">其他</button>
         </div>
         <div class="nav-right">
@@ -2746,53 +2860,73 @@
             <div id="instant-container" class="category-content">加载中...</div>
         </div>
 
-        <div id="page-exam" class="page-container">
-            <div class="exam-layout">
-                <section class="exam-column" aria-labelledby="exam-add-title">
-                    <h2 class="module-title" id="exam-add-title">导入</h2>
-                    <div class="exam-panel">
-                        <h3 class="exam-panel-title">添加考试</h3>
-                        <div class="exam-option-list">
-                            <a class="exam-option-row" href="https://jw.ustc.edu.cn/" target="_blank" rel="noopener">
-                                <span class="exam-option-main">
-                                    <span class="exam-option-title">从教务系统导入</span>
-                                    <span class="exam-option-desc">打开 jw.ustc.edu.cn 查看课程与考试安排</span>
+        <div id="page-ddl" class="page-container">
+            <div class="ddl-layout">
+                <section class="ddl-column" aria-label="导入DDL">
+                    <div class="ddl-panel">
+                        <h3 class="ddl-panel-title">导入DDL</h3>
+                        <div class="ddl-option-list">
+                            <a class="ddl-option-row" href="https://jw.ustc.edu.cn/" target="_blank" rel="noopener">
+                                <span class="ddl-option-main">
+                                    <span class="ddl-option-title">从教务系统导入</span>
+                                    <span class="ddl-option-desc">登录 jw.ustc.edu.cn 并导入考试信息</span>
                                 </span>
                             </a>
-                            <div class="exam-manual-hint">你也可以在下方手动输入</div>
+                            <div class="ddl-manual-hint">你也可以在下方手动输入</div>
                         </div>
-                        <form class="exam-form" id="exam-form">
-                            <input type="hidden" id="exam-edit-id" value="">
-                            <div class="exam-field">
-                                <label for="exam-subject-input">考试科目</label>
-                                <input class="exam-input" id="exam-subject-input" type="text" autocomplete="off"
-                                    placeholder="例如：高等数学">
+                        <form class="ddl-form" id="ddl-form">
+                            <input type="hidden" id="ddl-edit-id" value="">
+                            <div class="ddl-field">
+                                <label for="ddl-subject-input">主题</label>
+                                <input class="ddl-input" id="ddl-subject-input" type="text" autocomplete="off"
+                                    placeholder="">
                             </div>
-                            <div class="exam-field">
-                                <label for="exam-location-input">地点</label>
-                                <input class="exam-input" id="exam-location-input" type="text" autocomplete="off"
-                                    placeholder="例如：教学楼 101">
+                            <div class="ddl-field">
+                                <label for="ddl-location-input">地点</label>
+                                <input class="ddl-input" id="ddl-location-input" type="text" autocomplete="off"
+                                    placeholder="">
                             </div>
-                            <div class="exam-field">
+                            <div class="ddl-field">
                                 <label>时间</label>
-                                <div class="exam-time-grid">
-                                    <select class="exam-select" id="exam-month-select" aria-label="月份"></select>
-                                    <select class="exam-select" id="exam-day-select" aria-label="日期"></select>
-                                    <select class="exam-select" id="exam-hour-select" aria-label="小时"></select>
-                                    <select class="exam-select" id="exam-minute-select" aria-label="分钟"></select>
+                                <div class="ddl-time-grid">
+                                    <div class="ddl-time-picker" data-ddl-picker="ddl-month-select">
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <div class="ddl-select-menu" role="listbox"></div>
+                                        <input type="hidden" id="ddl-month-select" value="">
+                                    </div>
+                                    <div class="ddl-time-picker" data-ddl-picker="ddl-day-select">
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <div class="ddl-select-menu" role="listbox"></div>
+                                        <input type="hidden" id="ddl-day-select" value="">
+                                    </div>
+                                    <div class="ddl-time-picker" data-ddl-picker="ddl-hour-select">
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <div class="ddl-select-menu" role="listbox"></div>
+                                        <input type="hidden" id="ddl-hour-select" value="">
+                                    </div>
+                                    <div class="ddl-time-picker" data-ddl-picker="ddl-minute-select">
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <div class="ddl-select-menu" role="listbox"></div>
+                                        <input type="hidden" id="ddl-minute-select" value="">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="exam-form-actions">
-                                <button class="exam-primary-btn" type="submit" id="exam-submit-btn">保存考试</button>
-                                <button class="exam-secondary-btn" type="button" id="exam-cancel-btn">取消</button>
+                            <div class="ddl-form-actions">
+                                <button class="ddl-primary-btn" type="submit" id="ddl-submit-btn">保存</button>
+                                <button class="ddl-secondary-btn" type="button" id="ddl-cancel-btn">取消</button>
                             </div>
                         </form>
                     </div>
                 </section>
 
-                <section class="exam-column" aria-labelledby="exam-list-title">
-                    <h2 class="module-title" id="exam-list-title">我的考试</h2>
-                    <div class="exam-list" id="exam-list"></div>
+                <section class="ddl-column" aria-labelledby="ddl-list-title">
+                    <h2 class="module-title" id="ddl-list-title">我的DDL</h2>
+                    <div class="ddl-list" id="ddl-list"></div>
+                </section>
+
+                <section class="ddl-column" aria-labelledby="unified-ddl-list-title">
+                    <h2 class="module-title" id="unified-ddl-list-title">统一DDL</h2>
+                    <div class="ddl-list" id="unified-ddl-list"></div>
                 </section>
             </div>
         </div>
@@ -3104,6 +3238,53 @@
             }
         }
 
+        function splitMasonryItems(items) {
+            if (!Array.isArray(items) || items.length === 0) return [[], []];
+            if (items.length === 1) return [items, []];
+
+            const totalHeight = items.reduce((sum, item) => sum + Number(item.estimatedHeight || 0), 0);
+            let bestSplit = 1;
+            let bestDiff = Infinity;
+            let leftHeight = 0;
+
+            // 保持通知顺序，只寻找一个最平衡的连续切分点。
+            for (let i = 1; i < items.length; i++) {
+                leftHeight += Number(items[i - 1].estimatedHeight || 0);
+                const rightHeight = totalHeight - leftHeight;
+                const diff = Math.abs(leftHeight - rightHeight);
+                if (diff < bestDiff) {
+                    bestDiff = diff;
+                    bestSplit = i;
+                }
+            }
+
+            return [items.slice(0, bestSplit), items.slice(bestSplit)];
+        }
+
+        function distributeMasonryItems(items) {
+            if (!Array.isArray(items) || items.length === 0) return [[], []];
+
+            const columns = [[], []];
+            const heights = [0, 0];
+            items.forEach(item => {
+                const targetColumn = heights[0] <= heights[1] ? 0 : 1;
+                columns[targetColumn].push(item);
+                heights[targetColumn] += Number(item.estimatedHeight || 0);
+            });
+
+            return columns;
+        }
+
+        function buildMasonryColumnsHtml(items, mode = 'split') {
+            const [leftItems, rightItems] = mode === 'greedy'
+                ? distributeMasonryItems(items)
+                : splitMasonryItems(items);
+            return `
+                <div class="masonry-column">${leftItems.map(item => item.html).join('')}</div>
+                <div class="masonry-column">${rightItems.map(item => item.html).join('')}</div>
+            `;
+        }
+
         async function render() {
             const notifications = await fetchNotifications();
             const now = new Date();
@@ -3244,11 +3425,8 @@
             });
 
 
-            let longIndex = 0, instantIndex = 0;
-            let longHtml1 = '', longHtml2 = '';
-            let instantHtml1 = '', instantHtml2 = '';
-            let longCol1Height = 0, longCol2Height = 0;
-            let instantCol1Height = 0, instantCol2Height = 0;
+            const longItems = [];
+            const instantItems = [];
 
             activeNotifs.forEach(n => {
                 const pubDateObj = new Date(n.publishTime);
@@ -3267,7 +3445,7 @@
                     `<span class="meta-sep">|</span>
                             <span class="meta-item"><span class="meta-label">地点:</span> <span class="deadline">${n.location}</span></span>` : '';
 
-                let currentOrder = n.type === 'long-term' ? longIndex : instantIndex;
+                let currentOrder = n.type === 'long-term' ? longItems.length : instantItems.length;
 
                 // 处理 Markdown 语法
                 let processedContent = n.content
@@ -3379,45 +3557,26 @@
                     estimatedHeight += 56 + fileList.length * 44; // 预估文件列表高度
                 }
 
+                const masonryItem = { html, estimatedHeight };
                 if (n.type === 'long-term') {
-                    if (longCol1Height <= longCol2Height) {
-                        longHtml1 += html;
-                        longCol1Height += estimatedHeight;
-                    } else {
-                        longHtml2 += html;
-                        longCol2Height += estimatedHeight;
-                    }
-                    longIndex++;
+                    longItems.push(masonryItem);
                 } else {
-                    if (instantCol1Height <= instantCol2Height) {
-                        instantHtml1 += html;
-                        instantCol1Height += estimatedHeight;
-                    } else {
-                        instantHtml2 += html;
-                        instantCol2Height += estimatedHeight;
-                    }
-                    instantIndex++;
+                    instantItems.push(masonryItem);
                 }
             });
 
             const longContainer = document.getElementById('long-term-container');
-            if (longIndex === 0) {
+            if (longItems.length === 0) {
                 longContainer.innerHTML = '<p style="color:#999;">暂无通知</p>';
             } else {
-                longContainer.innerHTML = `
-                    <div class="masonry-column">${longHtml1}</div>
-                    <div class="masonry-column">${longHtml2}</div>
-                `;
+                longContainer.innerHTML = buildMasonryColumnsHtml(longItems);
             }
 
             const instantContainer = document.getElementById('instant-container');
-            if (instantIndex === 0) {
+            if (instantItems.length === 0) {
                 instantContainer.innerHTML = '<p style="color:#999;">暂无通知</p>';
             } else {
-                instantContainer.innerHTML = `
-                    <div class="masonry-column">${instantHtml1}</div>
-                    <div class="masonry-column">${instantHtml2}</div>
-                `;
+                instantContainer.innerHTML = buildMasonryColumnsHtml(instantItems, 'greedy');
             }
 
             // 更新分类更新时间
@@ -4048,7 +4207,7 @@
             const notifications = await render();
             updateLastModified(notifications);
             await renderFriendshipLinks();
-            initExamPage();
+            initDdlPage();
             initCollapsibleSections();
             ensureTimelineWidgetReady().catch(error => {
                 console.error('预加载班级大事记失败:', error);
@@ -4269,133 +4428,343 @@
             }, 2500);
         }
 
-        const EXAM_STORAGE_KEY = 'classExamItems';
-        let examItems = [];
-        let examCountdownTimer = null;
+        const DDL_STORAGE_KEY = 'classDdlItems';
+        const DDL_LEGACY_STORAGE_KEY = 'classExamItems';
+        let ddlItems = [];
+        let unifiedDdlItems = [];
+        let ddlCountdownTimer = null;
 
-        function initExamPage() {
-            const form = document.getElementById('exam-form');
-            const list = document.getElementById('exam-list');
-            const cancelBtn = document.getElementById('exam-cancel-btn');
-            const monthSelect = document.getElementById('exam-month-select');
+        function initDdlPage() {
+            const form = document.getElementById('ddl-form');
+            const list = document.getElementById('ddl-list');
+            const unifiedList = document.getElementById('unified-ddl-list');
+            const cancelBtn = document.getElementById('ddl-cancel-btn');
+            const monthSelect = document.getElementById('ddl-month-select');
 
-            if (!form || !list || !cancelBtn || !monthSelect) return;
+            if (!form || !list || !unifiedList || !cancelBtn || !monthSelect) return;
 
-            populateExamTimeSelects();
-            examItems = loadExamItems();
-            renderExamList();
+            populateDdlTimeSelects();
+            ddlItems = loadLocalDdlItems();
+            // [EXAM-IMPORT-START] 书签导入入口，后续可随导入函数整块删除
+            handleExamBookmarkImport();
+            // [EXAM-IMPORT-END]
+            renderDdlLists();
+            loadUnifiedDdlItems();
 
             cancelBtn.addEventListener('click', () => {
-                resetExamForm();
+                resetDdlForm();
             });
 
             monthSelect.addEventListener('change', () => {
-                syncExamDayOptions();
+                syncDdlDayOptions();
             });
 
             form.addEventListener('submit', event => {
                 event.preventDefault();
-                saveExamFromForm();
+                saveDdlFromForm();
+            });
+
+            document.querySelectorAll('.ddl-time-picker').forEach(picker => {
+                picker.querySelector('.ddl-select')?.addEventListener('click', event => {
+                    event.stopPropagation();
+                    toggleDdlPicker(picker);
+                });
             });
 
             list.addEventListener('click', event => {
-                const actionEl = event.target.closest('[data-exam-action]');
+                const actionEl = event.target.closest('[data-ddl-action]');
                 if (!actionEl) return;
-                const card = actionEl.closest('.exam-card');
-                const examId = card?.dataset.examId;
-                if (!examId) return;
+                const card = actionEl.closest('.ddl-card');
+                const ddlId = card?.dataset.ddlId;
+                if (!ddlId) return;
 
                 event.stopPropagation();
-                const action = actionEl.dataset.examAction;
+                const action = actionEl.dataset.ddlAction;
                 if (action === 'menu') {
-                    toggleExamMenu(card);
+                    toggleDdlMenu(card);
                 } else if (action === 'edit') {
-                    closeExamMenus();
-                    editExam(examId);
+                    closeDdlMenus();
+                    editDdl(ddlId);
                 } else if (action === 'delete') {
-                    deleteExam(examId);
+                    deleteDdl(ddlId);
                 }
             });
 
-            document.addEventListener('click', closeExamMenus);
+            document.addEventListener('click', closeDdlMenus);
+            document.addEventListener('click', closeDdlPickers);
 
-            if (examCountdownTimer) clearInterval(examCountdownTimer);
-            examCountdownTimer = setInterval(refreshExamStatuses, 1000);
+            if (ddlCountdownTimer) clearInterval(ddlCountdownTimer);
+            ddlCountdownTimer = setInterval(refreshDdlStatuses, 1000);
         }
 
-        function populateExamTimeSelects() {
-            populateNumberSelect('exam-month-select', 1, 12, '月');
-            populateNumberSelect('exam-hour-select', 0, 23, '点', true);
-            populateNumberSelect('exam-minute-select', 0, 59, '分', true);
+        function populateDdlTimeSelects() {
+            populateNumberSelect('ddl-month-select', 1, 12, '月');
+            populateNumberSelect('ddl-hour-select', 0, 23, '点', true);
+            populateNumberSelect('ddl-minute-select', 0, 45, '分', true, 15);
 
-            const defaultDate = new Date(Date.now() + 60 * 60 * 1000);
-            document.getElementById('exam-month-select').value = String(defaultDate.getMonth() + 1);
-            syncExamDayOptions(defaultDate.getDate());
-            document.getElementById('exam-hour-select').value = String(defaultDate.getHours());
-            document.getElementById('exam-minute-select').value = String(defaultDate.getMinutes());
+            const defaultDate = getNextDdlQuarterDate(new Date(Date.now() + 60 * 60 * 1000));
+            document.getElementById('ddl-month-select').value = String(defaultDate.getMonth() + 1);
+            syncDdlDayOptions(defaultDate.getDate());
+            document.getElementById('ddl-hour-select').value = String(defaultDate.getHours());
+            document.getElementById('ddl-minute-select').value = String(defaultDate.getMinutes());
+            refreshDdlPickerLabels();
         }
 
-        function populateNumberSelect(selectId, start, end, suffix, pad = false) {
-            const select = document.getElementById(selectId);
-            if (!select) return;
-            select.innerHTML = '';
-            for (let value = start; value <= end; value++) {
-                const option = document.createElement('option');
-                option.value = String(value);
-                option.textContent = `${pad ? String(value).padStart(2, '0') : value}${suffix}`;
-                select.appendChild(option);
+        function getNextDdlQuarterDate(date) {
+            const nextDate = new Date(date);
+            const roundedMinute = Math.ceil(nextDate.getMinutes() / 15) * 15;
+            if (roundedMinute >= 60) {
+                nextDate.setHours(nextDate.getHours() + 1, 0, 0, 0);
+            } else {
+                nextDate.setMinutes(roundedMinute, 0, 0);
             }
+            return nextDate;
         }
 
-        function syncExamDayOptions(preferredDay) {
-            const monthSelect = document.getElementById('exam-month-select');
-            const daySelect = document.getElementById('exam-day-select');
+        function normalizeDdlMinuteValue(minute) {
+            const roundedMinute = Math.round((Number(minute) || 0) / 15) * 15;
+            return String(Math.min(45, Math.max(0, roundedMinute)));
+        }
+
+        function populateNumberSelect(selectId, start, end, suffix, pad = false, step = 1) {
+            const values = [];
+            for (let value = start; value <= end; value += step) {
+                values.push({
+                    value: String(value),
+                    label: `${pad ? String(value).padStart(2, '0') : value}${suffix}`
+                });
+            }
+            renderDdlPickerOptions(selectId, values);
+        }
+
+        function renderDdlPickerOptions(inputId, values) {
+            const input = document.getElementById(inputId);
+            const picker = document.querySelector(`[data-ddl-picker="${inputId}"]`);
+            const menu = picker?.querySelector('.ddl-select-menu');
+            if (!input || !picker || !menu) return;
+
+            menu.innerHTML = values.map(item => `
+                <button class="ddl-select-option" type="button" role="option" data-value="${escapeHtml(item.value)}">
+                    ${escapeHtml(item.label)}
+                </button>
+            `).join('');
+
+            menu.querySelectorAll('.ddl-select-option').forEach(option => {
+                option.addEventListener('click', event => {
+                    event.stopPropagation();
+                    input.value = option.dataset.value || '';
+                    input.dispatchEvent(new Event('change'));
+                    closeDdlPickers();
+                    refreshDdlPickerLabels();
+                });
+            });
+            refreshDdlPickerLabels();
+        }
+
+        function toggleDdlPicker(picker) {
+            const shouldOpen = !picker.classList.contains('open');
+            closeDdlPickers();
+            picker.classList.toggle('open', shouldOpen);
+            picker.querySelector('.ddl-select')?.setAttribute('aria-expanded', String(shouldOpen));
+        }
+
+        function closeDdlPickers() {
+            document.querySelectorAll('.ddl-time-picker.open').forEach(picker => {
+                picker.classList.remove('open');
+                picker.querySelector('.ddl-select')?.setAttribute('aria-expanded', 'false');
+            });
+        }
+
+        function refreshDdlPickerLabels() {
+            document.querySelectorAll('.ddl-time-picker').forEach(picker => {
+                const input = document.getElementById(picker.dataset.ddlPicker);
+                const button = picker.querySelector('.ddl-select');
+                const options = picker.querySelectorAll('.ddl-select-option');
+                if (!input || !button) return;
+
+                let label = '';
+                options.forEach(option => {
+                    const selected = option.dataset.value === input.value;
+                    option.classList.toggle('selected', selected);
+                    option.setAttribute('aria-selected', String(selected));
+                    if (selected) label = option.textContent.trim();
+                });
+                button.textContent = label || '请选择';
+            });
+        }
+
+        function syncDdlDayOptions(preferredDay) {
+            const monthSelect = document.getElementById('ddl-month-select');
+            const daySelect = document.getElementById('ddl-day-select');
             if (!monthSelect || !daySelect) return;
 
             const currentDay = preferredDay ?? (Number(daySelect.value) || 1);
             const month = Number(monthSelect.value) || 1;
             const year = new Date().getFullYear();
             const maxDay = new Date(year, month, 0).getDate();
-            daySelect.innerHTML = '';
-
+            const dayValues = [];
             for (let day = 1; day <= maxDay; day++) {
-                const option = document.createElement('option');
-                option.value = String(day);
-                option.textContent = `${day}日`;
-                daySelect.appendChild(option);
+                dayValues.push({ value: String(day), label: `${day}日` });
             }
+            renderDdlPickerOptions('ddl-day-select', dayValues);
 
             daySelect.value = String(Math.min(currentDay, maxDay));
+            refreshDdlPickerLabels();
         }
 
-        function loadExamItems() {
+        function parseDdlTime(value) {
+            if (Number.isFinite(Number(value))) return Number(value);
+            const parsed = new Date(String(value || '').trim()).getTime();
+            return Number.isNaN(parsed) ? null : parsed;
+        }
+
+        function normalizeDdlItems(items, source = 'ddl') {
+            if (!Array.isArray(items)) return [];
+            return items
+                .map((item, index) => {
+                    const time = parseDdlTime(item?.time);
+                    const subject = String(item?.subject || '').trim();
+                    if (!item || !subject || !Number.isFinite(time)) return null;
+                    return {
+                        id: String(item.id || `${source}-${index}-${time}`),
+                        subject,
+                        location: String(item.location || '').trim(),
+                        note: String(item.note || '').trim(),
+                        time
+                    };
+                })
+                .filter(Boolean)
+                .sort(compareDdlItems);
+        }
+
+        function loadLocalDdlItems() {
             try {
-                const raw = localStorage.getItem(EXAM_STORAGE_KEY);
-                const parsed = raw ? JSON.parse(raw) : [];
-                if (!Array.isArray(parsed)) return [];
-                return parsed
-                    .filter(item => item && item.id && item.subject && Number.isFinite(Number(item.time)))
-                    .map(item => ({
-                        id: String(item.id),
-                        subject: String(item.subject),
-                        location: String(item.location || ''),
-                        time: Number(item.time)
-                    }))
-                    .sort(compareExamItems);
+                let raw = localStorage.getItem(DDL_STORAGE_KEY);
+                if (!raw) {
+                    raw = localStorage.getItem(DDL_LEGACY_STORAGE_KEY);
+                    if (raw) localStorage.setItem(DDL_STORAGE_KEY, raw);
+                }
+                return normalizeDdlItems(raw ? JSON.parse(raw) : [], 'local');
             } catch (error) {
                 return [];
             }
         }
 
-        function persistExamItems() {
+        async function loadUnifiedDdlItems() {
             try {
-                localStorage.setItem(EXAM_STORAGE_KEY, JSON.stringify(examItems));
+                const response = await fetch('./ddl.json?t=' + new Date().getTime());
+                unifiedDdlItems = response.ok ? normalizeDdlItems(await response.json(), 'unified') : [];
             } catch (error) {
-                console.error('保存考试信息失败:', error);
+                unifiedDdlItems = [];
+            } finally {
+                renderDdlLists();
             }
         }
 
-        function compareExamItems(a, b) {
+        function persistDdlItems() {
+            try {
+                localStorage.setItem(DDL_STORAGE_KEY, JSON.stringify(ddlItems));
+            } catch (error) {
+                console.error('保存信息失败:', error);
+            }
+        }
+
+        // [EXAM-IMPORT-START] 接收书签代码传回的考试 JSON，保存进本页 DDL，本段后续可整块删除
+        function handleExamBookmarkImport() {
+            const hash = window.location.hash || '';
+            const dataMatch = hash.match(/^#(?:data|examData)=(.+)$/);
+            if (!dataMatch) return;
+
+            clearExamImportHash();
+
+            let importedExams = [];
+            try {
+                importedExams = JSON.parse(decodeURIComponent(dataMatch[1]));
+            } catch (error) {
+                showToast('考试信息导入失败：数据格式错误', 'error');
+                return;
+            }
+
+            const importedItems = normalizeExamImportItems(importedExams);
+            if (importedItems.length === 0) {
+                showToast('未找到可导入的考试信息', 'warning');
+                return;
+            }
+
+            const existingKeys = new Set(ddlItems.map(getExamImportKey));
+            const newItems = importedItems.filter(item => {
+                const key = getExamImportKey(item);
+                if (existingKeys.has(key)) return false;
+                existingKeys.add(key);
+                return true;
+            });
+
+            if (newItems.length === 0) {
+                showToast('考试信息已存在，无需重复导入', 'warning');
+                switchTab('ddl');
+                return;
+            }
+
+            ddlItems = normalizeDdlItems([...ddlItems, ...newItems], 'exam-import');
+            persistDdlItems();
+            showToast(`已导入 ${newItems.length} 条考试信息`, 'success');
+            switchTab('ddl');
+        }
+
+        function clearExamImportHash() {
+            if (window.history?.replaceState) {
+                window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+            }
+        }
+
+        function normalizeExamImportItems(exams) {
+            if (!Array.isArray(exams)) return [];
+            return exams
+                .map((exam, index) => {
+                    const subject = String(exam?.courseName || '').trim();
+                    const time = parseExamImportTime(exam?.datetime);
+                    if (!subject || !Number.isFinite(time)) return null;
+
+                    return {
+                        id: `exam-import-${time}-${index}-${Math.random().toString(16).slice(2)}`,
+                        subject,
+                        location: String(exam?.location || '').trim(),
+                        note: String(exam?.note || '').trim(),
+                        time
+                    };
+                })
+                .filter(Boolean);
+        }
+
+        function parseExamImportTime(value) {
+            const text = String(value || '').trim();
+            const match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})/);
+            if (match) {
+                const [, year, month, day, hour, minute] = match;
+                return new Date(
+                    Number(year),
+                    Number(month) - 1,
+                    Number(day),
+                    Number(hour),
+                    Number(minute),
+                    0,
+                    0
+                ).getTime();
+            }
+            return parseDdlTime(text);
+        }
+
+        function getExamImportKey(item) {
+            return [
+                String(item.subject || '').trim(),
+                Number(item.time) || 0,
+                String(item.location || '').trim(),
+                String(item.note || '').trim()
+            ].join('|');
+        }
+        // [EXAM-IMPORT-END]
+
+        function compareDdlItems(a, b) {
             const now = Date.now();
             const aEnded = a.time <= now;
             const bEnded = b.time <= now;
@@ -4403,77 +4772,78 @@
             return a.time - b.time || a.subject.localeCompare(b.subject, 'zh-Hans-CN');
         }
 
-        function showExamForm(exam) {
-            const form = document.getElementById('exam-form');
-            const subjectInput = document.getElementById('exam-subject-input');
-            const locationInput = document.getElementById('exam-location-input');
-            const editIdInput = document.getElementById('exam-edit-id');
-            const submitBtn = document.getElementById('exam-submit-btn');
+        function showDdlForm(ddl) {
+            const form = document.getElementById('ddl-form');
+            const subjectInput = document.getElementById('ddl-subject-input');
+            const locationInput = document.getElementById('ddl-location-input');
+            const editIdInput = document.getElementById('ddl-edit-id');
+            const submitBtn = document.getElementById('ddl-submit-btn');
             if (!form || !subjectInput || !locationInput || !editIdInput || !submitBtn) return;
 
-            if (exam) {
-                const date = new Date(exam.time);
-                editIdInput.value = exam.id;
-                subjectInput.value = exam.subject;
-                locationInput.value = exam.location || '';
-                document.getElementById('exam-month-select').value = String(date.getMonth() + 1);
-                syncExamDayOptions(date.getDate());
-                document.getElementById('exam-hour-select').value = String(date.getHours());
-                document.getElementById('exam-minute-select').value = String(date.getMinutes());
+            if (ddl) {
+                const date = new Date(ddl.time);
+                editIdInput.value = ddl.id;
+                subjectInput.value = ddl.subject;
+                locationInput.value = ddl.location || '';
+                document.getElementById('ddl-month-select').value = String(date.getMonth() + 1);
+                syncDdlDayOptions(date.getDate());
+                document.getElementById('ddl-hour-select').value = String(date.getHours());
+                document.getElementById('ddl-minute-select').value = normalizeDdlMinuteValue(date.getMinutes());
+                refreshDdlPickerLabels();
                 submitBtn.textContent = '保存修改';
             } else {
                 editIdInput.value = '';
                 subjectInput.value = '';
                 locationInput.value = '';
-                submitBtn.textContent = '保存考试';
-                populateExamTimeSelects();
+                submitBtn.textContent = '保存';
+                populateDdlTimeSelects();
             }
 
             setTimeout(() => subjectInput.focus(), 0);
         }
 
-        function resetExamForm() {
-            const form = document.getElementById('exam-form');
-            const subjectInput = document.getElementById('exam-subject-input');
-            const locationInput = document.getElementById('exam-location-input');
-            const editIdInput = document.getElementById('exam-edit-id');
-            const submitBtn = document.getElementById('exam-submit-btn');
+        function resetDdlForm() {
+            const form = document.getElementById('ddl-form');
+            const subjectInput = document.getElementById('ddl-subject-input');
+            const locationInput = document.getElementById('ddl-location-input');
+            const editIdInput = document.getElementById('ddl-edit-id');
+            const submitBtn = document.getElementById('ddl-submit-btn');
             if (!form || !subjectInput || !locationInput || !editIdInput || !submitBtn) return;
 
             subjectInput.value = '';
             locationInput.value = '';
             editIdInput.value = '';
-            submitBtn.textContent = '保存考试';
-            populateExamTimeSelects();
+            submitBtn.textContent = '保存';
+            populateDdlTimeSelects();
         }
 
-        function getExamTimeFromForm() {
+        function getDdlTimeFromForm() {
             const now = new Date();
-            const month = Number(document.getElementById('exam-month-select')?.value) || 1;
-            const day = Number(document.getElementById('exam-day-select')?.value) || 1;
-            const hour = Number(document.getElementById('exam-hour-select')?.value) || 0;
-            const minute = Number(document.getElementById('exam-minute-select')?.value) || 0;
+            const month = Number(document.getElementById('ddl-month-select')?.value) || 1;
+            const day = Number(document.getElementById('ddl-day-select')?.value) || 1;
+            const hour = Number(document.getElementById('ddl-hour-select')?.value) || 0;
+            const minute = Number(document.getElementById('ddl-minute-select')?.value) || 0;
             return new Date(now.getFullYear(), month - 1, day, hour, minute, 0, 0).getTime();
         }
 
-        function saveExamFromForm() {
-            const subjectInput = document.getElementById('exam-subject-input');
-            const locationInput = document.getElementById('exam-location-input');
-            const editIdInput = document.getElementById('exam-edit-id');
+        function saveDdlFromForm() {
+            const subjectInput = document.getElementById('ddl-subject-input');
+            const locationInput = document.getElementById('ddl-location-input');
+            const editIdInput = document.getElementById('ddl-edit-id');
             const subject = subjectInput?.value.trim();
             const location = locationInput?.value.trim() || '';
             if (!subject) {
-                showToast('请输入考试科目', 'warning');
+                showToast('请输入主题', 'warning');
                 subjectInput?.focus();
                 return;
             }
 
-            const time = getExamTimeFromForm();
+            const time = getDdlTimeFromForm();
             const editId = editIdInput?.value;
             if (editId) {
-                examItems = examItems.map(item => item.id === editId ? { ...item, subject, location, time } : item);
+                ddlItems = ddlItems.map(item => item.id === editId ? { ...item, subject, location, time } : item);
             } else {
-                examItems.push({
+                ddlItems.push({
                     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
                     subject,
                     location,
@@ -4481,49 +4851,49 @@
                 });
             }
 
-            examItems.sort(compareExamItems);
-            persistExamItems();
-            resetExamForm();
-            renderExamList();
-            showToast(editId ? '考试信息已更新' : '考试已添加', 'success');
+            ddlItems.sort(compareDdlItems);
+            persistDdlItems();
+            resetDdlForm();
+            renderDdlLists();
+            showToast(editId ? 'DDL信息已更新' : 'DDL已添加', 'success');
         }
 
-        function editExam(examId) {
-            const exam = examItems.find(item => item.id === examId);
-            if (!exam) return;
-            showExamForm(exam);
-            document.getElementById('exam-add-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        function editDdl(ddlId) {
+            const ddl = ddlItems.find(item => item.id === ddlId);
+            if (!ddl) return;
+            showDdlForm(ddl);
+            document.querySelector('#page-ddl .ddl-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function deleteExam(examId) {
-            examItems = examItems.filter(item => item.id !== examId);
-            persistExamItems();
-            renderExamList();
-            showToast('考试已删除', 'success');
+        function deleteDdl(ddlId) {
+            ddlItems = ddlItems.filter(item => item.id !== ddlId);
+            persistDdlItems();
+            renderDdlLists();
+            showToast('DDL已删除', 'success');
         }
 
-        function toggleExamMenu(card) {
+        function toggleDdlMenu(card) {
             const shouldOpen = !card.classList.contains('menu-open');
-            closeExamMenus();
+            closeDdlMenus();
             card.classList.toggle('menu-open', shouldOpen);
-            card.querySelector('.exam-more-btn')?.setAttribute('aria-expanded', String(shouldOpen));
+            card.querySelector('.ddl-more-btn')?.setAttribute('aria-expanded', String(shouldOpen));
         }
 
-        function closeExamMenus() {
-            document.querySelectorAll('.exam-card.menu-open').forEach(card => {
+        function closeDdlMenus() {
+            document.querySelectorAll('.ddl-card.menu-open').forEach(card => {
                 card.classList.remove('menu-open');
-                card.querySelector('.exam-more-btn')?.setAttribute('aria-expanded', 'false');
+                card.querySelector('.ddl-more-btn')?.setAttribute('aria-expanded', 'false');
             });
         }
 
-        function formatExamTime(time) {
+        function formatDdlTime(time) {
             const date = new Date(time);
             const hour = String(date.getHours()).padStart(2, '0');
             const minute = String(date.getMinutes()).padStart(2, '0');
             return `${date.getMonth() + 1}月${date.getDate()}日 ${hour}:${minute}`;
         }
 
-        function getExamStatus(time) {
+        function getDdlStatus(time) {
             const diff = time - Date.now();
             if (diff <= 0) {
                 return { ended: true, urgent: false, text: '已结束' };
@@ -4539,68 +4909,89 @@
             return {
                 ended: false,
                 urgent: diff < 7 * 24 * 60 * 60 * 1000,
-                text: `距离考试 ${days}天${hours}时${minutes}分${seconds}秒`
+                text: `剩余 ${days}天${hours}时${minutes}分${seconds}秒`
             };
         }
 
-        function renderExamList() {
-            const list = document.getElementById('exam-list');
+        function buildDdlCard(item, { interactive = true } = {}) {
+            const status = getDdlStatus(item.time);
+            const endedClass = status.ended ? ' ddl-ended' : '';
+            const urgentClass = status.urgent ? ' ddl-urgent' : '';
+            const locationHtml = item.location
+                ? `<div class="ddl-location">${escapeHtml(item.location)}</div>`
+                : '';
+            const noteHtml = item.note
+                ? `<div class="ddl-note">${escapeHtml(item.note)}</div>`
+                : '';
+            const menuHtml = interactive ? `
+                <button class="ddl-more-btn" type="button" data-ddl-action="menu" aria-label="更多操作" aria-haspopup="menu" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="6" cy="12" r="1.8"></circle>
+                        <circle cx="12" cy="12" r="1.8"></circle>
+                        <circle cx="18" cy="12" r="1.8"></circle>
+                    </svg>
+                </button>
+                <div class="ddl-card-menu">
+                    <button class="ddl-menu-item" type="button" data-ddl-action="edit">编辑</button>
+                    <button class="ddl-menu-item danger" type="button" data-ddl-action="delete">删除</button>
+                </div>
+            ` : '';
+
+            return `
+                <article class="ddl-card${endedClass}${urgentClass}" data-ddl-id="${escapeHtml(item.id)}" data-ddl-time="${item.time}">
+                    ${menuHtml}
+                    <div class="ddl-card-main">
+                        <h4 class="ddl-subject">${escapeHtml(item.subject)}</h4>
+                        <div class="ddl-time">${escapeHtml(formatDdlTime(item.time))}</div>
+                        ${locationHtml}
+                        ${noteHtml}
+                    </div>
+                    <div class="ddl-status">${escapeHtml(status.text)}</div>
+                </article>
+            `;
+        }
+
+        function renderDdlList(targetId, items, options = {}) {
+            const list = document.getElementById(targetId);
             if (!list) return;
 
-            examItems.sort(compareExamItems);
-            if (examItems.length === 0) {
-                list.innerHTML = '<div class="exam-empty">还没有添加考试。可以从左侧手动输入。</div>';
+            items.sort(compareDdlItems);
+            if (items.length === 0) {
+                list.innerHTML = `<div class="ddl-empty">${escapeHtml(options.emptyText || '暂无DDL。')}</div>`;
                 return;
             }
 
-            list.innerHTML = examItems.map(item => {
-                const status = getExamStatus(item.time);
-                const endedClass = status.ended ? ' exam-ended' : '';
-                const urgentClass = status.urgent ? ' exam-urgent' : '';
-                const locationHtml = item.location
-                    ? `<div class="exam-location">${escapeHtml(item.location)}</div>`
-                    : '';
-                return `
-                    <article class="exam-card${endedClass}${urgentClass}" data-exam-id="${escapeHtml(item.id)}" data-exam-time="${item.time}">
-                        <button class="exam-more-btn" type="button" data-exam-action="menu" aria-label="更多操作" aria-haspopup="menu" aria-expanded="false">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <circle cx="6" cy="12" r="1.8"></circle>
-                                <circle cx="12" cy="12" r="1.8"></circle>
-                                <circle cx="18" cy="12" r="1.8"></circle>
-                            </svg>
-                        </button>
-                        <div class="exam-card-menu">
-                            <button class="exam-menu-item" type="button" data-exam-action="edit">编辑</button>
-                            <button class="exam-menu-item danger" type="button" data-exam-action="delete">删除</button>
-                        </div>
-                        <div class="exam-card-main">
-                            <h4 class="exam-subject">${escapeHtml(item.subject)}</h4>
-                            <div class="exam-time">${escapeHtml(formatExamTime(item.time))}</div>
-                            ${locationHtml}
-                        </div>
-                        <div class="exam-status">${escapeHtml(status.text)}</div>
-                    </article>
-                `;
-            }).join('');
+            list.innerHTML = items.map(item => buildDdlCard(item, options)).join('');
         }
 
-        function refreshExamStatuses() {
+        function renderDdlLists() {
+            renderDdlList('ddl-list', ddlItems, {
+                interactive: true,
+                emptyText: '还没有DDL。'
+            });
+            renderDdlList('unified-ddl-list', unifiedDdlItems, {
+                interactive: false,
+                emptyText: '暂无统一DDL。'
+            });
+        }
+
+        function refreshDdlStatuses() {
             let shouldRerender = false;
-            document.querySelectorAll('.exam-card[data-exam-time]').forEach(card => {
-                const status = getExamStatus(Number(card.dataset.examTime));
-                const wasEnded = card.classList.contains('exam-ended');
+            document.querySelectorAll('.ddl-card[data-ddl-time]').forEach(card => {
+                const status = getDdlStatus(Number(card.dataset.ddlTime));
+                const wasEnded = card.classList.contains('ddl-ended');
                 if (wasEnded !== status.ended) {
                     shouldRerender = true;
                 }
-                card.classList.toggle('exam-ended', status.ended);
-                card.classList.toggle('exam-urgent', status.urgent);
-                const statusEl = card.querySelector('.exam-status');
+                card.classList.toggle('ddl-ended', status.ended);
+                card.classList.toggle('ddl-urgent', status.urgent);
+                const statusEl = card.querySelector('.ddl-status');
                 if (statusEl && statusEl.textContent !== status.text) {
                     statusEl.textContent = status.text;
                 }
             });
             if (shouldRerender) {
-                renderExamList();
+                renderDdlLists();
             }
         }
 
@@ -4699,7 +5090,7 @@
 
         init();
     </script>
-    <!-- [TEMP-START] 临时弹窗：“考试”界面尚在开发中，后续可整块删除 -->
+    <!-- [TEMP-START] 临时弹窗：“DDL”界面尚在开发中，后续可整块删除 -->
     <style>
         #dev-popup-modal {
             display: none;
@@ -4766,7 +5157,7 @@
     </style>
     <div id="dev-popup-modal" onclick="closeDevPopup(event)">
         <div id="dev-popup-content" onclick="event.stopPropagation()">
-            <div id="dev-popup-text">“考试”界面尚在开发中</div>
+            <div id="dev-popup-text">“DDL”界面尚在开发中</div>
             <div class="dev-popup-actions">
                 <button id="dev-popup-btn" onclick="closeDevPopup()">确定</button>
             </div>
