@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -10,15 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
+            --page-bg: #f8fafc;
+            --page-text: #1e293b;
+            --page-gradient-opacity: 1;
+            --page-gradient-image: radial-gradient(at 0% 0%, rgba(0, 123, 255, 0.06) 0, transparent 50%),
+                radial-gradient(at 50% 0%, rgba(0, 200, 255, 0.06) 0, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(100, 0, 255, 0.05) 0, transparent 50%);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             /* 加入以下两行，修复 Safari 字体闪烁问题 */
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            background-color: #f8fafc;
+            background-color: transparent;
             padding: 20px;
             max-width: 1100px;
             margin: 0 auto;
-            color: #1e293b;
+            color: var(--page-text);
             font-size: 16px;
             line-height: 1.6;
         }
@@ -33,15 +39,14 @@
             height: 100%;
             z-index: -999;
             /* 将原本不透明的高亮 hsla 替换为极低透明度的 rgba 透视叠加，消除切换深色时的亮度残留 */
-            background-image: radial-gradient(at 0% 0%, rgba(0, 123, 255, 0.06) 0, transparent 50%),
-                radial-gradient(at 50% 0%, rgba(0, 200, 255, 0.06) 0, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(100, 0, 255, 0.05) 0, transparent 50%);
+            background-image: var(--page-gradient-image);
+            opacity: var(--page-gradient-opacity);
             transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
 
         body.dark-mode::before {
-            opacity: 0;
+            opacity: var(--page-gradient-opacity);
         }
 
         /* 为数字和特定标签使用 Inter 字体 */
@@ -145,6 +150,22 @@
             }
         }
 
+        @keyframes navReveal {
+
+            0%,
+            80% {
+                filter: blur(18px);
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            100% {
+                filter: blur(0);
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
         h1 {
             display: none;
         }
@@ -230,21 +251,6 @@
                 row-gap: 15px;
             }
 
-            /* 仅给第一个包含主题切换按钮的标题栏右侧预留安全空间，防止文字与按钮重叠 */
-            #main-content>.section-header:first-of-type {
-                padding-right: 45px;
-            }
-
-            .header-left {
-                flex-wrap: wrap;
-            }
-
-            .theme-toggle-btn {
-                position: absolute;
-                right: -42px;
-                top: 0;
-                margin-left: 0;
-            }
 
             .collapse-toggle-btn {
                 order: unset;
@@ -723,6 +729,34 @@
             right: 30px;
         }
 
+        #download-original-btn {
+            top: auto;
+            right: 30px;
+            bottom: 30px;
+            transform: none;
+            width: auto;
+            height: auto;
+            border-radius: 12px;
+            padding: 10px 18px;
+            gap: 6px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+        }
+
+        #download-original-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        #download-original-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
         #close-modal-hitbox {
             position: absolute;
             top: 0;
@@ -811,7 +845,9 @@
             padding-right: 10%;
             box-sizing: border-box;
             user-select: none;
-            transition: padding 0.3s ease;
+            transition: none;
+            contain: layout style;
+            isolation: isolate;
         }
 
         .timeline-widget-container.loading .timeline-track-container {
@@ -869,7 +905,10 @@
             height: 100%;
             background: linear-gradient(90deg, #007bff, #00c6ff);
             border-radius: 2px;
-            width: 0%;
+            width: 100%;
+            transform: scaleX(var(--timeline-progress, 0));
+            transform-origin: left center;
+            will-change: transform;
             pointer-events: none;
         }
 
@@ -882,10 +921,11 @@
             background: #fff;
             border: 4px solid #007bff;
             border-radius: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate3d(calc(var(--timeline-thumb-x, 0px) - 50%), -50%, 0);
             box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
             cursor: grab;
             z-index: 30;
+            will-change: transform;
             transition: box-shadow 0.2s, background 0.2s;
         }
 
@@ -951,8 +991,6 @@
             z-index: 10;
             transition: opacity 0.3s ease;
             opacity: 1;
-            /* 提示浏览器提前分配复合层，防止层级变换引发重排 */
-            will-change: z-index;
         }
 
         /* 选中状态：最高层级置顶 */
@@ -1154,7 +1192,9 @@
             border: 2px solid #fff;
             box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
             z-index: 2;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
             /* 防止干扰热区点击 */
         }
@@ -1200,20 +1240,25 @@
             position: relative;
             z-index: 1;
             pointer-events: auto;
-            transition: all 0.4s ease;
+            transition: transform 0.4s ease,
+                box-shadow 0.4s ease,
+                border-color 0.4s ease,
+                background-color 0.4s ease;
             /* 统一过渡动画时长 */
             cursor: pointer;
             display: flex;
             flex-direction: column;
+            transform: translateZ(0);
+            backface-visibility: hidden;
             /* 强制开启 GPU 硬件加速，彻底解决毛玻璃动画时的掉帧问题 */
-            will-change: transform, box-shadow, background-color;
+            will-change: transform;
         }
 
         .timeline-node.selected .timeline-content {
             box-shadow: 0 12px 40px rgba(0, 123, 255, 0.25);
             /* 加深阴影 */
             border: 1px solid rgba(0, 123, 255, 0.3);
-            transform: scale(1.1);
+            transform: translateZ(0) scale(1.1);
             /* 增大放大比例 */
         }
 
@@ -1317,23 +1362,34 @@
             right: auto;
             width: 100vw;
             height: auto;
-            background-color: #f8fafc;
-            background-image: radial-gradient(at 0% 0%, rgba(0, 123, 255, 0.06) 0, transparent 50%),
-                radial-gradient(at 50% 0%, rgba(0, 200, 255, 0.06) 0, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(100, 0, 255, 0.05) 0, transparent 50%);
-            background-attachment: fixed;
-            background-position: 0 0;
-            background-size: 100vw 100vh;
+            background-color: var(--page-bg);
             z-index: 100;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.22s ease, visibility 0.22s;
+            overflow: hidden;
+            transition: opacity 0.22s ease,
+                visibility 0.22s,
+                background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 0;
             pointer-events: none;
             opacity: 0;
             visibility: hidden;
+        }
+
+        .timeline-loading-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: var(--page-gradient-image);
+            background-attachment: fixed;
+            background-position: 0 0;
+            background-size: 100vw 100vh;
+            opacity: var(--page-gradient-opacity);
+            z-index: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* 移动端：遮罩固定定位，完整覆盖整个视口，不受竖向内容高度影响 */
@@ -1365,6 +1421,10 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            transition: border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-top-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes spin {
@@ -1382,6 +1442,9 @@
             font-size: 0.9em;
             font-weight: 600;
             letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* ===== 分类折叠功能 CSS ===== */
@@ -1426,7 +1489,7 @@
 
         .category-content {
             transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), margin-bottom 0.4s ease;
-            max-height: 5000px;
+            max-height: var(--content-max-height, 5000px);
             opacity: 1;
             /* overflow will be managed by JS to allow shadows when expanded */
         }
@@ -1446,8 +1509,11 @@
 
         /* ----- 深色模式样式 ----- */
         body.dark-mode {
-            background-color: #121212;
-            color: #d1d5db;
+            --page-bg: #121212;
+            --page-text: #d1d5db;
+            --page-gradient-opacity: 0;
+            background-color: var(--page-bg);
+            color: var(--page-text);
         }
 
         body.dark-mode .welcome-title,
@@ -1542,8 +1608,7 @@
         }
 
         body.dark-mode .timeline-loading-overlay {
-            background-color: #121212;
-            background-image: none;
+            background-color: var(--page-bg);
         }
 
         body.dark-mode .timeline-spinner {
@@ -1590,8 +1655,8 @@
 
         /* ----- 深色模式切换按钮样式 ----- */
         .theme-toggle-btn {
-            background: rgba(0, 0, 0, 0.05);
-            color: #333;
+            background: transparent;
+            color: #555;
             border: none;
             width: 36px;
             height: 36px;
@@ -1600,29 +1665,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            margin-left: auto;
-            /* Push to the right */
             position: relative;
-            /* 确保作为图标绝对定位的容器 */
+            flex-shrink: 0;
         }
 
         .theme-toggle-btn:hover {
-            background: rgba(0, 0, 0, 0.1);
-            transform: scale(1.1);
+            transform: scale(1.15);
+            color: #333;
         }
 
         body.dark-mode .theme-toggle-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            color: #d1d5db;
         }
 
         body.dark-mode .theme-toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
         }
 
         /* 设定两个图标重叠在中心，并添加过渡动画 */
@@ -1674,11 +1733,11 @@
         .theme-transition .card h3,
         .theme-transition .meta,
         .theme-transition .meta-label,
-        .theme-transition .timeline-content,
         .theme-transition .timeline-desc,
-        .theme-transition .timeline-dot,
         .theme-transition .timeline-endpoint,
         .theme-transition .thumb-tooltip,
+        .theme-transition .timeline-spinner,
+        .theme-transition .loading-text,
         .theme-transition .footer-version,
         .theme-transition .theme-toggle-btn,
         .theme-transition .theme-toggle-btn svg,
@@ -1688,6 +1747,26 @@
         .theme-transition .file-name,
         .theme-transition .file-name-link,
         .theme-transition .file-ext,
+        .theme-transition .exam-panel,
+        .theme-transition .exam-panel-title,
+        .theme-transition .exam-option-row,
+        .theme-transition .exam-option-title,
+        .theme-transition .exam-option-desc,
+        .theme-transition .exam-manual-hint,
+        .theme-transition .exam-field label,
+        .theme-transition .exam-input,
+        .theme-transition .exam-select,
+        .theme-transition .exam-primary-btn,
+        .theme-transition .exam-secondary-btn,
+        .theme-transition .exam-card,
+        .theme-transition .exam-subject,
+        .theme-transition .exam-time,
+        .theme-transition .exam-location,
+        .theme-transition .exam-status,
+        .theme-transition .exam-more-btn,
+        .theme-transition .exam-card-menu,
+        .theme-transition .exam-menu-item,
+        .theme-transition .exam-empty,
         .theme-transition .countdown-ring .ring-bg {
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1696,11 +1775,46 @@
                 opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 text-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-top-color 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .theme-transition .timeline-content,
+        .theme-transition .timeline-dot {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .theme-transition .timeline-loading-overlay {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .theme-transition .timeline-loading-overlay::before {
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .timeline-theme-quiet .timeline-content {
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .timeline-theme-quiet .timeline-desc,
+        .timeline-theme-quiet .timeline-date,
+        .timeline-theme-quiet .timeline-dot,
+        .timeline-theme-quiet .timeline-endpoint,
+        .timeline-theme-quiet .thumb-tooltip {
+            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
         /* iOS 上附件文字切换加速，减少与卡片背景的视觉延迟 */
         @supports (-webkit-touch-callout: none) {
+
             .theme-transition .files-title,
             .theme-transition .file-name,
             .theme-transition .file-name-link,
@@ -1709,37 +1823,872 @@
                 transition-property: color, border-color, background-color !important;
             }
         }
+
+        /* ===== 顶部导航栏 ===== */
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            height: 50px;
+            background-color: transparent;
+            border-bottom: none;
+            box-shadow: none;
+            margin: -20px -20px 20px -20px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            isolation: isolate;
+            overflow: visible;
+            transition: none;
+            animation: navReveal 1.9s forwards;
+            opacity: 0;
+            filter: blur(18px);
+            visibility: hidden;
+        }
+
+        .top-nav::before {
+            content: none;
+            display: none;
+        }
+
+        .top-nav>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        body.dark-mode .top-nav::before {
+            content: none;
+        }
+
+        .nav-hamburger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            color: #1e293b;
+            flex-shrink: 0;
+            margin-right: 8px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-hamburger:hover {
+            color: #000;
+        }
+
+        .nav-hamburger svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            height: 100%;
+            overflow: hidden;
+            transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 300px;
+            opacity: 1;
+        }
+
+        .nav-tabs.collapsed {
+            max-width: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-item {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: color 0.3s ease, font-size 0.2s ease;
+            color: #9ca3af;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            color: #6b7280;
+        }
+
+        .nav-item.active {
+            color: #1e293b;
+            font-size: 1.05em;
+        }
+
+        .nav-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        /* 个人图标占位 */
+        .nav-profile-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            color: #1e293b;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            padding: 0;
+            flex-shrink: 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-profile-btn:hover {
+            color: #000;
+        }
+
+        .nav-profile-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+
+        /* 页面容器 */
+        .page-container {
+            display: none;
+        }
+
+        .page-container.active {
+            display: block;
+        }
+
+        /* 考试页面 */
+        .exam-layout {
+            display: grid;
+            grid-template-columns: minmax(260px, 0.9fr) minmax(320px, 1.35fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .exam-column {
+            min-width: 0;
+        }
+
+        .exam-column .module-title {
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 0;
+        }
+
+        .exam-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 22px;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .exam-panel-title {
+            margin: 0 0 16px;
+            color: #0f172a;
+            font-size: 1.35em;
+            font-weight: 800;
+            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .exam-option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .exam-option-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(37, 99, 235, 0.14);
+            background: rgba(37, 99, 235, 0.06);
+            color: #1e293b;
+            text-decoration: none;
+            font: inherit;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: background-color 0.25s ease,
+                border-color 0.25s ease,
+                color 0.25s ease;
+        }
+
+        .exam-option-row:hover {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.24);
+        }
+
+        .exam-option-main {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .exam-option-title {
+            font-weight: 700;
+            color: #0f172a;
+            transition: color 0.25s ease;
+        }
+
+        .exam-option-desc {
+            font-size: 0.86em;
+            color: #64748b;
+            transition: color 0.25s ease;
+        }
+
+        .exam-manual-hint {
+            margin: 4px 2px 0;
+            color: #94a3b8;
+            font-size: 0.9em;
+            line-height: 1.5;
+            transition: color 0.25s ease;
+        }
+
+        .exam-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            opacity: 1;
+            margin-top: 16px;
+            transition: opacity 0.25s ease, margin-top 0.3s ease;
+        }
+
+        .exam-field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .exam-field label {
+            color: #475569;
+            font-size: 0.9em;
+            font-weight: 700;
+            transition: color 0.25s ease;
+        }
+
+        .exam-input,
+        .exam-select {
+            width: 100%;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.92);
+            color: #0f172a;
+            padding: 11px 12px;
+            font: inherit;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                background-color 0.25s ease,
+                color 0.25s ease;
+        }
+
+        .exam-input:focus,
+        .exam-select:focus {
+            border-color: rgba(15, 23, 42, 0.22);
+            box-shadow: none;
+        }
+
+        .exam-time-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .exam-form-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .exam-primary-btn,
+        .exam-secondary-btn {
+            border: 1px solid transparent;
+            border-radius: 999px;
+            padding: 10px 18px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.25s ease,
+                color 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .exam-primary-btn {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+            box-shadow: none;
+        }
+
+        .exam-secondary-btn {
+            background: rgba(100, 116, 139, 0.1);
+            color: #475569;
+            border-color: rgba(100, 116, 139, 0.16);
+        }
+
+        .exam-primary-btn:hover {
+            background: #0069d9;
+            border-color: #0069d9;
+        }
+
+        .exam-secondary-btn:hover {
+            background: rgba(100, 116, 139, 0.16);
+            border-color: rgba(100, 116, 139, 0.24);
+        }
+
+        .exam-option-row:focus,
+        .exam-primary-btn:focus,
+        .exam-secondary-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .exam-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .exam-card {
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(37, 99, 235, 0.13);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+            transition: background-color 0.3s ease,
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                opacity 0.3s ease,
+                filter 0.3s ease;
+        }
+
+        .exam-card-main {
+            min-width: 0;
+            padding-right: 36px;
+        }
+
+        .exam-card.exam-ended {
+            background: rgba(226, 232, 240, 0.72);
+            border-color: rgba(100, 116, 139, 0.18);
+            box-shadow: none;
+            filter: grayscale(0.28);
+            opacity: 0.76;
+        }
+
+        .exam-card.exam-urgent {
+            border: 1.5px solid #dc3545;
+            animation: urgentFlash 1.2s cubic-bezier(0.4, 0, 0.2, 1) 3;
+            animation-fill-mode: forwards;
+        }
+
+        .exam-subject {
+            margin: 0 0 6px;
+            color: #0f172a;
+            font-size: 1.12em;
+            font-weight: 800;
+            transition: color 0.25s ease;
+        }
+
+        .exam-time {
+            color: #64748b;
+            font-size: 0.92em;
+            transition: color 0.25s ease;
+        }
+
+        .exam-location {
+            color: #64748b;
+            font-size: 0.92em;
+            margin-top: 4px;
+            transition: color 0.25s ease;
+        }
+
+        .exam-status {
+            margin-top: 14px;
+            justify-self: end;
+            width: auto;
+            max-width: 100%;
+            text-align: right;
+            color: #007bff;
+            font-size: 1.08em;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            transition: color 0.25s ease;
+        }
+
+        .exam-card.exam-urgent .exam-status {
+            color: #dc3545;
+        }
+
+        .exam-card.exam-ended .exam-subject,
+        .exam-card.exam-ended .exam-time,
+        .exam-card.exam-ended .exam-location,
+        .exam-card.exam-ended .exam-status {
+            color: #64748b;
+        }
+
+        .exam-more-btn {
+            position: absolute;
+            top: 3px;
+            right: 12px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            color: #475569;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.25s ease;
+        }
+
+        .exam-more-btn svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+            fill: currentColor;
+        }
+
+        .exam-more-btn:hover,
+        .exam-card.menu-open .exam-more-btn {
+            background: transparent;
+            color: #2563eb;
+        }
+
+        .exam-card-menu {
+            position: absolute;
+            top: 46px;
+            right: 12px;
+            min-width: 112px;
+            padding: 6px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
+            display: none;
+            z-index: 20;
+        }
+
+        .exam-card.menu-open .exam-card-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .exam-menu-item {
+            border: none;
+            border-radius: 9px;
+            background: transparent;
+            color: #334155;
+            padding: 8px 10px;
+            text-align: left;
+            font: inherit;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .exam-menu-item:hover {
+            background: rgba(37, 99, 235, 0.09);
+            color: #1d4ed8;
+        }
+
+        .exam-menu-item.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .exam-empty {
+            color: #94a3b8;
+            padding: 30px 12px;
+            text-align: center;
+            border-radius: 14px;
+            background: rgba(148, 163, 184, 0.08);
+            transition: color 0.25s ease, background-color 0.25s ease;
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 12px 24px;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            pointer-events: auto;
+            line-height: 1.5;
+            max-width: 400px;
+            word-break: break-all;
+        }
+
+        .toast.success {
+            background: #10b981;
+            color: white;
+            border: none;
+        }
+
+        .toast.error {
+            background: #ef4444;
+            color: white;
+            border: none;
+        }
+
+        .toast.warning {
+            background: #f59e0b;
+            color: white;
+            border: none;
+        }
+
+        @keyframes toastSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toastFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        .page-empty-placeholder {
+            text-align: center;
+            color: #9ca3af;
+            padding: 80px 20px;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        /* 深色模式导航栏 */
+        body.dark-mode .top-nav {
+            background-color: transparent;
+        }
+
+        body.dark-mode .nav-profile-btn {
+            color: #d1d5db;
+        }
+
+        body.dark-mode .nav-profile-btn:hover {
+            color: #ffffff;
+        }
+
+        body.dark-mode .nav-hamburger {
+            color: #d1d5db;
+        }
+
+        body.dark-mode .nav-item {
+            color: #6b7280;
+        }
+
+        body.dark-mode .nav-item:hover {
+            color: #9ca3af;
+        }
+
+        body.dark-mode .nav-item.active {
+            color: #ffffff;
+        }
+
+        body.dark-mode .page-empty-placeholder {
+            color: #6b7280;
+        }
+
+        body.dark-mode .exam-panel,
+        body.dark-mode .exam-card {
+            background: rgba(30, 30, 30, 0.95);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+        }
+
+        body.dark-mode .exam-panel-title,
+        body.dark-mode .exam-option-title,
+        body.dark-mode .exam-subject {
+            color: #f8fafc;
+        }
+
+        body.dark-mode .exam-option-row {
+            background: rgba(37, 99, 235, 0.12);
+            border-color: rgba(147, 197, 253, 0.18);
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .exam-option-row:hover {
+            background: rgba(37, 99, 235, 0.18);
+            border-color: rgba(147, 197, 253, 0.28);
+        }
+
+        body.dark-mode .exam-option-desc,
+        body.dark-mode .exam-manual-hint,
+        body.dark-mode .exam-field label,
+        body.dark-mode .exam-time,
+        body.dark-mode .exam-location {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .exam-input,
+        body.dark-mode .exam-select {
+            background: rgba(15, 23, 42, 0.72);
+            border-color: rgba(148, 163, 184, 0.22);
+            color: #f8fafc;
+        }
+
+        body.dark-mode .exam-input:focus,
+        body.dark-mode .exam-select:focus {
+            border-color: rgba(148, 163, 184, 0.36);
+            box-shadow: none;
+        }
+
+        body.dark-mode .exam-primary-btn {
+            background: #007bff;
+            border-color: #007bff;
+        }
+
+        body.dark-mode .exam-primary-btn:hover {
+            background: #0069d9;
+            border-color: #0069d9;
+        }
+
+        body.dark-mode .exam-secondary-btn {
+            background: rgba(148, 163, 184, 0.12);
+            color: #cbd5e1;
+            border-color: rgba(148, 163, 184, 0.2);
+        }
+
+        body.dark-mode .exam-secondary-btn:hover {
+            background: rgba(148, 163, 184, 0.18);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        body.dark-mode .exam-more-btn {
+            background: transparent;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .exam-more-btn:hover,
+        body.dark-mode .exam-card.menu-open .exam-more-btn {
+            background: transparent;
+            color: #93c5fd;
+        }
+
+        body.dark-mode .exam-card.exam-urgent {
+            border-color: #dc3545;
+        }
+
+        body.dark-mode .exam-card-menu {
+            background: rgba(30, 30, 30, 0.98);
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .exam-menu-item {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .exam-menu-item:hover {
+            background: rgba(59, 130, 246, 0.18);
+            color: #93c5fd;
+        }
+
+        body.dark-mode .exam-card.exam-ended {
+            background: rgba(51, 65, 85, 0.52);
+            border-color: rgba(148, 163, 184, 0.18);
+            box-shadow: none;
+        }
+
+        body.dark-mode .exam-card.exam-ended .exam-subject,
+        body.dark-mode .exam-card.exam-ended .exam-time,
+        body.dark-mode .exam-card.exam-ended .exam-location,
+        body.dark-mode .exam-card.exam-ended .exam-status {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .exam-empty {
+            color: #64748b;
+            background: rgba(148, 163, 184, 0.08);
+        }
+
+        /* 导航栏主题过渡 */
+        .theme-transition .nav-hamburger,
+        .theme-transition .nav-item {
+            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        @media (max-width: 768px) {
+            .exam-layout {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .exam-panel {
+                padding: 18px;
+                border-radius: 16px;
+            }
+
+            .exam-time-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .exam-card {
+                padding: 15px;
+            }
+
+            .exam-card-main {
+                padding-right: 34px;
+            }
+
+            .top-nav {
+                margin: -10px -10px 10px -10px;
+                padding: 0 10px;
+                height: 46px;
+            }
+
+            .nav-item {
+                font-size: 0.9em;
+                padding: 0 14px;
+            }
+
+            .nav-hamburger {
+                margin-right: 4px;
+            }
+
+            .nav-hamburger svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .nav-right {
+                gap: 2px;
+            }
+
+            .nav-profile-btn {
+                width: 28px;
+                height: 28px;
+            }
+
+            .nav-profile-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <div id="toast-container"></div>
     <script>
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        function getSavedThemePreference() {
+            try {
+                return localStorage.getItem('theme');
+            } catch (error) {
+                return null;
+            }
+        }
 
-        // 如果本地存储为 dark，或者没有本地存储且系统为暗黑模式
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            document.body.classList.add('dark-mode');
+        function setSavedThemePreference(theme) {
+            try {
+                localStorage.setItem('theme', theme);
+            } catch (error) {
+                // Ignore storage failures so theme switching never blocks the page.
+            }
+        }
+
+        function getColorSchemeQuery() {
+            return window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+        }
+
+        {
+            const savedTheme = getSavedThemePreference();
+            const colorSchemeQuery = getColorSchemeQuery();
+            const prefersDark = colorSchemeQuery?.matches;
+
+            // 如果本地存储为 dark，或者没有本地存储且系统为暗黑模式
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.body.classList.add('dark-mode');
+            }
         }
     </script>
-    <div id="welcome-text">
-        <div class="welcome-inner">
-            <div class="welcome-title">25级少院5班通知中心</div>
-            <div id="last-update" class="update-tag">正在获取通知更新日期...</div>
+    <nav class="top-nav" id="top-nav">
+        <button class="nav-hamburger" id="nav-hamburger" onclick="toggleNavTabs()" aria-label="收起导航">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div class="nav-tabs" id="nav-tabs">
+            <button class="nav-item active" data-tab="notice" onclick="switchTab('notice')">通知</button>
+            <button class="nav-item" data-tab="exam" onclick="switchTab('exam')">考试</button>
+            <button class="nav-item" data-tab="other" onclick="switchTab('other')">其他</button>
         </div>
-    </div>
-
-    <div id="main-content">
-        <div class="section-header">
-            <div class="header-left">
-                <h2 class="module-title">通知</h2>
-                <span id="long-term-update" class="section-update-tag"></span>
-            </div>
-            <button class="collapse-toggle-btn" aria-expanded="true">
-                <svg viewBox="0 0 24 24">
-                    <polyline points="6 15 12 9 18 15"></polyline>
+        <div class="nav-right">
+            <button class="nav-profile-btn" aria-label="个人中心">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span class="toggle-text">收起</span>
             </button>
             <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="切换深色模式" onclick="toggleDarkMode()">
                 <svg class="icon-moon" viewBox="0 0 24 24">
@@ -1758,74 +2707,150 @@
                 </svg>
             </button>
         </div>
-        <div id="long-term-container" class="category-content">加载中...</div>
-
-        <div class="section-header">
-            <div class="header-left">
-                <h2 class="module-title">活动通知</h2>
-                <span id="instant-update" class="section-update-tag"></span>
-            </div>
-            <button class="collapse-toggle-btn" aria-expanded="true">
-                <svg viewBox="0 0 24 24">
-                    <polyline points="6 15 12 9 18 15"></polyline>
-                </svg>
-                <span class="toggle-text">收起</span>
-            </button>
+    </nav>
+    <div id="welcome-text">
+        <div class="welcome-inner">
+            <div class="welcome-title">25级少院5班通知中心</div>
+            <div id="last-update" class="update-tag">正在获取通知更新日期...</div>
         </div>
-        <div id="instant-container" class="category-content">加载中...</div>
+    </div>
 
-        <div class="section-header">
-            <div class="header-left">
-                <h2 class="module-title">班级大事记</h2>
+    <div id="main-content">
+        <div id="page-notice" class="page-container active">
+            <div class="section-header">
+                <div class="header-left">
+                    <h2 class="module-title">通知</h2>
+                    <span id="long-term-update" class="section-update-tag"></span>
+                </div>
+                <button class="collapse-toggle-btn" aria-expanded="true">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                    <span class="toggle-text">收起</span>
+                </button>
             </div>
-            <button class="collapse-toggle-btn" aria-expanded="false">
-                <svg viewBox="0 0 24 24">
-                    <polyline points="6 15 12 9 18 15"></polyline>
-                </svg>
-                <span class="toggle-text">展开</span>
-            </button>
+            <div id="long-term-container" class="category-content">加载中...</div>
+
+            <div class="section-header">
+                <div class="header-left">
+                    <h2 class="module-title">活动通知</h2>
+                    <span id="instant-update" class="section-update-tag"></span>
+                </div>
+                <button class="collapse-toggle-btn" aria-expanded="true">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                    <span class="toggle-text">收起</span>
+                </button>
+            </div>
+            <div id="instant-container" class="category-content">加载中...</div>
         </div>
-        <div id="timeline-container" class="timeline-widget-container category-content collapsed">
-            <!-- 加载遮罩 -->
-            <div id="timeline-loading-mask" class="timeline-loading-overlay">
-                <div class="timeline-spinner"></div>
-                <div class="loading-text">加载中...</div>
+
+        <div id="page-exam" class="page-container">
+            <div class="exam-layout">
+                <section class="exam-column" aria-labelledby="exam-add-title">
+                    <h2 class="module-title" id="exam-add-title">导入</h2>
+                    <div class="exam-panel">
+                        <h3 class="exam-panel-title">添加考试</h3>
+                        <div class="exam-option-list">
+                            <a class="exam-option-row" href="https://jw.ustc.edu.cn/" target="_blank" rel="noopener">
+                                <span class="exam-option-main">
+                                    <span class="exam-option-title">从教务系统导入</span>
+                                    <span class="exam-option-desc">打开 jw.ustc.edu.cn 查看课程与考试安排</span>
+                                </span>
+                            </a>
+                            <div class="exam-manual-hint">你也可以在下方手动输入</div>
+                        </div>
+                        <form class="exam-form" id="exam-form">
+                            <input type="hidden" id="exam-edit-id" value="">
+                            <div class="exam-field">
+                                <label for="exam-subject-input">考试科目</label>
+                                <input class="exam-input" id="exam-subject-input" type="text" autocomplete="off"
+                                    placeholder="例如：高等数学">
+                            </div>
+                            <div class="exam-field">
+                                <label for="exam-location-input">地点</label>
+                                <input class="exam-input" id="exam-location-input" type="text" autocomplete="off"
+                                    placeholder="例如：教学楼 101">
+                            </div>
+                            <div class="exam-field">
+                                <label>时间</label>
+                                <div class="exam-time-grid">
+                                    <select class="exam-select" id="exam-month-select" aria-label="月份"></select>
+                                    <select class="exam-select" id="exam-day-select" aria-label="日期"></select>
+                                    <select class="exam-select" id="exam-hour-select" aria-label="小时"></select>
+                                    <select class="exam-select" id="exam-minute-select" aria-label="分钟"></select>
+                                </div>
+                            </div>
+                            <div class="exam-form-actions">
+                                <button class="exam-primary-btn" type="submit" id="exam-submit-btn">保存考试</button>
+                                <button class="exam-secondary-btn" type="button" id="exam-cancel-btn">取消</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <section class="exam-column" aria-labelledby="exam-list-title">
+                    <h2 class="module-title" id="exam-list-title">我的考试</h2>
+                    <div class="exam-list" id="exam-list"></div>
+                </section>
             </div>
-            <div class="timeline-track-container" id="timelineTrack">
-                <div class="timeline-endpoint left">2025.9.1</div>
-                <div class="timeline-endpoint right" id="dynamic-right-endpoint">当前时间</div>
-                <div class="timeline-axis" id="timelineAxis">
-                    <div class="timeline-progress" id="timelineProgress"></div>
-                    <div id="timeline-nodes-container"></div>
-                    <div class="timeline-thumb" id="timelineThumb"></div>
+        </div>
+
+        <div id="page-other" class="page-container">
+            <div class="section-header">
+                <div class="header-left">
+                    <h2 class="module-title">班级大事记</h2>
+                </div>
+                <button class="collapse-toggle-btn" aria-expanded="false">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                    <span class="toggle-text">展开</span>
+                </button>
+            </div>
+            <div id="timeline-container" class="timeline-widget-container category-content collapsed">
+                <!-- 加载遮罩 -->
+                <div id="timeline-loading-mask" class="timeline-loading-overlay">
+                    <div class="timeline-spinner"></div>
+                    <div class="loading-text">加载中...</div>
+                </div>
+                <div class="timeline-track-container" id="timelineTrack">
+                    <div class="timeline-endpoint left">2025.9.1</div>
+                    <div class="timeline-endpoint right" id="dynamic-right-endpoint">当前时间</div>
+                    <div class="timeline-axis" id="timelineAxis">
+                        <div class="timeline-progress" id="timelineProgress"></div>
+                        <div id="timeline-nodes-container"></div>
+                        <div class="timeline-thumb" id="timelineThumb"></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="section-header">
-            <div class="header-left">
-                <h2 class="module-title">其他</h2>
-            </div>
-            <button class="collapse-toggle-btn" aria-expanded="true">
-                <svg viewBox="0 0 24 24">
-                    <polyline points="6 15 12 9 18 15"></polyline>
-                </svg>
-                <span class="toggle-text">收起</span>
-            </button>
-        </div>
-        <div id="others-container" class="category-content">
-            <div class="card">
-                <h3>友情链接</h3>
-                <div class="content-text" style="line-height: 1.6;">
-                    <ul id="friendship-links-list">
-                        <!-- Links will be dynamically populated here -->
-                    </ul>
+            <div class="section-header">
+                <div class="header-left">
+                    <h2 class="module-title">其他</h2>
                 </div>
+                <button class="collapse-toggle-btn" aria-expanded="true">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="6 15 12 9 18 15"></polyline>
+                    </svg>
+                    <span class="toggle-text">收起</span>
+                </button>
             </div>
-            <div class="card">
-                <h3>其他说明</h3>
-                <div class="content-text" style="line-height: 1.6;">
-                    欢迎提出意见！
+            <div id="others-container" class="category-content">
+                <div class="card">
+                    <h3>友情链接</h3>
+                    <div class="content-text" style="line-height: 1.6;">
+                        <ul id="friendship-links-list">
+                            <!-- Links will be dynamically populated here -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>其他说明</h3>
+                    <div class="content-text" style="line-height: 1.6;">
+                        欢迎提出意见！
+                    </div>
                 </div>
             </div>
         </div>
@@ -1852,10 +2877,19 @@
                 <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
         </button>
+        <button id="download-original-btn" class="modal-nav" onclick="downloadCurrentImage(event)" title="下载原图"
+            aria-label="下载原图">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 4v11"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="5" y1="20" x2="19" y2="20"></line>
+            </svg>
+            <span>下载原图</span>
+        </button>
     </div>
 
     <div class="footer-version">
-        版本: 260409 | 最近更新: 允许上传附件
+        版本: 260513 | 最近更新: 导航条
     </div>
 
     <script>
@@ -1866,6 +2900,12 @@
         };
         let timelineWidgetRendered = false;
         let timelineWidgetRendering = null;
+        let timelineWidgetControls = null;
+        let themeTransitionTimer = null;
+        const TIMELINE_LOADING_MIN_MS = 1200;
+        let timelineLoadingTimer = null;
+        let timelineLoadingResolve = null;
+        let timelineLoadingRunId = 0;
 
         function openModal(src, urls = []) {
             currentModalImages = urls.length > 0 ? urls : [src];
@@ -1874,6 +2914,7 @@
 
             const modal = document.getElementById('image-modal');
             const modalImg = document.getElementById('modal-image');
+            if (!modal || !modalImg) return;
 
             modalImg.src = currentModalImages[currentModalIndex];
             modal.style.display = 'flex';
@@ -1884,7 +2925,9 @@
         }
 
         function closeModal() {
-            document.getElementById('image-modal').style.display = 'none';
+            const modal = document.getElementById('image-modal');
+            if (!modal) return;
+            modal.style.display = 'none';
         }
 
         function navigateModal(diff) {
@@ -1906,9 +2949,27 @@
             }
         }
 
+        function downloadCurrentImage(event) {
+            event?.stopPropagation();
+            const src = currentModalImages[currentModalIndex];
+            if (!src) return;
+
+            const link = document.createElement('a');
+            link.href = encodeURI(src);
+            link.download = src.split(/[\\/]/).pop() || 'original-image';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        }
+
         function updateModalButtons() {
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
+            const downloadBtn = document.getElementById('download-original-btn');
+            if (!prevBtn || !nextBtn) return;
+            if (downloadBtn) {
+                downloadBtn.style.display = currentModalImages[currentModalIndex] ? 'flex' : 'none';
+            }
 
             if (currentModalImages.length <= 1) {
                 prevBtn.style.display = 'none';
@@ -2411,6 +3472,22 @@
             return processed.replace(/\n/g, '<br>');
         }
 
+        function getTimelineThumbSrc(src) {
+            const normalized = String(src || '').replace(/\\/g, '/').replace(/^\//, '');
+            if (!normalized.startsWith('timeline_images/')) return normalized;
+            return normalized
+                .replace(/^timeline_images\//, 'timeline_thumbs/')
+                .replace(/\.[^/.]+$/, '.jpg');
+        }
+
+        function buildTimelineImageHtml(src, modalImages) {
+            const cleanSrc = String(src || '').replace(/^\//, '');
+            const thumbSrc = getTimelineThumbSrc(cleanSrc);
+            const srcArg = escapeHtml(JSON.stringify(cleanSrc));
+            const imagesArg = escapeHtml(JSON.stringify(modalImages));
+            return `<img src="${escapeHtml(thumbSrc)}" data-full-src="${escapeHtml(cleanSrc)}" alt="timeline image" loading="lazy" decoding="async" fetchpriority="low" onerror="this.onerror=null; this.src='${escapeHtml(cleanSrc)}';" onclick="openModal(${srcArg}, ${imagesArg})">`;
+        }
+
         async function renderTimelineWidget() {
             const data = await fetchTimeline();
             const now = new Date();
@@ -2453,10 +3530,10 @@
                 const images = item.images && item.images.length > 0 ? item.images : (item.image ? [item.image] : []);
 
                 if (images.length > 0) {
+                    const modalImages = images.map(img => String(img || '').replace(/^\//, ''));
                     imgsHtml = `<div class="timeline-images-scroll">`;
                     images.forEach(img => {
-                        const cleanSrc = img.replace(/^\//, '');
-                        imgsHtml += `<img src="${cleanSrc}" alt="timeline image" loading="lazy" onclick="openModal('${cleanSrc}', ${JSON.stringify(images).replace(/"/g, '&quot;')})">`;
+                        imgsHtml += buildTimelineImageHtml(img, modalImages);
                     });
                     imgsHtml += `</div>`;
                 }
@@ -2484,11 +3561,7 @@
                 node.addEventListener('click', () => {
                     // 如果正在进行自动巡航，则停止它
                     if (thumb.classList.contains('hint')) {
-                        thumb.classList.remove('hint');
-                        if (hintAnimationId) {
-                            cancelAnimationFrame(hintAnimationId);
-                            hintAnimationId = null;
-                        }
+                        stopHintAnimation();
                     }
                     snapToNearest(percentage);
                 });
@@ -2512,6 +3585,7 @@
                     // 彻底清理由于横屏切换到竖屏而残留的内联样式计算高度
                     containerNode.style.paddingTop = '';
                     containerNode.style.paddingBottom = '';
+                    containerNode.style.removeProperty('--content-max-height');
                     // 移动端：流式布局，高度由内容自动撑开，无需 JS 干预
                     return;
                 }
@@ -2534,12 +3608,22 @@
 
                 containerNode.style.paddingTop = `${safePaddingTop}px`;
                 containerNode.style.paddingBottom = `${safePaddingBottom}px`;
+                containerNode.style.setProperty('--content-max-height', `${safePaddingTop + safePaddingBottom}px`);
+            };
+
+            let paddingFrameId = null;
+            const scheduleDynamicPadding = () => {
+                if (paddingFrameId) return;
+                paddingFrameId = requestAnimationFrame(() => {
+                    paddingFrameId = null;
+                    calculateDynamicPadding();
+                });
             };
 
             calculateDynamicPadding();
-            window.addEventListener('resize', calculateDynamicPadding);
+            window.addEventListener('resize', scheduleDynamicPadding);
             nodesContainer.querySelectorAll('img').forEach(img => {
-                img.addEventListener('load', calculateDynamicPadding);
+                img.addEventListener('load', scheduleDynamicPadding, { once: true });
             });
 
             // ====== 移动端专用逻辑：单卡片视窗中心焦点检测 (requestAnimationFrame 优化) ======
@@ -2602,6 +3686,17 @@
             const thumbTooltip = document.getElementById('thumb-tooltip');
 
             let isDraggingThumb = false;
+            let dragTrackRect = null;
+            let pendingMoveEvent = null;
+            let moveFrameId = null;
+            let currentTimelinePercent = 0;
+            let cachedTrackWidth = 0;
+
+            const measureTrackWidth = () => {
+                const width = track.getBoundingClientRect().width;
+                if (width > 0) cachedTrackWidth = width;
+                return cachedTrackWidth || 1;
+            };
 
             // 新增一个状态缓存变量，放在 updateVisuals 外层
             let lastActiveIndex = -1;
@@ -2612,10 +3707,10 @@
                     // 如果翻转到了竖屏模式，立刻中断桌面端的视觉运算（防止覆盖选中状态或浪费主线程）
                     return;
                 }
-                thumb.style.left = `${percentage}%`;
-                thumb.style.top = '50%';
-                progress.style.width = `${percentage}%`;
-                progress.style.height = '100%';
+                currentTimelinePercent = percentage;
+                const rectWidth = dragTrackRect?.width || cachedTrackWidth || measureTrackWidth();
+                thumb.style.setProperty('--timeline-thumb-x', `${rectWidth * percentage / 100}px`);
+                progress.style.setProperty('--timeline-progress', String(percentage / 100));
 
                 const currentMs = startTime + (percentage / 100) * totalDuration;
                 const currentDate = new Date(currentMs);
@@ -2646,15 +3741,32 @@
 
                 // 核心性能优化：只有当焦点节点发生变化时，才操作 classList，彻底消除卡顿
                 if (activeIndex !== lastActiveIndex) {
-                    nodes.forEach((node, i) => {
-                        if (i === activeIndex) {
-                            node.classList.add('selected');
-                        } else {
-                            node.classList.remove('selected');
-                        }
-                    });
+                    if (lastActiveIndex >= 0) {
+                        nodes[lastActiveIndex]?.classList.remove('selected');
+                    }
+                    nodes[activeIndex]?.classList.add('selected');
                     lastActiveIndex = activeIndex;
                 }
+            };
+
+            window.addEventListener('resize', () => {
+                dragTrackRect = null;
+                if (window.innerWidth > 768) {
+                    requestAnimationFrame(() => {
+                        measureTrackWidth();
+                        updateVisuals(currentTimelinePercent);
+                    });
+                }
+            });
+
+            let hintAnimationId = null;
+            const stopHintAnimation = () => {
+                thumb.classList.remove('hint');
+                if (hintAnimationId) {
+                    cancelAnimationFrame(hintAnimationId);
+                    hintAnimationId = null;
+                }
+                thumb.style.opacity = '';
             };
 
             const snapToNearest = (percentage) => {
@@ -2670,8 +3782,8 @@
                 });
 
                 const isMobile = window.innerWidth <= 768;
-                thumb.style.transition = isMobile ? 'top 0.3s ease' : 'left 0.3s ease';
-                progress.style.transition = isMobile ? 'height 0.3s ease' : 'width 0.3s ease';
+                thumb.style.transition = isMobile ? 'top 0.3s ease' : 'transform 0.3s ease';
+                progress.style.transition = isMobile ? 'height 0.3s ease' : 'transform 0.3s ease';
 
                 updateVisuals(targetPercentage);
 
@@ -2683,19 +3795,22 @@
 
             thumb.addEventListener('mousedown', (e) => {
                 isDraggingThumb = true;
-                thumb.classList.remove('hint');
+                dragTrackRect = track.getBoundingClientRect();
+                cachedTrackWidth = dragTrackRect.width || cachedTrackWidth;
+                stopHintAnimation();
                 e.preventDefault();
             });
 
             thumb.addEventListener('touchstart', (e) => {
                 isDraggingThumb = true;
-                thumb.classList.remove('hint');
+                dragTrackRect = track.getBoundingClientRect();
+                cachedTrackWidth = dragTrackRect.width || cachedTrackWidth;
+                stopHintAnimation();
                 // e.preventDefault(); // 移除以避免禁用原生滚动，或根据需要保留
             }, { passive: true });
 
-            const handleMove = (e) => {
-                if (!isDraggingThumb) return;
-                const rect = track.getBoundingClientRect();
+            const updateDragPosition = (e) => {
+                const rect = dragTrackRect || track.getBoundingClientRect();
                 const isMobile = window.innerWidth <= 768;
                 let ratio;
                 const clientX = e.clientX || (e.touches && e.touches[0].clientX);
@@ -2712,6 +3827,19 @@
                 updateVisuals(ratio * 100);
             };
 
+            const handleMove = (e) => {
+                if (!isDraggingThumb) return;
+                pendingMoveEvent = e;
+                if (moveFrameId) return;
+                moveFrameId = requestAnimationFrame(() => {
+                    moveFrameId = null;
+                    if (pendingMoveEvent) {
+                        updateDragPosition(pendingMoveEvent);
+                        pendingMoveEvent = null;
+                    }
+                });
+            };
+
             document.addEventListener('mousemove', handleMove);
             document.addEventListener('touchmove', (e) => {
                 if (isDraggingThumb) {
@@ -2723,9 +3851,16 @@
             const handleEnd = () => {
                 if (isDraggingThumb) {
                     isDraggingThumb = false;
-                    const isMobile = window.innerWidth <= 768;
-                    const currentPercent = isMobile ? (parseFloat(thumb.style.top) || 0) : (parseFloat(thumb.style.left) || 0);
-                    snapToNearest(currentPercent);
+                    if (moveFrameId) {
+                        cancelAnimationFrame(moveFrameId);
+                        moveFrameId = null;
+                    }
+                    if (pendingMoveEvent) {
+                        updateDragPosition(pendingMoveEvent);
+                        pendingMoveEvent = null;
+                    }
+                    dragTrackRect = null;
+                    snapToNearest(currentTimelinePercent);
                 }
             };
 
@@ -2735,6 +3870,8 @@
             track.addEventListener('click', (e) => {
                 if (e.target.closest('.timeline-content') || e.target === thumb) return;
                 const rect = track.getBoundingClientRect();
+                dragTrackRect = rect;
+                cachedTrackWidth = rect.width || cachedTrackWidth;
                 const isMobile = window.innerWidth <= 768;
                 let ratio;
                 if (isMobile) {
@@ -2746,10 +3883,16 @@
                 }
                 ratio = Math.max(0, Math.min(1, ratio));
                 snapToNearest(ratio * 100);
+                dragTrackRect = null;
             });
 
-            let hintAnimationId = null;
             const startHintAnimation = () => {
+                const timelineContainer = document.getElementById('timeline-container');
+                if (hintAnimationId || isDraggingThumb || window.innerWidth <= 768 || timelineContainer?.classList.contains('collapsed')) {
+                    return;
+                }
+                measureTrackWidth();
+                thumb.classList.add('hint');
                 const duration = 12000; // 动画总长 12 秒
                 const startTime = performance.now();
 
@@ -2823,7 +3966,11 @@
                 const easeInOut = (t) => 0.5 * (1 - Math.cos(Math.PI * t));
 
                 const animate = (time) => {
-                    if (!thumb.classList.contains('hint')) { thumb.style.opacity = ''; return; }
+                    const timelineContainer = document.getElementById('timeline-container');
+                    if (!thumb.classList.contains('hint') || timelineContainer?.classList.contains('collapsed')) {
+                        stopHintAnimation();
+                        return;
+                    }
                     const progress = ((time - startTime) % duration) / duration;
                     let currentPercent = 0, opacity = 1;
 
@@ -2857,12 +4004,22 @@
                 hintAnimationId = requestAnimationFrame(animate);
             };
 
+            timelineWidgetControls = {
+                startHintAnimation,
+                stopHintAnimation,
+                refreshLayout: () => {
+                    calculateDynamicPadding();
+                    measureTrackWidth();
+                    updateVisuals(currentTimelinePercent);
+                }
+            };
+
             // Init at the first node
             if (nodePositions.length > 0) {
                 thumb.style.transition = 'none';
                 progress.style.transition = 'none';
+                measureTrackWidth();
                 updateVisuals(0);
-                thumb.classList.add('hint');
                 startHintAnimation();
                 setTimeout(() => {
                     thumb.style.transition = 'box-shadow 0.2s, background 0.2s';
@@ -2875,6 +4032,7 @@
             const notifications = await render();
             updateLastModified(notifications);
             await renderFriendshipLinks();
+            initExamPage();
             initCollapsibleSections();
             ensureTimelineWidgetReady().catch(error => {
                 console.error('预加载班级大事记失败:', error);
@@ -2886,10 +4044,13 @@
         }
 
         function applyCollapseState(button, contentContainer, expanded) {
+            const toggleText = button.querySelector('.toggle-text');
             contentContainer.classList.toggle('collapsed', !expanded);
             contentContainer.style.overflow = expanded ? '' : 'hidden';
             button.setAttribute('aria-expanded', String(expanded));
-            button.querySelector('.toggle-text').textContent = expanded ? '收起' : '展开';
+            if (toggleText) {
+                toggleText.textContent = expanded ? '收起' : '展开';
+            }
         }
 
         function setTimelineLoading(visible) {
@@ -2898,6 +4059,35 @@
             if (!mask) return;
             container?.classList.toggle('loading', visible);
             mask.classList.toggle('active', visible);
+        }
+
+        function clearTimelineLoadingTimer(resolvePending = false) {
+            if (timelineLoadingTimer) {
+                clearTimeout(timelineLoadingTimer);
+                timelineLoadingTimer = null;
+            }
+            if (resolvePending && timelineLoadingResolve) {
+                timelineLoadingResolve();
+            }
+            timelineLoadingResolve = null;
+        }
+
+        function cancelTimelineLoading() {
+            timelineLoadingRunId++;
+            clearTimelineLoadingTimer(true);
+            setTimelineLoading(false);
+        }
+
+        function waitTimelineLoadingDuration() {
+            clearTimelineLoadingTimer(true);
+            return new Promise(resolve => {
+                timelineLoadingResolve = resolve;
+                timelineLoadingTimer = setTimeout(() => {
+                    timelineLoadingTimer = null;
+                    timelineLoadingResolve = null;
+                    resolve();
+                }, TIMELINE_LOADING_MIN_MS);
+            });
         }
 
         function waitForNextFrame() {
@@ -2920,17 +4110,36 @@
         }
 
         async function revealTimelineWithLoading() {
+            const runId = ++timelineLoadingRunId;
+            timelineWidgetControls?.stopHintAnimation();
             setTimelineLoading(true);
-            const startedAt = performance.now();
-            try {
-                await ensureTimelineWidgetReady();
-                window.dispatchEvent(new Event('resize'));
-            } catch (error) {
-                console.error('加载班级大事记失败:', error);
-            } finally {
-                const remaining = Math.max(1200 - (performance.now() - startedAt), 0);
-                setTimeout(() => setTimelineLoading(false), remaining);
+            const durationPromise = waitTimelineLoadingDuration();
+            let loadError = null;
+
+            await Promise.all([
+                ensureTimelineWidgetReady()
+                    .then(() => {
+                        timelineWidgetControls?.refreshLayout();
+                    })
+                    .catch(error => {
+                        loadError = error;
+                    }),
+                durationPromise
+            ]);
+
+            if (loadError) {
+                console.error('加载班级大事记失败:', loadError);
             }
+
+            if (runId !== timelineLoadingRunId) return;
+            const timelineContainer = document.getElementById('timeline-container');
+            if (timelineContainer?.classList.contains('collapsed')) {
+                setTimelineLoading(false);
+                return;
+            }
+            setTimelineLoading(false);
+            timelineWidgetControls?.refreshLayout();
+            timelineWidgetControls?.startHintAnimation();
         }
 
         // 添加折叠功能事件全量绑定
@@ -2956,20 +4165,24 @@
 
                     if (!isCollapsed) {
                         // Action: 收起 (Collapse)
+                        if (contentContainer.id === 'timeline-container') {
+                            timelineWidgetControls?.stopHintAnimation();
+                            cancelTimelineLoading();
+                        }
+
                         // 强制截断，避免收起动画时出现内容溢出或重叠
                         contentContainer.style.overflow = 'hidden';
 
-                        // 强制浏览器重绘以立即生效溢出隐藏
-                        void contentContainer.offsetWidth;
-
                         contentContainer.classList.add('collapsed');
                         this.setAttribute('aria-expanded', 'false');
-                        this.querySelector('.toggle-text').textContent = '展开';
+                        const toggleText = this.querySelector('.toggle-text');
+                        if (toggleText) {
+                            toggleText.textContent = '展开';
+                        }
                     } else {
                         // Action: 展开 (Expand)
                         // 在展开动画期间，必须保持 overflow: hidden 才能具有抽屉下推效果
                         if (contentContainer.id === 'timeline-container') {
-                            setTimelineLoading(true);
                             contentContainer.style.overflow = 'visible';
                         } else {
                             contentContainer.style.overflow = 'hidden';
@@ -2977,7 +4190,10 @@
 
                         contentContainer.classList.remove('collapsed');
                         this.setAttribute('aria-expanded', 'true');
-                        this.querySelector('.toggle-text').textContent = '收起';
+                        const toggleText = this.querySelector('.toggle-text');
+                        if (toggleText) {
+                            toggleText.textContent = '收起';
+                        }
 
                         if (contentContainer.id === 'timeline-container') {
                             revealTimelineWithLoading();
@@ -3006,6 +4222,7 @@
 
                 const links = await response.json();
                 const listEl = document.getElementById('friendship-links-list');
+                if (!listEl) return;
 
                 if (links && links.length > 0) {
                     listEl.innerHTML = links.map(link =>
@@ -3019,43 +4236,553 @@
             }
         }
 
-        function toggleDarkMode() {
-            // 添加过渡动画 class
-            document.body.classList.add('theme-transition');
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
 
-            // 强制浏览器重绘以确保动画 class 生效
-            void document.body.offsetHeight;
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = escapeHtml(message).replace(/\n/g, '<br>');
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'toastFadeOut 0.2s ease-in forwards';
+                toast.addEventListener('animationend', () => {
+                    toast.remove();
+                }, { once: true });
+            }, 2500);
+        }
+
+        const EXAM_STORAGE_KEY = 'classExamItems';
+        let examItems = [];
+        let examCountdownTimer = null;
+
+        function initExamPage() {
+            const form = document.getElementById('exam-form');
+            const list = document.getElementById('exam-list');
+            const cancelBtn = document.getElementById('exam-cancel-btn');
+            const monthSelect = document.getElementById('exam-month-select');
+
+            if (!form || !list || !cancelBtn || !monthSelect) return;
+
+            populateExamTimeSelects();
+            examItems = loadExamItems();
+            renderExamList();
+
+            cancelBtn.addEventListener('click', () => {
+                resetExamForm();
+            });
+
+            monthSelect.addEventListener('change', () => {
+                syncExamDayOptions();
+            });
+
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                saveExamFromForm();
+            });
+
+            list.addEventListener('click', event => {
+                const actionEl = event.target.closest('[data-exam-action]');
+                if (!actionEl) return;
+                const card = actionEl.closest('.exam-card');
+                const examId = card?.dataset.examId;
+                if (!examId) return;
+
+                event.stopPropagation();
+                const action = actionEl.dataset.examAction;
+                if (action === 'menu') {
+                    toggleExamMenu(card);
+                } else if (action === 'edit') {
+                    closeExamMenus();
+                    editExam(examId);
+                } else if (action === 'delete') {
+                    deleteExam(examId);
+                }
+            });
+
+            document.addEventListener('click', closeExamMenus);
+
+            if (examCountdownTimer) clearInterval(examCountdownTimer);
+            examCountdownTimer = setInterval(refreshExamStatuses, 1000);
+        }
+
+        function populateExamTimeSelects() {
+            populateNumberSelect('exam-month-select', 1, 12, '月');
+            populateNumberSelect('exam-hour-select', 0, 23, '点', true);
+            populateNumberSelect('exam-minute-select', 0, 59, '分', true);
+
+            const defaultDate = new Date(Date.now() + 60 * 60 * 1000);
+            document.getElementById('exam-month-select').value = String(defaultDate.getMonth() + 1);
+            syncExamDayOptions(defaultDate.getDate());
+            document.getElementById('exam-hour-select').value = String(defaultDate.getHours());
+            document.getElementById('exam-minute-select').value = String(defaultDate.getMinutes());
+        }
+
+        function populateNumberSelect(selectId, start, end, suffix, pad = false) {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            select.innerHTML = '';
+            for (let value = start; value <= end; value++) {
+                const option = document.createElement('option');
+                option.value = String(value);
+                option.textContent = `${pad ? String(value).padStart(2, '0') : value}${suffix}`;
+                select.appendChild(option);
+            }
+        }
+
+        function syncExamDayOptions(preferredDay) {
+            const monthSelect = document.getElementById('exam-month-select');
+            const daySelect = document.getElementById('exam-day-select');
+            if (!monthSelect || !daySelect) return;
+
+            const currentDay = preferredDay ?? (Number(daySelect.value) || 1);
+            const month = Number(monthSelect.value) || 1;
+            const year = new Date().getFullYear();
+            const maxDay = new Date(year, month, 0).getDate();
+            daySelect.innerHTML = '';
+
+            for (let day = 1; day <= maxDay; day++) {
+                const option = document.createElement('option');
+                option.value = String(day);
+                option.textContent = `${day}日`;
+                daySelect.appendChild(option);
+            }
+
+            daySelect.value = String(Math.min(currentDay, maxDay));
+        }
+
+        function loadExamItems() {
+            try {
+                const raw = localStorage.getItem(EXAM_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                if (!Array.isArray(parsed)) return [];
+                return parsed
+                    .filter(item => item && item.id && item.subject && Number.isFinite(Number(item.time)))
+                    .map(item => ({
+                        id: String(item.id),
+                        subject: String(item.subject),
+                        location: String(item.location || ''),
+                        time: Number(item.time)
+                    }))
+                    .sort(compareExamItems);
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function persistExamItems() {
+            try {
+                localStorage.setItem(EXAM_STORAGE_KEY, JSON.stringify(examItems));
+            } catch (error) {
+                console.error('保存考试信息失败:', error);
+            }
+        }
+
+        function compareExamItems(a, b) {
+            const now = Date.now();
+            const aEnded = a.time <= now;
+            const bEnded = b.time <= now;
+            if (aEnded !== bEnded) return aEnded ? 1 : -1;
+            return a.time - b.time || a.subject.localeCompare(b.subject, 'zh-Hans-CN');
+        }
+
+        function showExamForm(exam) {
+            const form = document.getElementById('exam-form');
+            const subjectInput = document.getElementById('exam-subject-input');
+            const locationInput = document.getElementById('exam-location-input');
+            const editIdInput = document.getElementById('exam-edit-id');
+            const submitBtn = document.getElementById('exam-submit-btn');
+            if (!form || !subjectInput || !locationInput || !editIdInput || !submitBtn) return;
+
+            if (exam) {
+                const date = new Date(exam.time);
+                editIdInput.value = exam.id;
+                subjectInput.value = exam.subject;
+                locationInput.value = exam.location || '';
+                document.getElementById('exam-month-select').value = String(date.getMonth() + 1);
+                syncExamDayOptions(date.getDate());
+                document.getElementById('exam-hour-select').value = String(date.getHours());
+                document.getElementById('exam-minute-select').value = String(date.getMinutes());
+                submitBtn.textContent = '保存修改';
+            } else {
+                editIdInput.value = '';
+                subjectInput.value = '';
+                locationInput.value = '';
+                submitBtn.textContent = '保存考试';
+                populateExamTimeSelects();
+            }
+
+            setTimeout(() => subjectInput.focus(), 0);
+        }
+
+        function resetExamForm() {
+            const form = document.getElementById('exam-form');
+            const subjectInput = document.getElementById('exam-subject-input');
+            const locationInput = document.getElementById('exam-location-input');
+            const editIdInput = document.getElementById('exam-edit-id');
+            const submitBtn = document.getElementById('exam-submit-btn');
+            if (!form || !subjectInput || !locationInput || !editIdInput || !submitBtn) return;
+
+            subjectInput.value = '';
+            locationInput.value = '';
+            editIdInput.value = '';
+            submitBtn.textContent = '保存考试';
+            populateExamTimeSelects();
+        }
+
+        function getExamTimeFromForm() {
+            const now = new Date();
+            const month = Number(document.getElementById('exam-month-select')?.value) || 1;
+            const day = Number(document.getElementById('exam-day-select')?.value) || 1;
+            const hour = Number(document.getElementById('exam-hour-select')?.value) || 0;
+            const minute = Number(document.getElementById('exam-minute-select')?.value) || 0;
+            return new Date(now.getFullYear(), month - 1, day, hour, minute, 0, 0).getTime();
+        }
+
+        function saveExamFromForm() {
+            const subjectInput = document.getElementById('exam-subject-input');
+            const locationInput = document.getElementById('exam-location-input');
+            const editIdInput = document.getElementById('exam-edit-id');
+            const subject = subjectInput?.value.trim();
+            const location = locationInput?.value.trim() || '';
+            if (!subject) {
+                showToast('请输入考试科目', 'warning');
+                subjectInput?.focus();
+                return;
+            }
+
+            const time = getExamTimeFromForm();
+            const editId = editIdInput?.value;
+            if (editId) {
+                examItems = examItems.map(item => item.id === editId ? { ...item, subject, location, time } : item);
+            } else {
+                examItems.push({
+                    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                    subject,
+                    location,
+                    time
+                });
+            }
+
+            examItems.sort(compareExamItems);
+            persistExamItems();
+            resetExamForm();
+            renderExamList();
+            showToast(editId ? '考试信息已更新' : '考试已添加', 'success');
+        }
+
+        function editExam(examId) {
+            const exam = examItems.find(item => item.id === examId);
+            if (!exam) return;
+            showExamForm(exam);
+            document.getElementById('exam-add-title')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function deleteExam(examId) {
+            examItems = examItems.filter(item => item.id !== examId);
+            persistExamItems();
+            renderExamList();
+            showToast('考试已删除', 'success');
+        }
+
+        function toggleExamMenu(card) {
+            const shouldOpen = !card.classList.contains('menu-open');
+            closeExamMenus();
+            card.classList.toggle('menu-open', shouldOpen);
+            card.querySelector('.exam-more-btn')?.setAttribute('aria-expanded', String(shouldOpen));
+        }
+
+        function closeExamMenus() {
+            document.querySelectorAll('.exam-card.menu-open').forEach(card => {
+                card.classList.remove('menu-open');
+                card.querySelector('.exam-more-btn')?.setAttribute('aria-expanded', 'false');
+            });
+        }
+
+        function formatExamTime(time) {
+            const date = new Date(time);
+            const hour = String(date.getHours()).padStart(2, '0');
+            const minute = String(date.getMinutes()).padStart(2, '0');
+            return `${date.getMonth() + 1}月${date.getDate()}日 ${hour}:${minute}`;
+        }
+
+        function getExamStatus(time) {
+            const diff = time - Date.now();
+            if (diff <= 0) {
+                return { ended: true, urgent: false, text: '已结束' };
+            }
+
+            let remaining = Math.floor(diff / 1000);
+            const days = Math.floor(remaining / 86400);
+            remaining %= 86400;
+            const hours = Math.floor(remaining / 3600);
+            remaining %= 3600;
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+            return {
+                ended: false,
+                urgent: diff < 7 * 24 * 60 * 60 * 1000,
+                text: `距离考试 ${days}天${hours}时${minutes}分${seconds}秒`
+            };
+        }
+
+        function renderExamList() {
+            const list = document.getElementById('exam-list');
+            if (!list) return;
+
+            examItems.sort(compareExamItems);
+            if (examItems.length === 0) {
+                list.innerHTML = '<div class="exam-empty">还没有添加考试。可以从左侧手动输入。</div>';
+                return;
+            }
+
+            list.innerHTML = examItems.map(item => {
+                const status = getExamStatus(item.time);
+                const endedClass = status.ended ? ' exam-ended' : '';
+                const urgentClass = status.urgent ? ' exam-urgent' : '';
+                const locationHtml = item.location
+                    ? `<div class="exam-location">${escapeHtml(item.location)}</div>`
+                    : '';
+                return `
+                    <article class="exam-card${endedClass}${urgentClass}" data-exam-id="${escapeHtml(item.id)}" data-exam-time="${item.time}">
+                        <button class="exam-more-btn" type="button" data-exam-action="menu" aria-label="更多操作" aria-haspopup="menu" aria-expanded="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="6" cy="12" r="1.8"></circle>
+                                <circle cx="12" cy="12" r="1.8"></circle>
+                                <circle cx="18" cy="12" r="1.8"></circle>
+                            </svg>
+                        </button>
+                        <div class="exam-card-menu">
+                            <button class="exam-menu-item" type="button" data-exam-action="edit">编辑</button>
+                            <button class="exam-menu-item danger" type="button" data-exam-action="delete">删除</button>
+                        </div>
+                        <div class="exam-card-main">
+                            <h4 class="exam-subject">${escapeHtml(item.subject)}</h4>
+                            <div class="exam-time">${escapeHtml(formatExamTime(item.time))}</div>
+                            ${locationHtml}
+                        </div>
+                        <div class="exam-status">${escapeHtml(status.text)}</div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function refreshExamStatuses() {
+            let shouldRerender = false;
+            document.querySelectorAll('.exam-card[data-exam-time]').forEach(card => {
+                const status = getExamStatus(Number(card.dataset.examTime));
+                const wasEnded = card.classList.contains('exam-ended');
+                if (wasEnded !== status.ended) {
+                    shouldRerender = true;
+                }
+                card.classList.toggle('exam-ended', status.ended);
+                card.classList.toggle('exam-urgent', status.urgent);
+                const statusEl = card.querySelector('.exam-status');
+                if (statusEl && statusEl.textContent !== status.text) {
+                    statusEl.textContent = status.text;
+                }
+            });
+            if (shouldRerender) {
+                renderExamList();
+            }
+        }
+
+        function isTimelineExpanded() {
+            const timelineContainer = document.getElementById('timeline-container');
+            return Boolean(timelineContainer && !timelineContainer.classList.contains('collapsed'));
+        }
+
+        function toggleDarkMode() {
+            if (themeTransitionTimer) {
+                clearTimeout(themeTransitionTimer);
+                themeTransitionTimer = null;
+            }
+
+            const shouldQuietTimeline = isTimelineExpanded();
+            if (shouldQuietTimeline) {
+                document.body.classList.add('timeline-theme-quiet');
+            }
+
+            // 添加过渡动画 class。不要强制同步重排，避免快速点击时卡住主线程。
+            document.body.classList.add('theme-transition');
 
             const isDark = document.body.classList.toggle('dark-mode');
 
             // 仅更新 localStorage，由 CSS 处理图标切换
-            if (isDark) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
+            setSavedThemePreference(isDark ? 'dark' : 'light');
 
             // 动画结束后移除过渡 class，增加 50ms 的缓冲时间防止动画末端被截断
-            setTimeout(() => {
+            themeTransitionTimer = setTimeout(() => {
                 document.body.classList.remove('theme-transition');
+                document.body.classList.remove('timeline-theme-quiet');
+                themeTransitionTimer = null;
+                if (isTimelineExpanded()) {
+                    timelineWidgetControls?.startHintAnimation();
+                }
             }, 450);
         }
 
         // 监听系统主题变化
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-            const savedTheme = localStorage.getItem('theme');
-            // 只有在用户没有手动覆盖的情况下，才跟随系统实时切换
-            if (!savedTheme) {
-                if (event.matches) {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
+        {
+            const colorSchemeQuery = getColorSchemeQuery();
+            const handleSystemThemeChange = event => {
+                const savedTheme = getSavedThemePreference();
+                // 只有在用户没有手动覆盖的情况下，才跟随系统实时切换
+                if (!savedTheme) {
+                    if (event.matches) {
+                        document.body.classList.add('dark-mode');
+                    } else {
+                        document.body.classList.remove('dark-mode');
+                    }
                 }
+            };
+
+            if (colorSchemeQuery?.addEventListener) {
+                colorSchemeQuery.addEventListener('change', handleSystemThemeChange);
+            } else if (colorSchemeQuery?.addListener) {
+                colorSchemeQuery.addListener(handleSystemThemeChange);
             }
-        });
+        }
+
+        function toggleNavTabs() {
+            const navTabs = document.getElementById('nav-tabs');
+            if (!navTabs) return;
+            navTabs.classList.toggle('collapsed');
+        }
+
+        function switchTab(tabName) {
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.tab === tabName);
+            });
+
+            // Toggle page containers
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById('page-' + tabName);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // If switching to "other" tab, ensure timeline is loaded
+            if (tabName === 'other') {
+                const timelineContainer = document.getElementById('timeline-container');
+                if (timelineContainer && !timelineContainer.classList.contains('collapsed')) {
+                    revealTimelineWithLoading();
+                }
+            } else {
+                cancelTimelineLoading();
+                timelineWidgetControls?.stopHintAnimation();
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         init();
     </script>
+    <!-- [TEMP-START] 临时弹窗：“考试”界面尚在开发中，后续可整块删除 -->
+    <style>
+        #dev-popup-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 10002;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #dev-popup-content {
+            background: #ffffff;
+            color: #1e293b;
+            padding: 24px 24px 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 80%;
+            width: 320px;
+            text-align: left;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(128, 128, 128, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        body.dark-mode #dev-popup-content {
+            background: #1e1e1e;
+            color: #ffffff;
+        }
+        #dev-popup-text {
+            font-size: 1.05em;
+            font-weight: 600;
+            line-height: 1.5;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .dev-popup-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        #dev-popup-btn {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        #dev-popup-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+    <div id="dev-popup-modal" onclick="closeDevPopup(event)">
+        <div id="dev-popup-content" onclick="event.stopPropagation()">
+            <div id="dev-popup-text">“考试”界面尚在开发中</div>
+            <div class="dev-popup-actions">
+                <button id="dev-popup-btn" onclick="closeDevPopup()">确定</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function closeDevPopup() {
+            const modal = document.getElementById('dev-popup-modal');
+            const content = document.getElementById('dev-popup-content');
+            if (modal) {
+                modal.style.opacity = '0';
+                if(content) content.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // 欢迎动画大约在1.9秒完成，设置 2000ms 后显示弹窗
+        setTimeout(() => {
+            const modal = document.getElementById('dev-popup-modal');
+            const content = document.getElementById('dev-popup-content');
+            if (modal) {
+                modal.style.display = 'flex';
+                // 触发重绘
+                modal.offsetHeight;
+                modal.style.opacity = '1';
+                if(content) content.style.transform = 'scale(1)';
+            }
+        }, 2000);
+    </script>
+    <!-- [TEMP-END] 临时弹窗 -->
 </body>
 
 </html>

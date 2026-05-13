@@ -64,5 +64,41 @@
         "isUrgent": false,
         "images": [],
         "files": []
+    },
+    {
+        "id": 1778669201662,
+        "type": "long-term",
+        "title": "统计与金融系教授开放日",
+        "target": "",
+        "location": "",
+        "content": "",
+        "publishTime": "2026-05-13T10:46:41.662Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "2026-05-18T09:00",
+        "ongoingEnd": "2026-05-22T16:00",
+        "isUrgent": false,
+        "images": [
+            "images/金融.jpg"
+        ],
+        "files": []
+    },
+    {
+        "id": 1778669273887,
+        "type": "long-term",
+        "title": "所系结合英才班宣讲会",
+        "target": "",
+        "location": "物质科研楼三楼报告厅",
+        "content": "2026年所系结合英才班选拔暨研究生培养介绍宣讲会。\n\n本次宣讲会分上、下午两场举办，会后将启动物理学院2024级11个所系结合英才班（严济慈班除外）选拔工作。学院暑期还将组织2024级和2025级学生赴各研究所参加科技夏令营，本次宣讲会可帮助同学们提前熟悉各研究所概况及科研研究方向，参会学生及入选英才班学生将优先获得参加各研究所科技夏令营的资格，此外，各研究所将在宣讲会现场开展2023级研究生预推免面试报名相关工作，请有推免深造意向的同学务必准时参会，谢谢",
+        "publishTime": "2026-05-13T10:47:53.887Z",
+        "timeType": "ongoing",
+        "deadline": "",
+        "ongoingStart": "",
+        "ongoingEnd": "",
+        "isUrgent": false,
+        "images": [
+            "images/所系结合.jpg"
+        ],
+        "files": []
     }
 ]

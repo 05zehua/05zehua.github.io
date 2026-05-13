@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 25级少院5班通知中心</title>
+    <meta name="description" content="25级少院5班通知中心登录页面">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --page-bg: #f8fafc;
+            --page-text: #1e293b;
+            --input-bg: #ffffff;
+            --input-border: #d7dce3;
+            --input-text: #1e293b;
+            --input-placeholder-opacity: 0.42;
+            --input-focus-ring: rgba(59, 130, 246, 0.12);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: var(--page-bg);
+            color: var(--page-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 渐变背景层 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -999;
+            background-image: radial-gradient(at 0% 0%, rgba(0, 123, 255, 0.06) 0, transparent 50%),
+                radial-gradient(at 50% 0%, rgba(0, 200, 255, 0.06) 0, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(100, 0, 255, 0.05) 0, transparent 50%);
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        body.dark-mode::before {
+            opacity: 0;
+        }
+
+        /* ===== 深色模式 ===== */
+        body.dark-mode {
+            --page-bg: #121212;
+            --page-text: #d1d5db;
+            --input-bg: #1f1f1f;
+            --input-border: #363636;
+            --input-text: #e5e7eb;
+            --input-placeholder-opacity: 0.38;
+            --input-focus-ring: rgba(59, 130, 246, 0.2);
+        }
+
+        /* ===== 顶部栏 ===== */
+        .login-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 16px 28px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ===== 主题切换按钮（与主站一致） ===== */
+        .theme-toggle-btn {
+            background: transparent;
+            color: #555;
+            border: none;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.15);
+            color: #333;
+        }
+
+        body.dark-mode .theme-toggle-btn {
+            color: #d1d5db;
+        }
+
+        body.dark-mode .theme-toggle-btn:hover {
+            color: #ffffff;
+        }
+
+        .theme-toggle-btn svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 55%;
+            height: 55%;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .theme-toggle-btn .icon-moon {
+            opacity: 1;
+            transform: translate(-50%, -50%) rotate(0) scale(1);
+        }
+
+        .theme-toggle-btn .icon-sun {
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(-90deg) scale(0);
+        }
+
+        body.dark-mode .theme-toggle-btn .icon-moon {
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(90deg) scale(0);
+        }
+
+        body.dark-mode .theme-toggle-btn .icon-sun {
+            opacity: 1;
+            transform: translate(-50%, -50%) rotate(0) scale(1);
+        }
+
+        /* ===== 主内容区域 ===== */
+        .login-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 28px 60px;
+        }
+
+        .login-split {
+            display: flex;
+            width: 100%;
+            max-width: 960px;
+            min-height: 480px;
+        }
+
+        /* ===== 左侧：登录/注册 ===== */
+        .login-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-right: 60px;
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .login-tab {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #c4c9d2;
+            padding: 0;
+            transition: color 0.25s ease;
+            position: relative;
+        }
+
+        .login-tab:hover {
+            color: #9ca3af;
+        }
+
+        .login-tab.active {
+            color: #1e293b;
+        }
+
+        body.dark-mode .login-tab {
+            color: #4b5563;
+        }
+
+        body.dark-mode .login-tab:hover {
+            color: #9ca3af;
+        }
+
+        body.dark-mode .login-tab.active {
+            color: #ffffff;
+        }
+
+        /* ===== 表单 ===== */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .login-form.hidden {
+            display: none;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.88em;
+            font-weight: 600;
+            color: #64748b;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .form-label {
+            color: #9ca3af;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 0.95em;
+            color: var(--input-text);
+            background-color: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input::placeholder {
+            color: var(--input-text);
+            opacity: var(--input-placeholder-opacity);
+            transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px var(--input-focus-ring);
+        }
+
+        body.dark-mode .form-input {
+            color-scheme: dark;
+        }
+
+        body.dark-mode .form-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .form-submit {
+            margin-top: 8px;
+            padding: 13px 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #ffffff;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+
+        .form-submit:hover {
+            opacity: 0.9;
+        }
+
+        .form-hint {
+            text-align: center;
+            font-size: 0.82em;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .form-hint a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-hint a:hover {
+            text-decoration: underline;
+        }
+
+        body.dark-mode .form-hint {
+            color: #6b7280;
+        }
+
+        /* ===== 右侧：留白 ===== */
+        .login-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid rgba(0, 0, 0, 0.06);
+            padding-left: 60px;
+            transition: border-color 0.4s ease;
+        }
+
+        body.dark-mode .login-right {
+            border-left-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .right-placeholder {
+            color: #d1d5db;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        body.dark-mode .right-placeholder {
+            color: #4b5563;
+        }
+
+        /* ===== 主题过渡动画 ===== */
+        .theme-transition,
+        .theme-transition::before,
+        .theme-transition .login-tab,
+        .theme-transition .form-input,
+        .theme-transition .form-input::placeholder,
+        .theme-transition .form-label,
+        .theme-transition .form-submit,
+        .theme-transition .form-hint,
+        .theme-transition .form-hint a,
+        .theme-transition .login-right,
+        .theme-transition .right-placeholder,
+        .theme-transition .theme-toggle-btn {
+            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* ===== 移动端适配 ===== */
+        @media (max-width: 768px) {
+            .login-header {
+                padding: 12px 16px;
+            }
+
+            .login-main {
+                padding: 0 20px 40px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
+            .login-split {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .login-left {
+                padding-right: 0;
+            }
+
+            .login-tabs {
+                margin-bottom: 24px;
+            }
+
+            .login-tab {
+                font-size: 1.3em;
+            }
+
+            .login-right {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+
+    <header class="login-header">
+        <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="切换深色模式" onclick="toggleDarkMode()">
+            <svg class="icon-moon" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg class="icon-sun" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </button>
+    </header>
+
+    <main class="login-main">
+        <div class="login-split">
+            <!-- 左侧：登录/注册 -->
+            <div class="login-left">
+                <div class="login-tabs">
+                    <button class="login-tab active" data-form="login" onclick="switchForm('login')">登录</button>
+                    <button class="login-tab" data-form="register" onclick="switchForm('register')">注册</button>
+                </div>
+
+                <!-- 登录表单 -->
+                <form id="form-login" class="login-form" onsubmit="return false;">
+                    <div class="form-group">
+                        <label class="form-label" for="login-username">用户名</label>
+                        <input class="form-input" id="login-username" type="text" placeholder="请输入用户名"
+                            autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="login-password">密码</label>
+                        <input class="form-input" id="login-password" type="password" placeholder="请输入密码"
+                            autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="form-submit">登录</button>
+                    <div class="form-hint">还没有账号？<a href="#" onclick="switchForm('register'); return false;">立即注册</a>
+                    </div>
+                </form>
+
+                <!-- 注册表单 -->
+                <form id="form-register" class="login-form hidden" onsubmit="return false;">
+                    <div class="form-group">
+                        <label class="form-label" for="reg-username">用户名</label>
+                        <input class="form-input" id="reg-username" type="text" placeholder="请输入用户名"
+                            autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-password">密码</label>
+                        <input class="form-input" id="reg-password" type="password" placeholder="请输入密码"
+                            autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-confirm">确认密码</label>
+                        <input class="form-input" id="reg-confirm" type="password" placeholder="请再次输入密码"
+                            autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="form-submit">注册</button>
+                    <div class="form-hint">已有账号？<a href="#" onclick="switchForm('login'); return false;">返回登录</a></div>
+                </form>
+            </div>
+
+            <!-- 右侧：留白 -->
+            <div class="login-right">
+                <span class="right-placeholder"></span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function switchForm(formName) {
+            // 切换 Tab 高亮
+            document.querySelectorAll('.login-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.form === formName);
+            });
+            // 切换表单显示
+            document.getElementById('form-login').classList.toggle('hidden', formName !== 'login');
+            document.getElementById('form-register').classList.toggle('hidden', formName !== 'register');
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.add('theme-transition');
+            void document.body.offsetHeight;
+
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+            setTimeout(() => {
+                document.body.classList.remove('theme-transition');
+            }, 450);
+        }
+
+        // 监听系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            const savedTheme = localStorage.getItem('theme');
+            if (!savedTheme) {
+                if (event.matches) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
