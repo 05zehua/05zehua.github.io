@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -1752,6 +1752,10 @@
         .theme-transition .ddl-option-row,
         .theme-transition .ddl-option-title,
         .theme-transition .ddl-option-desc,
+        .theme-transition .ddl-import-steps,
+        .theme-transition .ddl-import-steps a,
+        .theme-transition .ddl-import-note,
+        .theme-transition .ddl-disclaimer,
         .theme-transition .ddl-manual-hint,
         .theme-transition .ddl-field label,
         .theme-transition .ddl-input,
@@ -2062,6 +2066,48 @@
             color: #64748b;
             transition: color 0.25s ease;
         }
+
+        /* [EXAM-IMPORT-START] 书签导入说明与免责声明样式，后续可整段删除 */
+        .ddl-import-steps {
+            margin: 14px 0 0;
+            padding-left: 20px;
+            color: #475569;
+            font-size: 0.9em;
+            line-height: 1.7;
+            transition: color 0.25s ease;
+        }
+
+        .ddl-import-steps li {
+            margin-bottom: 8px;
+        }
+
+        .ddl-import-steps a {
+            color: #2563eb;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.25s ease;
+        }
+
+        .ddl-import-steps a:hover {
+            text-decoration: underline;
+        }
+
+        .ddl-import-note,
+        .ddl-disclaimer {
+            color: #94a3b8;
+            font-size: 0.82em;
+            line-height: 1.55;
+            transition: color 0.25s ease;
+        }
+
+        .ddl-import-note {
+            margin: 8px 2px 0;
+        }
+
+        .ddl-disclaimer {
+            margin-top: 10px;
+        }
+        /* [EXAM-IMPORT-END] */
 
         .ddl-manual-hint {
             margin: 4px 2px 0;
@@ -2568,12 +2614,19 @@
         }
 
         body.dark-mode .ddl-option-desc,
+        body.dark-mode .ddl-import-steps,
+        body.dark-mode .ddl-import-note,
+        body.dark-mode .ddl-disclaimer,
         body.dark-mode .ddl-manual-hint,
         body.dark-mode .ddl-field label,
         body.dark-mode .ddl-time,
         body.dark-mode .ddl-location,
         body.dark-mode .ddl-note {
             color: #94a3b8;
+        }
+
+        body.dark-mode .ddl-import-steps a {
+            color: #93c5fd;
         }
 
         body.dark-mode .ddl-input,
@@ -2866,12 +2919,21 @@
                     <div class="ddl-panel">
                         <h3 class="ddl-panel-title">导入DDL</h3>
                         <div class="ddl-option-list">
-                            <a class="ddl-option-row" href="https://jw.ustc.edu.cn/" target="_blank" rel="noopener">
+                            <div class="ddl-option-row">
                                 <span class="ddl-option-main">
                                     <span class="ddl-option-title">从教务系统导入</span>
-                                    <span class="ddl-option-desc">登录 jw.ustc.edu.cn 并导入考试信息</span>
                                 </span>
-                            </a>
+                            </div>
+                            <!-- [EXAM-IMPORT-START] 扩展导入使用说明，后续可整块删除 -->
+                            <ol class="ddl-import-steps">
+                                <li>点击下载 <a href="ustc-jw-importer.zip" download>ustc-jw-importer.zip</a> 并解压缩。</li>
+                                <li>进入 Chrome / Edge 的扩展管理页面。</li>
+                                <li>开启“开发者模式”，选择“加载未打包的扩展程序”，选择刚刚解压出的文件夹。</li>
+                                <li>登录 <a href="https://jw.ustc.edu.cn/" target="_blank" rel="noopener">jw.ustc.edu.cn</a>，进入“考试”-“考试信息”界面。</li>
+                                <li>点击启动扩展，跳转后在“DDL”板块中即可看到考试信息。</li>
+                            </ol>
+                            <div class="ddl-import-note">完成上述操作后即可删除扩展和刚刚的文件夹。</div>
+                            <!-- [EXAM-IMPORT-END] -->
                             <div class="ddl-manual-hint">你也可以在下方手动输入</div>
                         </div>
                         <form class="ddl-form" id="ddl-form">
@@ -2922,11 +2984,17 @@
                 <section class="ddl-column" aria-labelledby="ddl-list-title">
                     <h2 class="module-title" id="ddl-list-title">我的DDL</h2>
                     <div class="ddl-list" id="ddl-list"></div>
+                    <!-- [EXAM-IMPORT-START] DDL信息核对免责声明，后续可整块删除 -->
+                    <div class="ddl-disclaimer">请自行与教务系统上的信息核对。此处展示的信息可能有误或过时。我们不对此承担任何责任。</div>
+                    <!-- [EXAM-IMPORT-END] -->
                 </section>
 
                 <section class="ddl-column" aria-labelledby="unified-ddl-list-title">
                     <h2 class="module-title" id="unified-ddl-list-title">统一DDL</h2>
                     <div class="ddl-list" id="unified-ddl-list"></div>
+                    <!-- [EXAM-IMPORT-START] DDL信息核对免责声明，后续可整块删除 -->
+                    <div class="ddl-disclaimer">请自行与教务系统上的信息核对。此处展示的信息可能有误或过时。我们不对此承担任何责任。</div>
+                    <!-- [EXAM-IMPORT-END] -->
                 </section>
             </div>
         </div>
@@ -4459,6 +4527,13 @@
                 syncDdlDayOptions();
             });
 
+            document.querySelectorAll('[data-extension-url]').forEach(link => {
+                link.addEventListener('click', event => {
+                    event.preventDefault();
+                    openExtensionSettings(link.dataset.extensionUrl);
+                });
+            });
+
             form.addEventListener('submit', event => {
                 event.preventDefault();
                 saveDdlFromForm();
@@ -4668,6 +4743,39 @@
                 console.error('保存信息失败:', error);
             }
         }
+
+        // [EXAM-IMPORT-START] 尝试打开浏览器扩展设置页；若浏览器拦截，则复制地址让用户手动粘贴
+        async function openExtensionSettings(url) {
+            if (!url) return;
+
+            window.open(url, '_blank', 'noopener');
+            try {
+                await copyPlainText(url);
+                showToast(`已尝试打开扩展页面，并复制地址：${url}`, 'success');
+            } catch (error) {
+                showToast(`如未打开，请手动在地址栏输入：${url}`, 'warning');
+            }
+        }
+
+        async function copyPlainText(text) {
+            if (navigator.clipboard?.writeText && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return;
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            textarea.setSelectionRange(0, textarea.value.length);
+            const copied = document.execCommand('copy');
+            textarea.remove();
+            if (!copied) throw new Error('copy failed');
+        }
+        // [EXAM-IMPORT-END]
 
         // [EXAM-IMPORT-START] 接收书签代码传回的考试 JSON，保存进本页 DDL，本段后续可整块删除
         function handleExamBookmarkImport() {

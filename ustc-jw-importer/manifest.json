@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "USTC 考试信息导入",
+  "version": "1.0.0",
+  "description": "从 USTC 教务系统考试信息页读取表格，并导入到 DDL 页面。",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_title": "导入考试信息"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
