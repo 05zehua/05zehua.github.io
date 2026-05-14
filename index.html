@@ -233,7 +233,7 @@
             }
 
             .welcome-title {
-                font-size: clamp(2rem, 11vw, 2.5rem);
+                font-size: clamp(1.8rem, 9vw, 2.3rem);
                 line-height: 1.2;
             }
 
@@ -242,7 +242,7 @@
             }
 
             .update-tag {
-                font-size: 2.1rem !important;
+                font-size: 1.85rem !important;
             }
 
             .section-header {
@@ -1772,6 +1772,12 @@
         .theme-transition .ddl-card-menu,
         .theme-transition .ddl-menu-item,
         .theme-transition .ddl-empty,
+        .theme-transition .settings-content,
+        .theme-transition .setting-label,
+        .theme-transition .setting-options,
+        .theme-transition .setting-options::before,
+        .theme-transition .setting-option,
+        .theme-transition .settings-close-btn,
         .theme-transition .countdown-ring .ring-bg {
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -2107,6 +2113,7 @@
         .ddl-disclaimer {
             margin-top: 10px;
         }
+
         /* [EXAM-IMPORT-END] */
 
         .ddl-manual-hint {
@@ -2368,6 +2375,7 @@
             margin-top: 4px;
             transition: color 0.25s ease;
         }
+
         /* [EXAM-IMPORT-END] */
 
         .ddl-status {
@@ -2481,10 +2489,9 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            z-index: 10010;
+            display: grid;
+            place-items: center;
             pointer-events: none;
         }
 
@@ -2493,7 +2500,7 @@
             color: #f8fafc;
             padding: 12px 24px;
             border-radius: 9999px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             font-size: 0.95rem;
             font-weight: 500;
             display: flex;
@@ -2504,6 +2511,7 @@
             line-height: 1.5;
             max-width: 400px;
             word-break: break-all;
+            grid-area: 1 / 1;
         }
 
         .toast.success {
@@ -2545,6 +2553,17 @@
             to {
                 opacity: 0;
                 transform: translateY(-10px);
+            }
+        }
+
+        @keyframes toastFadeOutDown {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(15px) scale(0.95);
             }
         }
 
@@ -2798,39 +2817,341 @@
                 height: 20px;
             }
         }
+
+        /* 设置弹窗 */
+        #settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10005;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #settings-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .settings-content {
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 650px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #settings-modal.active .settings-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        body.dark-mode .settings-content {
+            background: #1e1e1e;
+            color: #f8fafc;
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 24px 10px 24px;
+        }
+
+        .settings-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .settings-close-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 8px;
+            margin: -8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .settings-close-btn:hover {
+            background: rgba(15, 23, 42, 0.05);
+            color: #0f172a;
+        }
+
+        body.dark-mode .settings-close-btn {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .settings-close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+        }
+
+        .settings-close-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .settings-body {
+            padding: 12px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        @media (min-width: 480px) {
+            .setting-item {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+            }
+        }
+
+        .setting-label {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #334155;
+            flex-shrink: 0;
+        }
+
+        body.dark-mode .setting-label {
+            color: #cbd5e1;
+        }
+
+        .setting-options {
+            --option-count: 2;
+            --active-index: 0;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(var(--option-count), minmax(0, 1fr));
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+            transition: background-color 0.34s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.34s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: grab;
+            touch-action: pan-y;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .setting-options::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 4px;
+            width: calc((100% - 8px) / var(--option-count));
+            border-radius: 7px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+            transform: translateX(calc(var(--active-index) * 100%));
+            transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+                background-color 0.34s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.34s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .setting-options.dragging {
+            cursor: grabbing;
+        }
+
+        .setting-options.dragging::before {
+            transition: none;
+        }
+
+        .theme-transition .setting-options.dragging::before {
+            transition: none !important;
+        }
+
+        .setting-options::-webkit-scrollbar {
+            display: none;
+        }
+
+        body.dark-mode .setting-options {
+            background: #0f172a;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+        }
+
+        body.dark-mode .setting-options::before {
+            background: #1e293b;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        }
+
+        .setting-option {
+            position: relative;
+            z-index: 1;
+            background: transparent;
+            border: none;
+            padding: 6px 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+            color: #64748b;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: color 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .setting-option {
+            color: #64748b;
+        }
+
+        .setting-option:hover {
+            color: #334155;
+        }
+
+        body.dark-mode .setting-option:hover {
+            color: #cbd5e1;
+        }
+
+        .setting-option.active {
+            color: #0f172a;
+            text-shadow: 0 0 0 currentColor;
+        }
+
+        body.dark-mode .setting-option.active {
+            color: #f8fafc;
+        }
+
+        @media (max-width: 420px) {
+            .settings-body {
+                padding: 12px 16px 20px;
+            }
+
+            .setting-option {
+                min-height: 34px;
+                padding: 5px 6px;
+                font-size: 0.78em;
+                line-height: 1.25;
+                white-space: normal;
+            }
+        }
+
+        .nav-settings-btn {
+            background: transparent;
+            border: none;
+            color: currentColor;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-settings-btn:hover {
+            background: rgba(15, 23, 42, 0.05);
+        }
+
+        body.dark-mode .nav-settings-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-settings-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-settings-btn {
+                width: 28px;
+                height: 28px;
+            }
+
+            .nav-settings-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div id="toast-container"></div>
     <script>
-        function getSavedThemePreference() {
-            try {
-                return localStorage.getItem('theme');
-            } catch (error) {
-                return null;
-            }
-        }
-
-        function setSavedThemePreference(theme) {
-            try {
-                localStorage.setItem('theme', theme);
-            } catch (error) {
-                // Ignore storage failures so theme switching never blocks the page.
-            }
-        }
-
         function getColorSchemeQuery() {
             return window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
         }
 
         {
-            const savedTheme = getSavedThemePreference();
+            const getSettings = () => {
+                try {
+                    return JSON.parse(localStorage.getItem('classSiteSettings')) || {};
+                } catch (e) {
+                    return {};
+                }
+            };
+            const settings = getSettings();
+
+            // Migrate old theme if needed
+            let themeMode = settings.themeMode;
+            if (!themeMode) {
+                try {
+                    const oldTheme = localStorage.getItem('theme');
+                    if (oldTheme) {
+                        themeMode = oldTheme;
+                    } else {
+                        themeMode = 'system';
+                    }
+                } catch (e) {
+                    themeMode = 'system';
+                }
+            }
+
             const colorSchemeQuery = getColorSchemeQuery();
             const prefersDark = colorSchemeQuery?.matches;
 
-            // 如果本地存储为 dark，或者没有本地存储且系统为暗黑模式
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            let isDark = false;
+            if (themeMode === 'dark') {
+                isDark = true;
+            } else if (themeMode === 'system') {
+                isDark = prefersDark;
+            } else if (themeMode === 'auto') {
+                const hour = new Date().getHours();
+                isDark = hour >= 18 || hour < 6;
+            }
+
+            if (isDark) {
                 document.body.classList.add('dark-mode');
             }
         }
@@ -2850,13 +3171,6 @@
             <button class="nav-item" data-tab="other" onclick="switchTab('other')">其他</button>
         </div>
         <div class="nav-right">
-            <button class="nav-profile-btn" aria-label="个人中心">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </button>
             <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="切换深色模式" onclick="toggleDarkMode()">
                 <svg class="icon-moon" viewBox="0 0 24 24">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
@@ -2871,6 +3185,22 @@
                     <line x1="21" y1="12" x2="23" y2="12"></line>
                     <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <button class="nav-settings-btn" aria-label="设置" onclick="openSettingsModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                </svg>
+            </button>
+            <button class="nav-profile-btn" aria-label="个人中心">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
                 </svg>
             </button>
         </div>
@@ -2919,20 +3249,23 @@
                     <div class="ddl-panel">
                         <h3 class="ddl-panel-title">导入DDL</h3>
                         <div class="ddl-option-list">
-                            <div class="ddl-option-row">
+                            <div class="ddl-option-row" data-ddl-import-trigger role="button" tabindex="0"
+                                aria-label="从教务系统导入考试信息">
                                 <span class="ddl-option-main">
                                     <span class="ddl-option-title">从教务系统导入</span>
                                 </span>
                             </div>
                             <!-- [EXAM-IMPORT-START] 扩展导入使用说明，后续可整块删除 -->
-                            <ol class="ddl-import-steps">
+                            <ol class="ddl-import-steps" data-ddl-web-import-help>
                                 <li>点击下载 <a href="ustc-jw-importer.zip" download>ustc-jw-importer.zip</a> 并解压缩。</li>
                                 <li>进入 Chrome / Edge 的扩展管理页面。</li>
                                 <li>开启“开发者模式”，选择“加载未打包的扩展程序”，选择刚刚解压出的文件夹。</li>
-                                <li>登录 <a href="https://jw.ustc.edu.cn/" target="_blank" rel="noopener">jw.ustc.edu.cn</a>，进入“考试”-“考试信息”界面。</li>
+                                <li>登录 <a href="https://jw.ustc.edu.cn/" target="_blank"
+                                        rel="noopener">jw.ustc.edu.cn</a>，进入“考试”-“考试信息”界面。</li>
                                 <li>点击启动扩展，跳转后在“DDL”板块中即可看到考试信息。</li>
                             </ol>
-                            <div class="ddl-import-note">完成上述操作后即可删除扩展和刚刚的文件夹。</div>
+                            <div class="ddl-import-note" data-ddl-desktop-import-note hidden>
+                                将打开内置教务系统窗口。请手动登录并进入“考试”-“考试信息”页面后点击提取。</div>
                             <!-- [EXAM-IMPORT-END] -->
                             <div class="ddl-manual-hint">你也可以在下方手动输入</div>
                         </div>
@@ -2952,22 +3285,26 @@
                                 <label>时间</label>
                                 <div class="ddl-time-grid">
                                     <div class="ddl-time-picker" data-ddl-picker="ddl-month-select">
-                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox"
+                                            aria-expanded="false"></button>
                                         <div class="ddl-select-menu" role="listbox"></div>
                                         <input type="hidden" id="ddl-month-select" value="">
                                     </div>
                                     <div class="ddl-time-picker" data-ddl-picker="ddl-day-select">
-                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox"
+                                            aria-expanded="false"></button>
                                         <div class="ddl-select-menu" role="listbox"></div>
                                         <input type="hidden" id="ddl-day-select" value="">
                                     </div>
                                     <div class="ddl-time-picker" data-ddl-picker="ddl-hour-select">
-                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox"
+                                            aria-expanded="false"></button>
                                         <div class="ddl-select-menu" role="listbox"></div>
                                         <input type="hidden" id="ddl-hour-select" value="">
                                     </div>
                                     <div class="ddl-time-picker" data-ddl-picker="ddl-minute-select">
-                                        <button class="ddl-select" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+                                        <button class="ddl-select" type="button" aria-haspopup="listbox"
+                                            aria-expanded="false"></button>
                                         <div class="ddl-select-menu" role="listbox"></div>
                                         <input type="hidden" id="ddl-minute-select" value="">
                                     </div>
@@ -3092,6 +3429,57 @@
 
     <div class="footer-version">
         版本: 260513 | 最近更新: 导航条
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div id="settings-modal" onclick="closeSettingsModal(event)">
+        <div class="settings-content" onclick="event.stopPropagation()">
+            <div class="settings-header">
+                <h2 class="settings-title">设置</h2>
+                <button class="settings-close-btn" aria-label="关闭" onclick="closeSettingsModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-item">
+                    <div class="setting-label">进入时主页面</div>
+                    <div class="setting-options" id="setting-default-tab">
+                        <button class="setting-option" data-value="notice"
+                            onclick="updateSetting('defaultTab', 'notice')">通知</button>
+                        <button class="setting-option" data-value="ddl"
+                            onclick="updateSetting('defaultTab', 'ddl')">DDL</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">深浅模式</div>
+                    <div class="setting-options" id="setting-theme-mode">
+                        <button class="setting-option" data-value="dark"
+                            onclick="updateSetting('themeMode', 'dark')">深色模式</button>
+                        <button class="setting-option" data-value="light"
+                            onclick="updateSetting('themeMode', 'light')">浅色模式</button>
+                        <button class="setting-option" data-value="system"
+                            onclick="updateSetting('themeMode', 'system')">跟随系统</button>
+                        <button class="setting-option" data-value="auto"
+                            onclick="updateSetting('themeMode', 'auto')">自动切换</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label">过期DDL删除方式</div>
+                    <div class="setting-options" id="setting-ddl-expired">
+                        <button class="setting-option" data-value="auto"
+                            onclick="updateSetting('ddlExpired', 'auto')">过期自动删除</button>
+                        <button class="setting-option" data-value="1day"
+                            onclick="updateSetting('ddlExpired', '1day')">过期1天后删除</button>
+                        <button class="setting-option" data-value="manual"
+                            onclick="updateSetting('ddlExpired', 'manual')">手动删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -4277,6 +4665,7 @@
             await renderFriendshipLinks();
             initDdlPage();
             initCollapsibleSections();
+            switchTab(window.currentSettings ? window.currentSettings.defaultTab : 'notice');
             ensureTimelineWidgetReady().catch(error => {
                 console.error('预加载班级大事记失败:', error);
             });
@@ -4483,16 +4872,25 @@
             const container = document.getElementById('toast-container');
             if (!container) return;
 
+            container.querySelectorAll('.toast').forEach(t => {
+                if (t._hideTimeout) clearTimeout(t._hideTimeout);
+                t.remove();
+            });
+
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = escapeHtml(message).replace(/\n/g, '<br>');
             container.appendChild(toast);
 
-            setTimeout(() => {
+            toast._hideTimeout = setTimeout(() => {
+                if (toast.classList.contains('fading-out')) return;
+                toast.classList.add('fading-out');
                 toast.style.animation = 'toastFadeOut 0.2s ease-in forwards';
-                toast.addEventListener('animationend', () => {
-                    toast.remove();
-                }, { once: true });
+                toast.addEventListener('animationend', (e) => {
+                    if (e.animationName === 'toastFadeOut' && toast.parentNode) {
+                        toast.remove();
+                    }
+                });
             }, 2500);
         }
 
@@ -4514,6 +4912,7 @@
             populateDdlTimeSelects();
             ddlItems = loadLocalDdlItems();
             // [EXAM-IMPORT-START] 书签导入入口，后续可随导入函数整块删除
+            setupDesktopExamImport();
             handleExamBookmarkImport();
             // [EXAM-IMPORT-END]
             renderDdlLists();
@@ -4744,6 +5143,68 @@
             }
         }
 
+        // [EXAM-IMPORT-START] Electron 客户端导入桥接；普通浏览器继续显示扩展导入说明
+        function setupDesktopExamImport() {
+            const trigger = document.querySelector('[data-ddl-import-trigger]');
+            if (!trigger) return;
+
+            const desktopApi = window.ustcDesktop;
+            const hasDesktopImporter = Boolean(desktopApi?.openJwImport);
+
+            if (hasDesktopImporter) {
+                document.querySelectorAll('[data-ddl-web-import-help]').forEach(el => {
+                    el.hidden = true;
+                });
+                document.querySelectorAll('[data-ddl-desktop-import-note]').forEach(el => {
+                    el.hidden = false;
+                });
+            }
+
+            const runImport = () => {
+                if (hasDesktopImporter) {
+                    openDesktopExamImport();
+                    return;
+                }
+                showToast('请按下方说明安装浏览器扩展后导入', 'warning');
+            };
+
+            trigger.addEventListener('click', runImport);
+            trigger.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    runImport();
+                }
+            });
+        }
+
+        async function openDesktopExamImport() {
+            const desktopApi = window.ustcDesktop;
+            if (!desktopApi?.openJwImport) {
+                showToast('当前浏览器不支持内置导入，请使用下方扩展导入方式', 'warning');
+                return;
+            }
+
+            try {
+                showToast('正在打开教务系统导入窗口', 'success');
+                const result = await desktopApi.openJwImport();
+
+                if (result?.canceled) {
+                    showToast('已取消导入', 'warning');
+                    return;
+                }
+
+                if (!result?.ok) {
+                    showToast(result?.message || '考试信息导入失败', 'error');
+                    return;
+                }
+
+                importExamItems(result.exams);
+            } catch (error) {
+                showToast('考试信息导入失败，请重试', 'error');
+            }
+        }
+        // [EXAM-IMPORT-END]
+
         // [EXAM-IMPORT-START] 尝试打开浏览器扩展设置页；若浏览器拦截，则复制地址让用户手动粘贴
         async function openExtensionSettings(url) {
             if (!url) return;
@@ -4793,6 +5254,10 @@
                 return;
             }
 
+            importExamItems(importedExams);
+        }
+
+        function importExamItems(importedExams) {
             const importedItems = normalizeExamImportItems(importedExams);
             if (importedItems.length === 0) {
                 showToast('未找到可导入的考试信息', 'warning');
@@ -4815,6 +5280,7 @@
 
             ddlItems = normalizeDdlItems([...ddlItems, ...newItems], 'exam-import');
             persistDdlItems();
+            renderDdlLists();
             showToast(`已导入 ${newItems.length} 条考试信息`, 'success');
             switchTab('ddl');
         }
@@ -5072,12 +5538,35 @@
             list.innerHTML = items.map(item => buildDdlCard(item, options)).join('');
         }
 
+        function filterExpiredDdlItems(items, isLocal) {
+            const mode = window.currentSettings?.ddlExpired || 'manual';
+            if (mode === 'manual') return items;
+
+            const now = Date.now();
+            return items.filter(item => {
+                const diff = now - item.time;
+                if (diff > 0) {
+                    if (mode === 'auto') return false;
+                    if (mode === '1day' && diff >= 24 * 60 * 60 * 1000) return false;
+                }
+                return true;
+            });
+        }
+
         function renderDdlLists() {
+            const originalLength = ddlItems.length;
+            ddlItems = filterExpiredDdlItems(ddlItems, true);
+            if (ddlItems.length !== originalLength) {
+                persistDdlItems();
+            }
+
             renderDdlList('ddl-list', ddlItems, {
                 interactive: true,
                 emptyText: '还没有DDL。'
             });
-            renderDdlList('unified-ddl-list', unifiedDdlItems, {
+
+            const displayUnifiedItems = filterExpiredDdlItems(unifiedDdlItems, false);
+            renderDdlList('unified-ddl-list', displayUnifiedItems, {
                 interactive: false,
                 emptyText: '暂无统一DDL。'
             });
@@ -5085,8 +5574,24 @@
 
         function refreshDdlStatuses() {
             let shouldRerender = false;
+            const now = Date.now();
+            const mode = window.currentSettings?.ddlExpired || 'manual';
+
             document.querySelectorAll('.ddl-card[data-ddl-time]').forEach(card => {
-                const status = getDdlStatus(Number(card.dataset.ddlTime));
+                const time = Number(card.dataset.ddlTime);
+                const status = getDdlStatus(time);
+
+                if (status.ended && mode !== 'manual') {
+                    const diff = now - time;
+                    if (mode === 'auto') {
+                        shouldRerender = true;
+                    } else if (mode === '1day' && diff >= 24 * 60 * 60 * 1000) {
+                        shouldRerender = true;
+                    }
+                }
+
+                if (shouldRerender) return;
+
                 const wasEnded = card.classList.contains('ddl-ended');
                 if (wasEnded !== status.ended) {
                     shouldRerender = true;
@@ -5124,8 +5629,8 @@
 
             const isDark = document.body.classList.toggle('dark-mode');
 
-            // 仅更新 localStorage，由 CSS 处理图标切换
-            setSavedThemePreference(isDark ? 'dark' : 'light');
+            // Override and save new explicit setting
+            updateSetting('themeMode', isDark ? 'dark' : 'light');
 
             // 动画结束后移除过渡 class，增加 50ms 的缓冲时间防止动画末端被截断
             themeTransitionTimer = setTimeout(() => {
@@ -5142,9 +5647,9 @@
         {
             const colorSchemeQuery = getColorSchemeQuery();
             const handleSystemThemeChange = event => {
-                const savedTheme = getSavedThemePreference();
-                // 只有在用户没有手动覆盖的情况下，才跟随系统实时切换
-                if (!savedTheme) {
+                const mode = window.currentSettings?.themeMode || 'system';
+                // 只有在跟随系统模式下，才实时切换
+                if (mode === 'system') {
                     if (event.matches) {
                         document.body.classList.add('dark-mode');
                     } else {
@@ -5196,6 +5701,260 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // --- Settings State and Logic ---
+        const SITE_SETTINGS_KEY = 'classSiteSettings';
+
+        window.currentSettings = {
+            defaultTab: 'notice',
+            themeMode: 'system',
+            ddlExpired: 'manual'
+        };
+
+        const SETTING_CONTROL_KEYS = {
+            'setting-default-tab': 'defaultTab',
+            'setting-theme-mode': 'themeMode',
+            'setting-ddl-expired': 'ddlExpired'
+        };
+
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem(SITE_SETTINGS_KEY);
+                if (saved) {
+                    window.currentSettings = { ...window.currentSettings, ...JSON.parse(saved) };
+                } else {
+                    const oldTheme = localStorage.getItem('theme');
+                    if (oldTheme) {
+                        window.currentSettings.themeMode = oldTheme;
+                        saveSettings();
+                    }
+                }
+            } catch (e) { }
+            applySettingsToUI();
+            initSettingSliders();
+            applyThemeLogic();
+        }
+
+        function saveSettings() {
+            try {
+                localStorage.setItem(SITE_SETTINGS_KEY, JSON.stringify(window.currentSettings));
+            } catch (e) { }
+        }
+
+        function updateSetting(key, value) {
+            if (window.currentSettings[key] !== value) {
+                window.currentSettings[key] = value;
+                saveSettings();
+                applySettingsToUI();
+                showToast('已保存', 'success');
+
+                if (key === 'themeMode') {
+                    applyThemeLogic();
+                } else if (key === 'ddlExpired') {
+                    refreshDdlStatuses();
+                }
+            }
+        }
+
+        function applySettingsToUI() {
+            const updateActiveBtn = (containerId, value) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                const buttons = Array.from(container.querySelectorAll('.setting-option'));
+                const activeIndex = Math.max(0, buttons.findIndex(btn => btn.dataset.value === value));
+                container.style.setProperty('--option-count', buttons.length || 1);
+                container.style.setProperty('--active-index', activeIndex);
+                buttons.forEach((btn, index) => {
+                    btn.classList.toggle('active', index === activeIndex);
+                });
+            };
+
+            updateActiveBtn('setting-default-tab', window.currentSettings.defaultTab);
+            updateActiveBtn('setting-theme-mode', window.currentSettings.themeMode);
+            updateActiveBtn('setting-ddl-expired', window.currentSettings.ddlExpired);
+        }
+
+        function clampSettingIndex(value, max) {
+            return Math.min(Math.max(value, 0), max);
+        }
+
+        function getSettingPointerIndex(container, clientX) {
+            const buttons = Array.from(container.querySelectorAll('.setting-option'));
+            const maxIndex = buttons.length - 1;
+            if (maxIndex < 0) return { visualIndex: 0, commitIndex: 0, buttons };
+
+            const rect = container.getBoundingClientRect();
+            const sidePadding = 4;
+            const trackWidth = Math.max(1, rect.width - sidePadding * 2);
+            const segmentWidth = trackWidth / buttons.length;
+            const x = clampSettingIndex(clientX - rect.left - sidePadding, trackWidth);
+            const visualIndex = clampSettingIndex((x / segmentWidth) - 0.5, maxIndex);
+            const commitIndex = clampSettingIndex(Math.floor(x / segmentWidth), maxIndex);
+            return { visualIndex, commitIndex, buttons };
+        }
+
+        function initSettingSliders() {
+            document.querySelectorAll('.setting-options').forEach(container => {
+                const settingKey = SETTING_CONTROL_KEYS[container.id];
+                if (!settingKey || container.dataset.dragReady === 'true') return;
+                container.dataset.dragReady = 'true';
+
+                let dragState = null;
+                let pendingVisualIndex = null;
+                let frameId = 0;
+
+                const applyPendingVisualIndex = () => {
+                    frameId = 0;
+                    if (pendingVisualIndex !== null) {
+                        container.style.setProperty('--active-index', pendingVisualIndex.toFixed(3));
+                    }
+                };
+
+                const scheduleVisualIndex = index => {
+                    pendingVisualIndex = index;
+                    if (!frameId) {
+                        frameId = requestAnimationFrame(applyPendingVisualIndex);
+                    }
+                };
+
+                container.addEventListener('pointerdown', event => {
+                    if (event.button !== undefined && event.button !== 0) return;
+                    const { visualIndex, commitIndex } = getSettingPointerIndex(container, event.clientX);
+                    dragState = {
+                        pointerId: event.pointerId,
+                        commitIndex
+                    };
+                    container.classList.add('dragging');
+                    container.setPointerCapture?.(event.pointerId);
+                    scheduleVisualIndex(visualIndex);
+                });
+
+                container.addEventListener('pointermove', event => {
+                    if (!dragState || dragState.pointerId !== event.pointerId) return;
+                    const { visualIndex, commitIndex } = getSettingPointerIndex(container, event.clientX);
+                    dragState.commitIndex = commitIndex;
+                    scheduleVisualIndex(visualIndex);
+                    event.preventDefault();
+                });
+
+                const finishDrag = event => {
+                    if (!dragState || dragState.pointerId !== event.pointerId) return;
+                    if (frameId) {
+                        cancelAnimationFrame(frameId);
+                        frameId = 0;
+                    }
+                    const { commitIndex, buttons } = getSettingPointerIndex(container, event.clientX);
+                    const selectedButton = buttons[commitIndex] || buttons[dragState.commitIndex];
+                    container.classList.remove('dragging');
+                    container.releasePointerCapture?.(event.pointerId);
+                    container.dataset.suppressClick = 'true';
+                    dragState = null;
+                    pendingVisualIndex = null;
+
+                    if (selectedButton?.dataset.value) {
+                        if (window.currentSettings[settingKey] === selectedButton.dataset.value) {
+                            applySettingsToUI();
+                        } else {
+                            updateSetting(settingKey, selectedButton.dataset.value);
+                        }
+                    } else {
+                        applySettingsToUI();
+                    }
+                };
+
+                container.addEventListener('pointerup', finishDrag);
+                container.addEventListener('pointercancel', event => {
+                    if (!dragState || dragState.pointerId !== event.pointerId) return;
+                    if (frameId) {
+                        cancelAnimationFrame(frameId);
+                        frameId = 0;
+                    }
+                    container.classList.remove('dragging');
+                    container.releasePointerCapture?.(event.pointerId);
+                    dragState = null;
+                    pendingVisualIndex = null;
+                    applySettingsToUI();
+                });
+
+                container.addEventListener('click', event => {
+                    if (container.dataset.suppressClick === 'true') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        container.dataset.suppressClick = 'false';
+                    }
+                }, true);
+            });
+        }
+
+        let themeAutoTimer = null;
+
+        let applyThemeTimer = null;
+        function applyThemeLogic() {
+            const mode = window.currentSettings.themeMode || 'system';
+            let shouldBeDark = false;
+
+            if (themeAutoTimer) {
+                clearInterval(themeAutoTimer);
+                themeAutoTimer = null;
+            }
+
+            const applyDark = (dark) => {
+                if (document.body.classList.contains('dark-mode') !== dark) {
+                    if (applyThemeTimer) clearTimeout(applyThemeTimer);
+                    document.body.classList.add('theme-transition');
+                    document.body.classList.toggle('dark-mode', dark);
+
+                    applyThemeTimer = setTimeout(() => {
+                        document.body.classList.remove('theme-transition');
+                        applyThemeTimer = null;
+                    }, 450);
+                }
+            };
+
+            if (mode === 'dark') {
+                shouldBeDark = true;
+            } else if (mode === 'light') {
+                shouldBeDark = false;
+            } else if (mode === 'system') {
+                shouldBeDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            } else if (mode === 'auto') {
+                const checkAutoTime = () => {
+                    const hour = new Date().getHours();
+                    const isDarkTime = hour >= 18 || hour < 6;
+                    applyDark(isDarkTime);
+                };
+                checkAutoTime();
+                themeAutoTimer = setInterval(checkAutoTime, 5000);
+                return;
+            }
+
+            applyDark(shouldBeDark);
+        }
+
+        function openSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.offsetHeight; // trigger reflow
+                modal.classList.add('active');
+            }
+        }
+
+        function closeSettingsModal(event) {
+            if (event && event.type === 'click' && event.target.id !== 'settings-modal' && !event.target.closest('.settings-close-btn')) {
+                return;
+            }
+            const modal = document.getElementById('settings-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    if (!modal.classList.contains('active')) {
+                        modal.style.display = 'none';
+                    }
+                }, 300);
+            }
+        }
+
+        loadSettings();
         init();
     </script>
     <!-- [TEMP-START] 临时弹窗：“DDL”界面尚在开发中，后续可整块删除 -->
@@ -5216,6 +5975,7 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
+
         #dev-popup-content {
             background: #ffffff;
             color: #1e293b;
@@ -5233,20 +5993,24 @@
             flex-direction: column;
             gap: 20px;
         }
+
         body.dark-mode #dev-popup-content {
             background: #1e1e1e;
             color: #ffffff;
         }
+
         #dev-popup-text {
             font-size: 1.05em;
             font-weight: 600;
             line-height: 1.5;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
+
         .dev-popup-actions {
             display: flex;
             justify-content: flex-end;
         }
+
         #dev-popup-btn {
             background: #007bff;
             color: #fff;
@@ -5259,6 +6023,7 @@
             transition: background 0.2s;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
+
         #dev-popup-btn:hover {
             background: #0056b3;
         }
@@ -5277,7 +6042,7 @@
             const content = document.getElementById('dev-popup-content');
             if (modal) {
                 modal.style.opacity = '0';
-                if(content) content.style.transform = 'scale(0.95)';
+                if (content) content.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     modal.style.display = 'none';
                 }, 300);
@@ -5293,7 +6058,7 @@
                 // 触发重绘
                 modal.offsetHeight;
                 modal.style.opacity = '1';
-                if(content) content.style.transform = 'scale(1)';
+                if (content) content.style.transform = 'scale(1)';
             }
         }, 2000);
     </script>
